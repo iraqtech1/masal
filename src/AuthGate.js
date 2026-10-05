@@ -1,3 +1,4 @@
+import {store} from './store.js';
 import {ref,watch,nextTick} from 'vue/dist/vue.esm-bundler.js';
 import {Layers,ChevronLeft,Eye,EyeOff,User,Smartphone,Mail,LockKeyhole} from 'lucide-vue-next';
 
@@ -29,15 +30,17 @@ export default {
         }else{
           const account=accounts.get(address);
           if(!account||account.hash!==hash){error.value='الإيميل أو الباسورد غير صحيح. أنشئ حساباً تجريبياً أولاً.';return;}
-          enter(account.user);
+          const customer=store.customers.find(c=>c.email===address);
+          if(customer&&!customer.active){error.value='هذا الحساب موقوف بالمعاينة. راجع إدارة المتجر.';return;}
+          enter(customer?{name:customer.name,phone:customer.phone,email:customer.email}:account.user);
         }
       }catch{error.value='تعذّر إكمال التجربة. حاول مرة ثانية.';}finally{busy.value=false;}
     }
-    return {view,name,phone,email,password,show,error,busy,heading,change,submit,guest:()=>enter(null)};
+    return {store,view,name,phone,email,password,show,error,busy,heading,change,submit,guest:()=>enter(null)};
   },
   template:`<div class="auth-shell">
     <div class="auth-story" aria-hidden="true"><span class="auth-wordmark">MASAL / DIGITAL STORE</span><div><span class="auth-kicker">مساحتك الرقمية</span><h2>كل عالمك.<br>بمكان واحد.</h2><p>رصيدك، ألعابك وبطاقاتك المفضّلة.<br>اختارها على كيفك.</p></div><div class="auth-art"><span>Zain<small>رصيد واتصالات</small></span><span>PUBG<small>عالم الألعاب</small></span><span>Apple<small>بطاقات عالمية</small></span></div></div>
-    <section class="auth-panel"><a href="#" class="brand auth-brand" @click.prevent="change('welcome')"><span class="brand-mark"><Layers/></span><span>ماسال<small>DIGITAL STORE</small></span></a>
+    <section class="auth-panel"><a href="#" class="brand auth-brand" @click.prevent="change('welcome')"><span class="brand-mark"><Layers/></span><span>{{store.settings.name}}<small>DIGITAL STORE</small></span></a>
       <div class="auth-body" :key="view">
         <template v-if="view==='welcome'"><span class="eyebrow">أهلاً بيك بماسال</span><h1 ref="heading" tabindex="-1">بطاقتك الجاية،<br><span>تبدأ من هنا.</span></h1><p class="auth-intro">تصفّح البطاقات كزائر، أو سجّل دخولك وخلّي حسابك أقرب إلك.</p><button class="primary auth-action" @click="guest">الدخول كزائر <ChevronLeft :size="18"/></button><button class="auth-outline auth-action" @click="change('login')">تسجيل الدخول <User :size="18"/></button><p class="auth-switch">جديد على ماسال؟ <button @click="change('register')">إنشاء حساب</button></p></template>
         <template v-else><button class="auth-back" @click="change('welcome')"><ChevronLeft :size="16"/> رجوع</button><span class="eyebrow">{{view==='login'?'نورت من جديد':'خلّينا نتعرّف عليك'}}</span><h1 ref="heading" tabindex="-1">{{view==='login'?'تسجيل الدخول':'إنشاء حساب'}}</h1><p class="auth-intro">{{view==='login'?'ادخل إيميلك والباسورد حتى تدخل لحسابك.':'كم معلومة بسيطة ونجهّز حسابك.'}}</p>
