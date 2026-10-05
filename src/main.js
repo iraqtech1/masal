@@ -7,11 +7,13 @@ import AuthGate from './AuthGate.js';
 import PwaControls from './PwaControls.js';
 import Dashboard from './Dashboard.js';
 import BannerSlider from './BannerSlider.js';
+import MasalMark from './MasalMark.js';
+import SplashIntro from './SplashIntro.js';
 import MarketingSite from './marketing/Site.js';
 import {router} from './marketing/router.js';
 import {store,upsertCustomer,createOrder,createTicket} from './store.js';
 const app=createApp({
-components:{BannerSlider,MarketingSite,Dashboard,PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
+components:{SplashIntro,BannerSlider,MarketingSite,Dashboard,PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
 setup(){
 const admin=ref(location.hash.startsWith('#/admin'));
 const marketing=ref(location.hash.startsWith('#/ar'));
@@ -42,13 +44,14 @@ if(document.modelContext?.registerTool){try{document.modelContext.registerTool({
 return {marketing,store,toggleMerchant,admin,myTickets,entered,session,authRequest,enterStore,accountAccess,navMotion,navIcons,page,category,query,merchant,selected,quantity,denom,orders,toast,subject,message,success,dialog,products,number,filtered,price,nav,go,notify,open,close,buy,support,copy};
 },
 template:`
+<SplashIntro :enabled="!admin"/><div id="masal-content">
 <PwaControls :allow-install="!marketing"/>
 <MarketingSite v-if="marketing"/>
 <Dashboard v-if="admin"/>
 <AuthGate v-show="!entered&&!admin&&!marketing" :request="authRequest" @enter="enterStore"/>
 <div v-if="entered&&!admin&&!marketing" class="app-shell">
-<aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><Layers/></span><span>{{store.settings.name}}<small>DIGITAL STORE</small></span></a><div class="side-label">مساحتك الرقمية</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>بطاقاتك، بمكان واحد</p><small>نسخة أولية للمعاينة</small></div></aside>
-<main><header><div class="mobile-brand"><span class="brand-mark"><Layers/></span>{{store.settings.name}}</div><div class="breadcrumb">المتجر <ChevronLeft/> <span>{{nav.find(n=>n.id===page).label}}</span></div><div class="header-actions"><span class="preview-badge">معاينة تجريبية</span><button class="account-access" @click="accountAccess" :aria-label="session?'تسجيل الخروج':'تسجيل الدخول'"><User :size="17"/><span>{{session?session.name:'دخول'}}</span><small v-if="session">خروج</small></button><button class="profile" @click="toggleMerchant" :aria-label="merchant?'التبديل إلى حساب فرد':'التبديل إلى حساب محل'"><User/><span>{{merchant?'حساب محل':'حساب فرد'}}</span></button></div></header>
+<aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><MasalMark/></span><span>{{store.settings.name}}<small>DIGITAL STORE</small></span></a><div class="side-label">مساحتك الرقمية</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>بطاقاتك، بمكان واحد</p><small>نسخة أولية للمعاينة</small></div></aside>
+<main><header><div class="mobile-brand"><span class="brand-mark"><MasalMark/></span>{{store.settings.name}}</div><div class="breadcrumb">المتجر <ChevronLeft/> <span>{{nav.find(n=>n.id===page).label}}</span></div><div class="header-actions"><span class="preview-badge">معاينة تجريبية</span><button class="account-access" @click="accountAccess" :aria-label="session?'تسجيل الخروج':'تسجيل الدخول'"><User :size="17"/><span>{{session?session.name:'دخول'}}</span><small v-if="session">خروج</small></button><button class="profile" @click="toggleMerchant" :aria-label="merchant?'التبديل إلى حساب فرد':'التبديل إلى حساب محل'"><User/><span>{{merchant?'حساب محل':'حساب فرد'}}</span></button></div></header>
 <div class="content"><Transition name="view" mode="out-in"><div :key="page">
 <template v-if="page==='home'"><div class="welcome"><div><span class="eyebrow">كل اللي تحتاجه، أقرب إلك</span><h1>شنو نعبّي اليوم؟</h1></div><span class="edition" dir="ltr">YOUR DIGITAL EVERYDAY</span></div>
 <BannerSlider/><div class="hero"><div class="hero-copy"><span class="hero-label"><span></span> رصيد • ألعاب • بطاقات عالمية</span><h2>عالمك الرقمي.<br><span>على كيفك.</span></h2><p>اختار بطاقتك، وحدّد فئتها.<br>كل خياراتك بمكان واحد.</p><button @click="go('cards')">تصفّح البطاقات <Grid2X2 :size="18"/></button></div><CardDeck v-if="products.length" :products="products.slice(0,6)" @select="open"/></div>
@@ -61,4 +64,4 @@ template:`
 <nav class="bottom-nav"><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span></button></nav>
 <dialog ref="dialog" @click="e=>{if(e.target===dialog)close()}" @cancel="selected=null"><template v-if="selected"><button class="close" @click="close" aria-label="إغلاق"><X/></button><template v-if="!success"><span class="eyebrow">خلّص اختيارك</span><h2>{{selected.name}}</h2><p class="muted">{{selected.tag}}</p><label class="field-label">فئة البطاقة</label><div class="denominations"><button v-for="(v,i) in selected.values" :class="{selected:denom===i}" @click="denom=i">{{number(v)}} <small>{{selected.id===3?'UC':selected.category==='اتصالات'?'د.ع':'USD'}}</small></button></div><div class="quantity-row"><span>الكمية</span><div class="stepper"><button :disabled="quantity<=1" @click="quantity--" aria-label="تقليل الكمية"><Minus :size="18"/></button><span>{{number(quantity)}}</span><button :disabled="quantity>=20" @click="quantity++" aria-label="زيادة الكمية"><Plus :size="18"/></button></div></div><div class="payment"><CreditCard/><span>الدفع بواسطة Qi<small>محاكاة للدفع فقط</small></span><Check :size="18"/></div><div class="total"><span>المجموع</span><strong>{{number(price)}} <small>د.ع</small></strong></div><button class="primary wide" @click="buy">تجربة الشراء</button><p class="dialog-note">لا يتم خصم أي مبلغ أو إصدار كارت حقيقي.</p></template><template v-else><div class="success"><span><Check :size="36"/></span><h2>اكتملت التجربة!</h2><p>أضفنا طلبك التجريبي إلى مشترياتي.</p><button class="primary wide" @click="close();go('orders')">عرض مشترياتي</button></div></template></template></dialog>
 <Transition name="toast"><div v-if="toast" class="toast" role="status">{{toast}}</div></Transition>
-</div>`});app.use(router);app.mount('#app');
+</div></div>`});app.component('MasalMark',MasalMark);app.use(router);app.mount('#app');

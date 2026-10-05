@@ -1,4 +1,4 @@
 /* The lower half of the required hero fades to white: keep statistics readable. */
-.dz-site .dz-hero .dz-stat strong,.dz-site .dz-hero .dz-stat>span{color:#7a2438}
-.dz-site .dz-hero h1 em{color:#f6e4e9;text-shadow:0 2px 10px #7a243833}
-.dz-hero-compact .dz-actions:empty{display:none}
+.ms-site .ms-hero .ms-stat strong,.ms-site .ms-hero .ms-stat>span{color:#780f1c}
+.ms-site .ms-hero h1 em{color:#f9e8e9;text-shadow:0 2px 10px #780f1c33}
+.ms-hero-compact .ms-actions:empty{display:none}

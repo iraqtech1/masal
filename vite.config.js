@@ -7,12 +7,12 @@ export default defineConfig({
   plugins: [VitePWA({
     registerType: 'prompt',
     injectRegister: false,
-    includeAssets: ['favicon.svg', 'icons/*.png', 'fonts/*.ttf'],
+    includeAssets: ['favicon.png', 'brand/*', 'icons/*.png', 'fonts/*.ttf'],
     manifest: {
       id: './', name: 'ماسال — بطاقاتك الرقمية', short_name: 'ماسال',
       description: 'بطاقات الرصيد والألعاب والبطاقات العالمية بمكان واحد.',
       lang: 'ar', dir: 'rtl', start_url: './', scope: './',
-      display: 'standalone', background_color: '#ffffff', theme_color: '#751c3a',
+      display: 'standalone', background_color: '#ffffff', theme_color: '#a21c2d',
       icons: [
         {src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any'},
         {src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any'},
@@ -20,7 +20,7 @@ export default defineConfig({
       ],
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,png,ttf}'],
+      globPatterns: ['**/*.{js,css,html,svg,png,webp,ttf}'],
       cleanupOutdatedCaches: true,
       navigateFallbackDenylist: [/^\/api\//],
     },

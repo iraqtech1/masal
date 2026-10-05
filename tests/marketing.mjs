@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 import {createRouter,createMemoryHistory} from 'vue-router';
 import {validatePartnership,emptyPartnership} from '../src/marketing/partnership-form.js';
 import {filterArticles,articles} from '../src/marketing/articles.js';
@@ -26,5 +26,6 @@ assert.equal(new Set(paths).size,6);assert.deepEqual(paths.sort(),Object.keys(pa
 const router=createRouter({history:createMemoryHistory(),routes:paths.map(path=>({path,component:{}}))});
 for(const path of paths){await router.push(path);assert.equal(router.currentRoute.value.path,path);assert.equal(router.currentRoute.value.matched.length,1);assert.equal(router.resolve(path+'?type=host#contact').hash,'#contact')}
 await router.push('/ar');await router.push('/ar/about');router.back();await new Promise(r=>setTimeout(r,10));assert.equal(router.currentRoute.value.path,'/ar');
-assert.match(readFileSync('src/marketing/components.js','utf8'),/© 2026 Digital Zone\. جميع الحقوق محفوظة\./);
+assert.match(readFileSync('src/marketing/components.js','utf8'),/© 2026 Masal\. جميع الحقوق محفوظة\./);
 console.log('Marketing tests passed: six routes, navigation history, Arabic article search, category filter and partnership validation.');
+for(const name of readdirSync('src/marketing')){if(!/\.(js|json|css)$/.test(name))continue;const text=readFileSync('src/marketing/'+name,'utf8');assert.doesNotMatch(text,/ديجيتال|دجتل|Digital[ -]Zone|DIGITAL ZONE|سيف المفتي|رحال|تكت زون|سوبر كي/i,`Old brand reference in ${name}`)}
