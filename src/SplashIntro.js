@@ -1,24 +1,22 @@
 import {ref,onMounted,onBeforeUnmount,nextTick} from 'vue/dist/vue.esm-bundler.js';
-import {CreditCard,Gamepad2,Headphones,Smartphone,Star,ShoppingBag} from 'lucide-vue-next';
+import {CreditCard,Gamepad2,Headphones,Smartphone,Monitor,Cpu} from 'lucide-vue-next';
 import MasalMark from './MasalMark.js';
 import './splash.css';
-const sessionKey='masal-intro-v1';
 export default {
-  components:{MasalMark,CreditCard,Gamepad2,Headphones,Smartphone,Star,ShoppingBag},
+  components:{MasalMark,CreditCard,Gamepad2,Headphones,Smartphone,Monitor,Cpu},
   props:{enabled:{type:Boolean,default:true}},
   setup(props){
     const visible=ref(false),leaving=ref(false),reduced=ref(false);
-    const symbols=[CreditCard,Gamepad2,Star,Headphones,Smartphone,ShoppingBag];
+    const symbols=[CreditCard,Smartphone,Gamepad2,Headphones,Monitor,Cpu];
     let timer,exitTimer,content,previousOverflow;
     function restore(){if(content)content.inert=false;if(previousOverflow!==undefined)document.body.style.overflow=previousOverflow;}
     function finish(){if(leaving.value||!visible.value)return;clearTimeout(timer);leaving.value=true;exitTimer=setTimeout(async()=>{visible.value=false;restore();await nextTick();document.querySelector('.auth-panel h1')?.focus({preventScroll:true});},reduced.value?0:260);}
     onMounted(()=>{
       if(!props.enabled)return;
-      try{if(sessionStorage.getItem(sessionKey))return;sessionStorage.setItem(sessionKey,'1');}catch{}
       reduced.value=matchMedia('(prefers-reduced-motion: reduce)').matches;
       content=document.getElementById('masal-content');if(content)content.inert=true;
       previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';visible.value=true;
-      timer=setTimeout(finish,reduced.value?180:1950);
+      timer=setTimeout(finish,reduced.value?3000:2740);
     });
     onBeforeUnmount(()=>{clearTimeout(timer);clearTimeout(exitTimer);restore();});
     return {visible,leaving,reduced,symbols,finish};

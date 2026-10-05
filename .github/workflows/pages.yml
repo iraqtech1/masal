@@ -24,10 +24,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
+        id: node
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      - name: Restore installed dependencies
+        id: dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: masal-ubuntu24-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'package.json') }}
+      - name: Install dependencies when needed
+        if: steps.dependencies.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm test
       - run: npm run build
@@ -35,6 +43,9 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+          retention-days: 1
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          reporting_interval: 1000
