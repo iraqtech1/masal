@@ -5,7 +5,7 @@ export default defineConfig({
   resolve: {alias: [{find: /^vue$/, replacement: 'vue/dist/vue.esm-bundler.js'}]},
   base: process.env.GITHUB_ACTIONS ? '/masal/' : '/',
   plugins: [VitePWA({
-    registerType: 'prompt',
+    registerType: 'autoUpdate',
     injectRegister: false,
     includeAssets: ['favicon.png', 'brand/*', 'icons/*.png', 'fonts/*.ttf'],
     manifest: {
@@ -22,6 +22,8 @@ export default defineConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,svg,png,webp,ttf}'],
       cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
       navigateFallbackDenylist: [/^\/api\//],
     },
   })],

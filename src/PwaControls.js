@@ -1,31 +1,19 @@
 import {ref,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {useRegisterSW} from 'virtual:pwa-register/vue';
-import {Download,RefreshCw,WifiOff,X} from 'lucide-vue-next';
+import {WifiOff} from 'lucide-vue-next';
 
 export default {
   props:{allowInstall:{type:Boolean,default:true}},
-  components:{Download,RefreshCw,WifiOff,X},
+  components:{WifiOff},
   setup(){
-    const offline=ref(!navigator.onLine),installPrompt=ref(null),dismissed=ref(false),showHelp=ref(false),installError=ref('');
-    const standalone=ref(matchMedia('(display-mode: standalone)').matches||navigator.standalone===true);
-    const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    let registration;
-    const {needRefresh,updateServiceWorker}=useRegisterSW({onRegisteredSW(_url,reg){registration=reg;}});
-    function network(){offline.value=!navigator.onLine;}
-    function beforeInstall(event){event.preventDefault();installPrompt.value=event;dismissed.value=false;}
-    function installed(){standalone.value=true;installPrompt.value=null;}
-    function checkUpdate(){if(navigator.onLine)registration?.update().catch(()=>{});}
-    async function install(){
-      if(!installPrompt.value){showHelp.value=!showHelp.value;return;}
-      installError.value='';
-      try{await installPrompt.value.prompt();const {outcome}=await installPrompt.value.userChoice;if(outcome==='accepted')dismissed.value=true;installPrompt.value=null;}
-      catch{installError.value='تعذّر التثبيت. جرّب من قائمة المتصفح.';}
-    }
-    onMounted(()=>{window.addEventListener('online',network);window.addEventListener('offline',network);window.addEventListener('beforeinstallprompt',beforeInstall);window.addEventListener('appinstalled',installed);window.addEventListener('focus',checkUpdate);});
-    onBeforeUnmount(()=>{window.removeEventListener('online',network);window.removeEventListener('offline',network);window.removeEventListener('beforeinstallprompt',beforeInstall);window.removeEventListener('appinstalled',installed);window.removeEventListener('focus',checkUpdate);});
-    return {offline,needRefresh,installPrompt,dismissed,standalone,ios,showHelp,installError,install,updateServiceWorker};
+    const offline=ref(!navigator.onLine);
+    let registration,timer;
+    function checkUpdate(){if(navigator.onLine&&!document.hidden)registration?.update().catch(()=>{});}
+    function network(){offline.value=!navigator.onLine;checkUpdate();}
+    useRegisterSW({immediate:true,onRegisteredSW(_url,reg){registration=reg;checkUpdate();}});
+    onMounted(()=>{window.addEventListener('online',network);window.addEventListener('offline',network);window.addEventListener('focus',checkUpdate);document.addEventListener('visibilitychange',checkUpdate);timer=setInterval(checkUpdate,60000);});
+    onBeforeUnmount(()=>{window.removeEventListener('online',network);window.removeEventListener('offline',network);window.removeEventListener('focus',checkUpdate);document.removeEventListener('visibilitychange',checkUpdate);clearInterval(timer);});
+    return {offline};
   },
-  template:`<div class="pwa-controls">
-    <div v-if="offline" class="pwa-offline" role="status"><WifiOff :size="15"/> بدون اتصال — تعرض النسخة المحفوظة</div>
-  </div>`
+  template:`<div class="pwa-controls"><div v-if="offline" class="pwa-offline" role="status"><WifiOff :size="15"/> بدون اتصال — تعرض النسخة المحفوظة</div></div>`
 };
