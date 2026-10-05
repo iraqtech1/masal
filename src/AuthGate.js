@@ -39,10 +39,10 @@ export default {
     return {store,view,name,phone,email,password,show,error,busy,heading,change,submit,guest:()=>enter(null)};
   },
   template:`<div class="auth-shell">
-    <div class="auth-story" aria-hidden="true"><span class="auth-wordmark">MASAL / DIGITAL STORE</span><div><span class="auth-kicker">مساحتك الرقمية</span><h2>كل عالمك.<br>بمكان واحد.</h2><p>رصيدك، ألعابك وبطاقاتك المفضّلة.<br>اختارها على كيفك.</p></div><div class="auth-art"><span>Zain<small>رصيد واتصالات</small></span><span>PUBG<small>عالم الألعاب</small></span><span>Apple<small>بطاقات عالمية</small></span></div></div>
+    <div class="auth-story" aria-hidden="true"><span class="auth-wordmark">MASAL / DIGITAL STORE</span><div><span class="auth-kicker">ماسال</span><h2>بطاقات الرصيد<br>والألعاب</h2><p>بطاقات اتصالات وألعاب وبطاقات عالمية.</p></div><div class="auth-art"><span>Zain<small>رصيد واتصالات</small></span><span>PUBG<small>عالم الألعاب</small></span><span>Apple<small>بطاقات عالمية</small></span></div></div>
     <section class="auth-panel"><a href="#" class="brand auth-brand" @click.prevent="change('welcome')"><span class="brand-mark"><MasalMark/></span><span>{{store.settings.name}}<small>DIGITAL STORE</small></span></a>
       <div class="auth-body" :key="view">
-        <template v-if="view==='welcome'"><span class="eyebrow">أهلاً بيك بماسال</span><h1 ref="heading" tabindex="-1">بطاقتك الجاية،<br><span>تبدأ من هنا.</span></h1><button class="primary auth-action" @click="guest">الدخول كزائر <ChevronLeft :size="18"/></button><button class="auth-outline auth-action" @click="change('login')">تسجيل الدخول <User :size="18"/></button><p class="auth-switch">جديد على ماسال؟ <button @click="change('register')">إنشاء حساب</button></p></template>
+        <template v-if="view==='welcome'"><span class="eyebrow">أهلاً بيك بماسال</span><h1 ref="heading" tabindex="-1">بطاقات الرصيد<br><span>والألعاب</span></h1><button class="primary auth-action" @click="guest">الدخول كزائر <ChevronLeft :size="18"/></button><button class="auth-outline auth-action" @click="change('login')">تسجيل الدخول <User :size="18"/></button><p class="auth-switch">جديد على ماسال؟ <button @click="change('register')">إنشاء حساب</button></p></template>
         <template v-else><button class="auth-back" @click="change('welcome')"><ChevronLeft :size="16"/> رجوع</button><span class="eyebrow">{{view==='login'?'نورت من جديد':'خلّينا نتعرّف عليك'}}</span><h1 ref="heading" tabindex="-1">{{view==='login'?'تسجيل الدخول':'إنشاء حساب'}}</h1><p class="auth-intro">{{view==='login'?'ادخل إيميلك والباسورد حتى تدخل لحسابك.':'كم معلومة بسيطة ونجهّز حسابك.'}}</p>
         <form class="auth-form" @submit.prevent="submit">
           <template v-if="view==='register'"><label for="auth-name">الاسم الكامل</label><div class="auth-field"><User :size="18"/><input id="auth-name" v-model="name" autocomplete="name" placeholder="اسمك الكامل" required maxlength="80"/></div><label for="auth-phone">رقم الهاتف</label><div class="auth-field"><Smartphone :size="18"/><input id="auth-phone" v-model="phone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr" placeholder="07XXXXXXXXX" required maxlength="11" pattern="[0-9]{11}" title="11 أرقام بالأرقام الإنجليزية" @input="phone=phone.replace(/[^0-9]/g,'').slice(0,11)"/></div></template>
@@ -51,7 +51,7 @@ export default {
           <p v-if="error" class="auth-error" role="alert">{{error}}</p><button class="primary auth-action" :disabled="busy">{{busy?'لحظة...':view==='register'?'إنشاء حساب':'تسجيل الدخول'}} <ChevronLeft :size="18"/></button>
         </form><p class="auth-switch">{{view==='login'?'ما عندك حساب؟':'عندك حساب؟'}} <button @click="change(view==='login'?'register':'login')">{{view==='login'?'إنشاء حساب':'تسجيل الدخول'}}</button></p><button class="auth-guest" @click="guest">كمّل كزائر</button></template>
 
-      </div><span class="auth-footer" dir="ltr">MASAL · YOUR DIGITAL EVERYDAY</span>
+      </div><span class="auth-footer" dir="ltr">MASAL</span>
     </section>
   </div>`
 };

@@ -46,3 +46,9 @@ body{background:var(--masal-app-background);background-attachment:fixed}
  .auth-panel{padding-top:max(28px,env(safe-area-inset-top,0px));padding-bottom:max(24px,env(safe-area-inset-bottom,0px))}
  .app-shell dialog{padding-bottom:calc(24px + var(--mobile-safe-bottom))}
 }
+
+/* Slightly smaller headings and card text. */
+.auth-body h1{font-size:30px}
+.app-shell h1{font-size:29px}
+.app-shell .hero-copy h2{font-size:2.5rem}
+@media(max-width:700px){.auth-body h1{font-size:26px}.app-shell h1{font-size:26px}.app-shell .hero-copy h2{font-size:1.8rem}.app-shell .product-art strong{font-size:23px}.app-shell .product-info h3{font-size:13px}.app-shell .section-title h2{font-size:16px}.app-shell .product-footer b{font-size:13px}}
