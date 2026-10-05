@@ -8,4 +8,6 @@ This is an interactive UI prototype. Products and prices are illustrative. Qi pa
 
 The merchant switch previews account context only, not an authorization boundary or real wholesale pricing.
 
+Welcome screen offers guest entry, sign-in, and registration with name, phone, email and password. Demo accounts are kept only in the current tab's memory, with a password digest and no browser storage. Register a test account first to try sign-in; refreshing clears accounts and sessions. Production authentication requires a backend and is not provided by GitHub Pages.
+
 Agreed requirements: Vue web + mobile experience; Cairo Bold; English digits and dates; burgundy and white; consumers and merchants; Excel inventory import; supplier API; Qi integration. Store name: Masal (ماسال).

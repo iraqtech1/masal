@@ -3,9 +3,13 @@ import {Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,Cred
 import './style.css';
 import CardDeck from './CardDeck.js';
 import NavIcon from './NavIcon.js';
+import AuthGate from './AuthGate.js';
 const app=createApp({
-components:{NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
+components:{AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
 setup(){
+const entered=ref(false),session=ref(null),authRequest=ref(0);
+function enterStore(user){session.value=user;entered.value=true;orders.value=[];go('home');}
+function accountAccess(){session.value=null;entered.value=false;merchant.value=false;orders.value=[];toast.value='';authRequest.value++;}
 const navMotion=ref(0);
 const navIcons={Home,Grid2X2,ShoppingBag,Headphones};
 const page=ref('home'),category=ref('الكل'),query=ref(''),merchant=ref(false),selected=ref(null),quantity=ref(1),denom=ref(0),orders=ref([]),toast=ref(''),subject=ref(''),message=ref(''),success=ref(false),dialog=ref(null);
@@ -22,12 +26,13 @@ function buy(){orders.value.unshift({id:`DEMO-${String(orders.value.length+1).pa
 function support(){notify('تمت معاينة رسالتك محلياً — لم تُرسل إلى فريق دعم');subject.value='';message.value=''}
 async function copy(){try{await navigator.clipboard.writeText('DEMO-NOT-REDEEMABLE');notify('تم نسخ الكود التجريبي')}catch{notify('تعذّر النسخ. الكود: DEMO-NOT-REDEEMABLE')}}
 if(document.modelContext?.registerTool){try{document.modelContext.registerTool({name:'browse_cards',description:'Filter demo cards in the visible catalog; does not purchase.',inputSchema:{type:'object',properties:{query:{type:'string'}},required:['query'],additionalProperties:false},execute:async input=>{if(typeof input.query!=='string')throw Error('query must be a string');page.value='cards';query.value=input.query;await nextTick();return filtered.value.map(p=>({id:p.id,name:p.name}))}})}catch{}}
-return {navMotion,navIcons,page,category,query,merchant,selected,quantity,denom,orders,toast,subject,message,success,dialog,products,number,filtered,price,nav,go,notify,open,close,buy,support,copy};
+return {entered,session,authRequest,enterStore,accountAccess,navMotion,navIcons,page,category,query,merchant,selected,quantity,denom,orders,toast,subject,message,success,dialog,products,number,filtered,price,nav,go,notify,open,close,buy,support,copy};
 },
 template:`
-<div class="app-shell">
+<AuthGate v-show="!entered" :request="authRequest" @enter="enterStore"/>
+<div v-if="entered" class="app-shell">
 <aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><Layers/></span><span>ماسال<small>DIGITAL STORE</small></span></a><div class="side-label">مساحتك الرقمية</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>بطاقاتك، بمكان واحد</p><small>نسخة أولية للمعاينة</small></div></aside>
-<main><header><div class="mobile-brand"><span class="brand-mark"><Layers/></span>ماسال</div><div class="breadcrumb">المتجر <ChevronLeft/> <span>{{nav.find(n=>n.id===page).label}}</span></div><div class="header-actions"><span class="preview-badge">معاينة تجريبية</span><button class="profile" @click="merchant=!merchant" :aria-label="merchant?'التبديل إلى حساب فرد':'التبديل إلى حساب محل'"><User/><span>{{merchant?'حساب محل':'حساب فرد'}}</span></button></div></header>
+<main><header><div class="mobile-brand"><span class="brand-mark"><Layers/></span>ماسال</div><div class="breadcrumb">المتجر <ChevronLeft/> <span>{{nav.find(n=>n.id===page).label}}</span></div><div class="header-actions"><span class="preview-badge">معاينة تجريبية</span><button class="account-access" @click="accountAccess" :aria-label="session?'تسجيل الخروج':'تسجيل الدخول'"><User :size="17"/><span>{{session?session.name:'دخول'}}</span><small v-if="session">خروج</small></button><button class="profile" @click="merchant=!merchant" :aria-label="merchant?'التبديل إلى حساب فرد':'التبديل إلى حساب محل'"><User/><span>{{merchant?'حساب محل':'حساب فرد'}}</span></button></div></header>
 <div class="content"><Transition name="view" mode="out-in"><div :key="page">
 <template v-if="page==='home'"><div class="welcome"><div><span class="eyebrow">كل اللي تحتاجه، أقرب إلك</span><h1>شنو نعبّي اليوم؟</h1></div><span class="edition" dir="ltr">YOUR DIGITAL EVERYDAY</span></div>
 <div class="hero"><div class="hero-copy"><span class="hero-label"><span></span> رصيد • ألعاب • بطاقات عالمية</span><h2>عالمك الرقمي.<br><span>على كيفك.</span></h2><p>اختار بطاقتك، وحدّد فئتها.<br>كل خياراتك بمكان واحد.</p><button @click="go('cards')">تصفّح البطاقات <Grid2X2 :size="18"/></button></div><CardDeck :products="products.slice(0,6)" @select="open"/></div>
