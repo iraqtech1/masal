@@ -4,8 +4,9 @@ import './style.css';
 import CardDeck from './CardDeck.js';
 import NavIcon from './NavIcon.js';
 import AuthGate from './AuthGate.js';
+import PwaControls from './PwaControls.js';
 const app=createApp({
-components:{AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
+components:{PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
 setup(){
 const entered=ref(false),session=ref(null),authRequest=ref(0);
 function enterStore(user){session.value=user;entered.value=true;orders.value=[];go('home');}
@@ -29,6 +30,7 @@ if(document.modelContext?.registerTool){try{document.modelContext.registerTool({
 return {entered,session,authRequest,enterStore,accountAccess,navMotion,navIcons,page,category,query,merchant,selected,quantity,denom,orders,toast,subject,message,success,dialog,products,number,filtered,price,nav,go,notify,open,close,buy,support,copy};
 },
 template:`
+<PwaControls/>
 <AuthGate v-show="!entered" :request="authRequest" @enter="enterStore"/>
 <div v-if="entered" class="app-shell">
 <aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><Layers/></span><span>ماسال<small>DIGITAL STORE</small></span></a><div class="side-label">مساحتك الرقمية</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>بطاقاتك، بمكان واحد</p><small>نسخة أولية للمعاينة</small></div></aside>
