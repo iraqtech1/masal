@@ -2,6 +2,7 @@ import {createApp,ref,computed,nextTick,onMounted,onBeforeUnmount} from 'vue/dis
 import {Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight} from 'lucide-vue-next';
 import './style.css';
 import CardDeck from './CardDeck.js';
+import PullToRefresh from './PullToRefresh.js';
 import NavIcon from './NavIcon.js';
 import AuthGate from './AuthGate.js';
 import PwaControls from './PwaControls.js';
@@ -13,7 +14,7 @@ import MarketingSite from './marketing/Site.js';
 import {router} from './marketing/router.js';
 import {store,upsertCustomer,createOrder,createTicket} from './store.js';
 const app=createApp({
-components:{SplashIntro,BannerSlider,MarketingSite,Dashboard,PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
+components:{PullToRefresh,SplashIntro,BannerSlider,MarketingSite,Dashboard,PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
 setup(){
 const admin=ref(location.hash.startsWith('#/admin'));
 const marketing=ref(location.hash.startsWith('#/ar'));
@@ -50,6 +51,7 @@ template:`
 <Dashboard v-if="admin"/>
 <AuthGate v-show="!entered&&!admin&&!marketing" :request="authRequest" @enter="enterStore"/>
 <div v-if="entered&&!admin&&!marketing" class="app-shell">
+<PullToRefresh/>
 <aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><MasalMark/></span><span>{{store.settings.name}}<small>DIGITAL STORE</small></span></a><div class="side-label">المتجر</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :active="page===n.id" :motion="navMotion"/><span>{{n.label}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>ماسال</p><small>نسخة أولية للمعاينة</small></div></aside>
 <main><header><div class="mobile-brand"><span class="brand-mark"><MasalMark/></span>{{store.settings.name}}</div><div class="breadcrumb">المتجر <ChevronLeft/> <span>{{nav.find(n=>n.id===page).label}}</span></div><div class="header-actions"><span class="preview-badge">معاينة تجريبية</span><button class="account-access" @click="accountAccess" :aria-label="session?'تسجيل الخروج':'تسجيل الدخول'"><User :size="17"/><span>{{session?session.name:'دخول'}}</span><small v-if="session">خروج</small></button><button class="profile" @click="toggleMerchant" :aria-label="merchant?'التبديل إلى حساب فرد':'التبديل إلى حساب محل'"><User/><span>{{merchant?'حساب محل':'حساب فرد'}}</span></button></div></header>
 <div class="content"><Transition name="view" mode="out-in"><div :key="page">
