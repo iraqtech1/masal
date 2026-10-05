@@ -15,3 +15,10 @@
 .ms-site .ms-footer{background:linear-gradient(135deg,#640d18,#9a1b2c)}
 @media(min-width:1200px){.ms-site .ms-hero{background:linear-gradient(135deg,#640d18 0%,#a21c2d 48%,#d9858e 80%,#fff 100%)}}
 @media(max-width:560px){.ms-site .ms-hero .ms-stats{gap:16px;padding:14px 16px}.ms-site .ms-hero h1{font-size:36px}}
+
+/* Soft corner gradients inspired by Wasl, in Masal's burgundy and gold. */
+:root{--masal-app-background:radial-gradient(ellipse at 95% 5%,#a21c2d14,transparent 58%),radial-gradient(ellipse at 5% 95%,#e9bd5b20,transparent 55%),linear-gradient(145deg,#fffafb 0%,#f7e9ee 48%,#fff7e9 100%)}
+body{background:var(--masal-app-background);background-attachment:fixed}
+.auth-shell,.app-shell{min-height:100dvh;background:var(--masal-app-background);background-attachment:fixed}
+.auth-panel,.app-shell>.content,.app-shell>main{background:transparent}
+.app-shell>main>header,.app-shell>.sidebar{background:#ffffffec}
