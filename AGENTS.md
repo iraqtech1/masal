@@ -1,3 +1,15 @@
 # Masal workflow
 
-The user has requested that every completed change be uploaded to GitHub. After making a change, run the relevant checks, commit the completed updates, and push to the configured remote branch without asking again. Report failed checks or failed uploads accurately. Do not overwrite unrelated work or force-push.
+## قاعدة الرفع الإلزامية (الأولى قبل أي شي)
+
+- **ممنوع تنفيذ `git push` بدون سؤال المستخدم وموافقته صراحة.**
+- قبل أي رفع: اعرض على المستخدم قائمة الملفات المتعدّلة + ملخص كل تعديل، ثم **انتظر موافقته** قبل `commit` و`push` معًا.
+- إذا كانت الموافقة سابقة على مهمة محددة، الرفع مسموح **ضمن حدود تلك المهمة فقط** — أي عمل جديد يحتاج موافقة جديدة.
+- عند أي شك، اسأل. لا تفترض الموافقة.
+
+## بعد الموافقة
+
+- نفّذ الفحوص ذات الصلة أولاً (`npm test` وأي `check` معرّف).
+- ارفع التحديثات المكتملة إلى الفرع المُعدّ في الريموت.
+- أبلغ بصدق عن الفحوص الفاشلة أو الرفع الفاشل.
+- لا تُسقط عمل الغير، ولا تستخدم force-push.
