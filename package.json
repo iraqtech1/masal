@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "test": "node tests/flows.mjs"
+    "test": "node tests/flows.mjs && node tests/marketing.mjs",
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

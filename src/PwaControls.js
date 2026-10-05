@@ -3,6 +3,7 @@ import {useRegisterSW} from 'virtual:pwa-register/vue';
 import {Download,RefreshCw,WifiOff,X} from 'lucide-vue-next';
 
 export default {
+  props:{allowInstall:{type:Boolean,default:true}},
   components:{Download,RefreshCw,WifiOff,X},
   setup(){
     const offline=ref(!navigator.onLine),installPrompt=ref(null),dismissed=ref(false),showHelp=ref(false),installError=ref('');
@@ -26,7 +27,5 @@ export default {
   },
   template:`<div class="pwa-controls">
     <div v-if="offline" class="pwa-offline" role="status"><WifiOff :size="15"/> بدون اتصال — تعرض النسخة المحفوظة</div>
-    <div v-if="needRefresh" class="pwa-banner" role="status"><RefreshCw :size="20"/><div><b>تحديث جديد جاهز</b><p>حدّث التطبيق حتى تشوف آخر الإضافات.</p></div><button class="primary" @click="updateServiceWorker(true)">تحديث</button><button class="pwa-close" @click="needRefresh=false" aria-label="إغلاق تنبيه التحديث"><X :size="16"/></button></div>
-    <div v-else-if="!standalone&&!dismissed&&(installPrompt||ios)" class="pwa-banner"><Download :size="20"/><div><b>خلّي ماسال على تلفونك</b><p v-if="showHelp">من زر المشاركة في Safari اختار «إضافة إلى الشاشة الرئيسية».</p><p v-else>ثبّت التطبيق وافتحه من الشاشة الرئيسية.</p><p v-if="installError" role="alert">{{installError}}</p></div><button class="primary" @click="install">{{ios&&!installPrompt?'الطريقة':'تثبيت'}}</button><button class="pwa-close" @click="dismissed=true" aria-label="إغلاق تنبيه التثبيت"><X :size="16"/></button></div>
   </div>`
 };

@@ -42,7 +42,7 @@ if(document.modelContext?.registerTool){try{document.modelContext.registerTool({
 return {marketing,store,toggleMerchant,admin,myTickets,entered,session,authRequest,enterStore,accountAccess,navMotion,navIcons,page,category,query,merchant,selected,quantity,denom,orders,toast,subject,message,success,dialog,products,number,filtered,price,nav,go,notify,open,close,buy,support,copy};
 },
 template:`
-<PwaControls/>
+<PwaControls :allow-install="!marketing"/>
 <MarketingSite v-if="marketing"/>
 <Dashboard v-if="admin"/>
 <AuthGate v-show="!entered&&!admin&&!marketing" :request="authRequest" @enter="enterStore"/>
