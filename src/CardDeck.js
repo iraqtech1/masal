@@ -1,12 +1,13 @@
 import {ref,computed,onMounted,onUnmounted} from 'vue/dist/vue.esm-bundler.js';
-import {ChevronUp,ChevronDown,Pause,Play} from 'lucide-vue-next';
+import {ChevronUp,ChevronDown} from 'lucide-vue-next';
+import './card-deck.css';
 
 export default {
-  components:{ChevronUp,ChevronDown,Pause,Play},
+  components:{ChevronUp,ChevronDown},
   props:{products:Array},
   emits:['select'],
   setup(props,{emit}){
-    const active=ref(0),paused=ref(false),hovered=ref(false),focused=ref(false),reduced=ref(false);
+    const active=ref(0),hovered=ref(false),focused=ref(false),reduced=ref(false);
     const current=computed(()=>props.products[active.value]);
     let timer,media,start=null,moved=false;
     const move=step=>active.value=(active.value+step+props.products.length)%props.products.length;
@@ -18,9 +19,9 @@ export default {
     function select(p,i){if(moved){moved=false;return}if(i===active.value)emit('select',p);else active.value=i}
     function key(e){if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();move(1)}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();move(-1)}}
     const motion=e=>reduced.value=e.matches;
-    onMounted(()=>{media=matchMedia('(prefers-reduced-motion: reduce)');reduced.value=media.matches;media.addEventListener('change',motion);timer=setInterval(()=>{if(!paused.value&&!hovered.value&&!focused.value&&!reduced.value&&!document.hidden)move(1)},3200)});
+    onMounted(()=>{media=matchMedia('(prefers-reduced-motion: reduce)');reduced.value=media.matches;media.addEventListener('change',motion);timer=setInterval(()=>{if(!hovered.value&&!focused.value&&!reduced.value&&!document.hidden)move(1)},3200)});
     onUnmounted(()=>{clearInterval(timer);media?.removeEventListener('change',motion)});
-    return {active,current,paused,hovered,focused,reduced,move,offset,style,down,drag,up,select,key};
+    return {active,current,hovered,focused,reduced,move,offset,style,down,drag,up,select,key};
   },
   template:`<section class="card-deck" aria-label="الكارتات المميزة" aria-roledescription="carousel" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="focused=true" @focusout="focused=false" @keydown="key">
     <div class="deck-stage" @pointerdown="down" @pointermove="drag" @pointerup="up" @pointercancel="hovered=false" @pointerleave="hovered=false">
@@ -29,7 +30,7 @@ export default {
         <strong dir="ltr">{{p.en}}</strong><span class="deck-card-bottom"><span>{{p.name}}</span><span>{{p.tag}}</span></span>
       </button>
     </div>
-    <div class="deck-controls"><button @click="move(-1)" aria-label="الكارت السابق"><ChevronUp :size="18"/></button><span>{{current.name}} <small dir="ltr">{{active+1}} / {{products.length}}</small></span><button @click="move(1)" aria-label="الكارت التالي"><ChevronDown :size="18"/></button><button @click="paused=!paused" :aria-label="paused?'تشغيل حركة الكارتات':'إيقاف حركة الكارتات'" :aria-pressed="paused"><Play v-if="paused" :size="16"/><Pause v-else :size="16"/></button></div>
+    <div class="deck-controls"><button @click="move(-1)" aria-label="الكارت السابق"><ChevronUp :size="18"/></button><span>{{current.name}} <small dir="ltr">{{active+1}} / {{products.length}}</small></span><button @click="move(1)" aria-label="الكارت التالي"><ChevronDown :size="18"/></button></div>
     <p class="deck-hint">اسحب للتبديل · اضغط الكارت للشراء</p>
   </section>`
 };
