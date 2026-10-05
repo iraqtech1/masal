@@ -4,6 +4,7 @@ import {store,number,isoDate,record} from './store.js';
 import {validateInventory} from './inventory.js';
 import {readInventory,exportWorkbook} from './spreadsheets.js';
 import './dashboard.css';
+import SliderManager from './SliderManager.js';
 const importedCodes=new Set();
 const sections=[
   {id:'overview',name:'لوحة التحكم',icon:LayoutDashboard},
@@ -16,10 +17,11 @@ const sections=[
   {id:'suppliers',name:'المورّدون وAPI',icon:Link},
   {id:'support',name:'الدعم والتذاكر',icon:Headphones},
   {id:'reports',name:'التقارير',icon:BarChart3},
+  {id:'slider',name:'السلايدر',icon:Layers},
   {id:'settings',name:'الإعدادات',icon:Settings},
 ];
 export default {
-  components:{Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight},
+  components:{SliderManager,Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight},
   setup(){
     const section=ref('overview'),mobileMenu=ref(false),query=ref(''),filter=ref('الكل'),period=ref('الكل'),notice=ref(''),modal=ref(null),dialog=ref(null),draft=ref({}),formError=ref(''),fileInput=ref(null),preview=ref(null),importing=ref(false),settings=ref({...store.settings});
     let noticeTimer;
@@ -93,7 +95,7 @@ export default {
   <div class="admin-content"><div class="admin-live-strip"><b>الأحداث المباشرة</b><span><i></i>{{store.events[0]?.text||'لوحة ماسال جاهزة لأول حركة تشغيلية'}}</span><small dir="ltr">{{store.events[0]?.date.slice(11,16)||'LIVE'}}</small></div>
   <section v-if="section==='overview'" class="admin-hero"><div><span dir="ltr">{{isoDate()}} / MASAL CONSOLE</span><h1>أهلاً بيك، كل متجرك قدّامك.</h1><p>البطاقات، المحلات والطلبات… كل التفاصيل بمكان واحد.</p></div><div><button @click="go('inventory')"><Upload :size="17"/> استيراد الكارتات</button><a href="#"><Globe :size="17"/> فتح التطبيق</a></div></section>
   <div v-else class="admin-page-heading"><div><span class="admin-eyebrow">MASAL / BUSINESS</span><h1>{{title}}</h1><p>{{section==='cards'?'تحكّم بالفئات وأسعار الأفراد والمحلات.':section==='inventory'?'تابع الكميات واستورد ملفات الكارتات.':section==='support'?'طلبات المساعدة القادمة من التطبيق.':'بيانات متجرك، مرتبة وواضحة.'}}</p></div><button v-if="section==='cards'" class="admin-primary" @click="show('product')"><Plus :size="17"/> إضافة بطاقة</button><button v-if="section==='customers'||section==='merchants'" class="admin-primary" @click="show('customer')"><Plus :size="17"/> إضافة {{section==='merchants'?'محل':'عميل'}}</button><button v-if="section==='suppliers'" class="admin-primary" @click="show('supplier')"><Plus :size="17"/> إضافة مورّد</button><button v-if="section==='orders'||section==='reports'" class="admin-secondary" @click="exportReport"><Download :size="17"/> تصدير Excel</button></div>
-  <div class="admin-session-note"><AlertCircle :size="15"/> بيانات هذه اللوحة مرتبطة بمعاينة التطبيق داخل نفس التبويب. التغييرات تبقى خلال الجلسة وتُصفّر عند تحديث الصفحة.</div>
+  <SliderManager v-if="section==='slider'"/><div v-if="section!=='slider'" class="admin-session-note"><AlertCircle :size="15"/> بيانات هذه اللوحة مرتبطة بمعاينة التطبيق داخل نفس التبويب. التغييرات تبقى خلال الجلسة وتُصفّر عند تحديث الصفحة.</div>
   <template v-if="section==='overview'">
     <div class="admin-stats"><button v-for="s in stats" @click="go(s.section)"><div><span>{{s.label}}</span><component :is="s.icon" :size="18"/></div><strong dir="ltr">{{s.value}} <small>{{s.unit}}</small></strong><p>{{s.note}}</p></button></div>
     <div class="admin-two-columns"><section class="admin-panel"><div class="admin-panel-title"><h2>المبيعات حسب التصنيف</h2><button @click="go('reports')">عرض التقرير <ArrowUpLeft :size="15"/></button></div><div class="admin-sales-summary"><div><span>إجمالي المبيعات التجريبية</span><strong dir="ltr">{{number(gross)}} <small>IQD</small></strong><small>لا توجد عمليات دفع حقيقية</small></div><div class="admin-category-bars"><div v-for="c in categorySales"><span>{{c.name}}<b dir="ltr">{{number(c.total)}}</b></span><i><span :style="{width:(gross?c.total/gross*100:0)+'%'}"></span></i></div></div></div></section>
