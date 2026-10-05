@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  resolve: {alias: [{find: /^vue$/, replacement: 'vue/dist/vue.esm-bundler.js'}]},
   base: process.env.GITHUB_ACTIONS ? '/masal/' : '/',
   plugins: [VitePWA({
     registerType: 'prompt',
