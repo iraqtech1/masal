@@ -1,4 +1,16 @@
 import {createRouter,createWebHashHistory} from 'vue-router';
 import Home from './Home.js';
-const pending={template:'<Hero badge="ديجيتال زون" title="الخدمات الرقمية" accent=""/>',components:Home.components};
-export const router=createRouter({history:createWebHashHistory(),routes:[{path:'/ar',component:Home},...['about','mini-apps','business','insights','business/partnerships'].map(path=>({path:'/ar/'+path,component:pending})),{path:'/:pathMatch(.*)*',component:{template:'<span/>'}}],scrollBehavior(to,from,saved){if(saved)return saved;if(to.hash)return {el:to.hash,top:95,behavior:'smooth'};return {top:0}}});
+import About from './About.js';
+import MiniApps from './MiniApps.js';
+import Business from './Business.js';
+import Partnerships from './Partnerships.js';
+import Insights from './Insights.js';
+export const marketingRoutes=[
+ {path:'/ar',component:Home},
+ {path:'/ar/about',component:About},
+ {path:'/ar/mini-apps',component:MiniApps},
+ {path:'/ar/business',component:Business},
+ {path:'/ar/insights',component:Insights},
+ {path:'/ar/business/partnerships',component:Partnerships},
+];
+export const router=createRouter({history:createWebHashHistory(),routes:[...marketingRoutes,{path:'/:pathMatch(.*)*',component:{template:'<span/>'}}],scrollBehavior(to,from,saved){if(saved)return saved;if(to.hash)return {el:to.hash,top:95,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'};return {top:0}}});
