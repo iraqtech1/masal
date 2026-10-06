@@ -75,6 +75,6 @@ html[data-theme=dark] .app-shell .brands button:focus-visible,html[data-theme=da
 }
 @media(prefers-reduced-motion:reduce){.app-shell .brands button,.app-shell .product-selectable{transition:none}.app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:translateY(-3px)}}
 
-/* Permanent depth on the whole home feature panel. */
-.app-shell .hero{border:1px solid #e6a4af;border-bottom:2px solid #861421;box-shadow:0 6px 0 -1px #6d101e,0 16px 28px #780f1c38;margin-bottom:12px}
-html[data-theme=dark] .app-shell .hero{border-color:#4b91b6;border-bottom-color:#0a2940;box-shadow:0 6px 0 -1px #06131f,0 16px 28px #0009,0 0 0 1px #82d4f51a}
+/* A simple frame softly separates the whole home feature panel. */
+.app-shell .hero{border:1.5px solid #e6a4af;box-shadow:0 6px 16px #780f1c20;margin-bottom:12px}
+html[data-theme=dark] .app-shell .hero{border-color:#5b9dbf;box-shadow:0 6px 16px #0005}
