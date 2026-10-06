@@ -6,8 +6,6 @@
 .admin-shell .admin-stats>button:active{box-shadow:0 4px 14px #780f1c24}
 .masal-login .masal-login-field{direction:ltr}
 .masal-login .masal-login-field input{text-align:left;direction:ltr}
-.masal-login .masal-login-frame{width:100%;max-width:none}
-.masal-login{padding:clamp(12px,2vw,28px)}
 .admin-merchant-count{display:flex;gap:16px;align-items:center;margin-bottom:20px;padding:22px}
 .admin-merchant-count>svg{width:48px;height:48px;padding:10px;border-radius:14px;background:#f6eaf0;color:#a21c2d}
 .admin-merchant-count strong{display:block;font-size:28px;color:var(--admin-dark)}
