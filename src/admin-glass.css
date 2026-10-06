@@ -8,6 +8,11 @@
 .admin-shell .admin-stats>button:hover{border-color:#c4879c;box-shadow:0 7px 22px #7817361c}
 .admin-shell .admin-stats>button:active{background:#fcf1f5df;border-color:var(--admin-wine);box-shadow:0 3px 12px #78173630}
 .admin-shell .admin-stats>button:focus-visible{box-shadow:0 7px 22px #78173626}
+.admin-shell .admin-stats>button.is-selected{background:linear-gradient(135deg,#fff7f9ed,#f5dae3c9);border-color:#a21c2d;box-shadow:0 7px 22px #78173620,inset 0 3px 0 #a21c2d}
+.admin-stat-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:6px 0 18px;padding:15px 18px;border:1px solid #ffffffd9;border-radius:13px;background:#ffffff9c}
+.admin-stat-heading h2{font-size:16px;color:#780f1c;margin:0}.admin-stat-heading>div{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.admin-stat-close{display:flex;align-items:center;gap:6px;font:700 12px 'Cairo',sans-serif;color:#94596b;padding:8px;border-radius:8px}.admin-stat-close:hover{background:#f7e6ed}
+@media(max-width:600px){.admin-stat-heading{align-items:flex-start;flex-direction:column;padding:13px}.admin-stat-heading h2{font-size:14px}.admin-stat-heading>div{width:100%;justify-content:space-between}}
 .masal-login .masal-login-frame{-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);background:#ffffffb8}
 @media(max-width:700px){.admin-shell{background-attachment:scroll}.admin-shell .admin-sidebar,.admin-shell .admin-header{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.admin-shell .admin-sidebar,.admin-shell .admin-header,.admin-shell .admin-panel,.admin-shell .admin-stats>button,.admin-shell .admin-mini-stats>div{background:#fff8faed}}
