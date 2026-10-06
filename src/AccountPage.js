@@ -8,12 +8,12 @@ export default {
   props:{user:Object,error:String},emits:['save','logout'],
   setup(props,{emit}){
     const view=ref('menu'),name=ref(''),email=ref('');
-    function edit(){name.value=props.user.name;email.value=props.user.email;view.value='edit';}
+    function edit(){name.value=props.user.previewId&&props.user.name==='حساب تجريبي'?'':props.user.name;email.value=props.user.email;view.value='edit';}
     function save(){emit('save',{name:name.value,email:email.value,done:()=>{view.value='menu';}});}
     return {t,language,dark,view,name,email,edit,save};
   },
   template:`<section class="account-page" :aria-label="t(&quot;حسابي&quot;)">
-  <template v-if="view==='menu'"><div class="account-identity"><span><User :size="28"/></span><div><h2>{{t(user.name)}}</h2><p v-if="user.phone" dir="ltr">{{user.phone}}</p></div></div>
+  <template v-if="view==='menu'"><div class="account-identity"><span><User :size="28"/></span><div><h2 v-if="user.name&&!(user.previewId&&user.name==='حساب تجريبي')">{{t(user.name)}}</h2><p v-if="user.phone" dir="ltr">{{user.phone}}</p></div></div>
   <div class="account-menu">
   <button class="account-row" @click="edit"><span class="account-row-icon"><UserRoundPen/></span><span>{{t("الملف الشخصي")}}</span><ChevronLeft class="account-chevron"/></button>
   <button class="account-row" @click="view='privacy'"><span class="account-row-icon"><ShieldCheck/></span><span>{{t("الخصوصية والشروط")}}</span><ChevronLeft class="account-chevron"/></button>
