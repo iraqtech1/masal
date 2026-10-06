@@ -80,7 +80,6 @@ export default {
   "محاكاة للدفع فقط": "Simulated payment only",
   "المجموع": "Total",
   "تجربة الشراء": "Try demo purchase",
-  "لا يتم خصم أي مبلغ أو إصدار كارت حقيقي.": "No money is charged and no real card is issued.",
   "اكتملت التجربة!": "Demo completed!",
   "أضفنا طلبك التجريبي إلى طلباتي.": "Your demo order has been added to My orders.",
   "عرض طلباتي": "View my orders",
