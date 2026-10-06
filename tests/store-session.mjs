@@ -6,6 +6,7 @@ saveStoreSession(storage,{entered:true,user:null,page:'cards',merchant:false});
 assert.equal(restoreStoreSession(storage),null,'Legacy guest entry must return to phone sign-in');
 saveStoreSession(storage,{entered:true,user:{name:'Test',phone:'07000000000',email:'test@example.test',password:'never-save',hash:'never-save'},page:'orders',merchant:true});
 assert.equal(restoreStoreSession(storage).page,'orders');
+assert.equal('merchant' in restoreStoreSession(storage),false,'Legacy merchant session flag is discarded');
 assert.equal(restoreStoreSession(storage).user.name,'Test');
 assert.ok(![...values.values()][0].includes('never-save'),'Credentials must never be persisted');
 saveStoreSession(storage,{entered:false});

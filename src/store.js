@@ -32,7 +32,7 @@ const initialProducts=[
 {id:8,name:'Steam',en:'STEAM',category:'متاجر عالمية',color:'#203447',tag:'المتجر الأمريكي',unit:'USD',values:[5,10,20],prices:[8000,15500,31000]}
 ];
 export const store=reactive({
-  products:initialProducts.map(p=>({...p,active:true,wholesale:[...p.prices],stock:p.values.map(()=>0)})),
+  products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),
   orders:[],customers:[],tickets:[],imports:[],suppliers:[],events:[],
   settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''},
 });
@@ -50,9 +50,9 @@ export function upsertCustomer(user){
   if(customer){Object.assign(customer,user);return;}
   if(!customer){store.customers.push({...user,id:crypto.randomUUID(),kind:'فرد',active:true,discount:0,date:isoDate()});record('انضم حساب تجريبي جديد إلى ماسال');}
 }
-export function createOrder(product,denom,quantity,customer,merchant){
-  const unit=(merchant?product.wholesale:product.prices)[denom];
-  const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',kind:merchant?'محل':'فرد',status:'مكتمل',payment:'Qi / محاكاة'};
+export function createOrder(product,denom,quantity,customer){
+  const unit=product.prices[denom];
+  const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',kind:'فرد',status:'مكتمل',payment:'Qi / محاكاة'};
   if(product.stock[denom]>=quantity)product.stock[denom]-=quantity;
   store.orders.unshift(order);record('طلب تجريبي جديد: '+product.name);return order;
 }

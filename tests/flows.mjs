@@ -12,11 +12,11 @@ const checked=validateInventory([
 assert.equal(checked.accepted.length,1);
 assert.equal(checked.errors.length,4);
 assert.equal(validateInventory([{product_id:p.id,denomination:p.values[0],code:'DEMO-A'}],store.products,new Set(['DEMO-A'])).accepted.length,0);
-p.wholesale[0]=5000;p.stock[0]=3;
+p.stock[0]=3;
 const user={name:'Test',email:'demo@example.com',phone:'07700000000'};
 upsertCustomer(user);upsertCustomer(user);assert.equal(store.customers.length,1);
 const order=createOrder(p,0,2,user,true);
-assert.equal(order.price,10000);assert.equal(order.kind,'محل');assert.equal(p.stock[0],1);assert.equal(store.orders.length,1);
+assert.equal(order.price,p.prices[0]*2,'Legacy merchant flag cannot change retail pricing');assert.equal(order.kind,'فرد');assert.equal(p.stock[0],1);assert.equal(store.orders.length,1);
 createTicket('Test','Demo message',user);assert.equal(store.tickets[0].email,user.email);
 assert.match(order.date,/^\d{4}-\d{2}-\d{2}$/);
 const withoutEmail={name:'No email',phone:'07812345678',email:''},another={name:'Another',phone:'07912345678',email:''};
