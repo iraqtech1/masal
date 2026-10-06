@@ -16,3 +16,6 @@
  .app-shell .hero .deck-controls{margin-top:2px;gap:10px}
  .app-shell .hero .deck-hint{margin-top:6px!important}
 }
+
+.app-shell .hero .deck-stage{touch-action:none;cursor:grab}
+.app-shell .hero .deck-stage:active{cursor:grabbing}

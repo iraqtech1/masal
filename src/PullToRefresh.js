@@ -14,7 +14,7 @@ export default {
       reset();
       if(refreshing.value||innerWidth>700||e.touches.length!==1||window.scrollY>1||document.querySelector('dialog[open]'))return;
       const target=e.target;
-      if(target.closest('input,textarea,select,[contenteditable="true"],.bottom-nav'))return;
+      if(target.closest('input,textarea,select,[contenteditable="true"],.bottom-nav,.deck-stage'))return;
       for(let el=target;el&&el!==document.body;el=el.parentElement){
         if(el.scrollHeight>el.clientHeight&&/auto|scroll/.test(getComputedStyle(el).overflowY))return;
       }
