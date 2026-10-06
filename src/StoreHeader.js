@@ -1,10 +1,11 @@
+import PagedList from './PagedList.js';
 import {t,language} from './i18n.js';
 import {ref,computed,watch,onMounted,onBeforeUnmount,useId} from 'vue/dist/vue.esm-bundler.js';
 import {Bell,X,CheckCheck} from 'lucide-vue-next';
 import MasalMark from './MasalMark.js';
 import './store-header.css';
 export default {
- components:{Bell,X,CheckCheck,MasalMark},
+ components:{PagedList,Bell,X,CheckCheck,MasalMark},
  props:{name:String,orderCount:Number,ticketCount:Number},
  setup(props){
   const root=ref(null),opened=ref(false),panelId='notifications-'+useId();
@@ -30,7 +31,7 @@ export default {
    <div class="notification-heading"><h2>{{t("الإشعارات")}}</h2><button type="button" :aria-label="t(&quot;إغلاق الإشعارات&quot;)" @click="opened=false"><X :size="19"/></button></div>
    <p class="notification-demo">{{t("إشعارات تجريبية للمعاينة")}}</p>
    <button v-if="unread" type="button" class="notification-read-all" @click="readAll"><CheckCheck :size="16"/>{{t("تحديد الكل كمقروء")}}</button>
-   <ul><li v-for="message in messages" :key="message.id" :class="{unread:message.unread}"><span v-if="message.unread" class="notification-dot" :aria-label="t(&quot;غير مقروء&quot;)"></span><div><h3>{{t(message.title)}}</h3><p>{{t(message.body)}}</p><small>{{t(message.time)}}</small></div></li></ul>
+   <PagedList :items="messages" :size="5" :scroll="false" v-slot="{items:notificationRows}"><ul><li v-for="message in notificationRows" :key="message.id" :class="{unread:message.unread}"><span v-if="message.unread" class="notification-dot" :aria-label="t(&quot;غير مقروء&quot;)"></span><div><h3>{{t(message.title)}}</h3><p>{{t(message.body)}}</p><small>{{t(message.time)}}</small></div></li></ul></PagedList>
   </section>
  </header>`
 };

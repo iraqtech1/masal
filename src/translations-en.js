@@ -1,4 +1,9 @@
 export default {
+  "التنقل بين الصفحات": "Pagination",
+  "السابق": "Previous",
+  "التالي": "Next",
+  "الصفحة": "Page",
+  "من": "of",
   "ماسال": "Masal",
   "الرئيسية": "Home",
   "البطاقات": "Cards",
