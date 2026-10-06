@@ -43,3 +43,5 @@ html[data-theme=dark] :is(.admin-form-error,.auth-error,.masal-login-error,.admi
 /* Neon is reserved for sign-out and the theme toggle. */
 html[data-theme=dark] :is(.admin-shell .admin-signout,.theme-toggle){border:1px solid #42bfee!important;box-shadow:0 0 0 1px #42bfee24,0 0 12px #27b7ef28,0 8px 24px #0005!important}
 html[data-theme=dark] :is(.admin-shell .admin-signout,.theme-toggle):is(:hover,:focus-visible){border-color:#7ae0ff!important;box-shadow:0 0 0 1px #7ae0ff55,0 0 18px #27b7ef50,0 8px 24px #0005!important}
+
+html[data-theme=dark] .banner-controls{background:rgba(13,33,53,.9);border-color:rgba(140,221,255,.4)}
