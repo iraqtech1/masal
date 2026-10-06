@@ -16,3 +16,6 @@ assert.equal(restoreStoreSession(storage),null);
 assert.equal(restoreStoreSession({getItem(){throw Error('blocked')}}),null);
 assert.doesNotThrow(()=>saveStoreSession({setItem(){throw Error('blocked')}},{entered:true,user:null,page:'home'}));
 console.log('Preview session restoration and logout checks passed.');
+
+saveStoreSession(storage,{entered:true,user:{name:'Preview',phone:'',email:'',previewId:'demo-tab'},page:'account'});
+assert.equal(restoreStoreSession(storage).user.previewId,'demo-tab','Direct preview entry survives refresh');

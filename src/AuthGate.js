@@ -2,7 +2,7 @@ import {store} from './store.js';
 import {ref,computed,watch,nextTick,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {ChevronRight,User,Smartphone,Mail,ShieldCheck,ArrowLeft} from 'lucide-vue-next';
 import MasalMark from './MasalMark.js';
-import {createPreviewAuth,normalizePhone} from './auth-preview.js';
+import {createPreviewAuth,createPreviewUser,normalizePhone} from './auth-preview.js';
 import './auth.css';
 
 export const auth=createPreviewAuth();
@@ -27,6 +27,7 @@ export default {
     function allowed(mobile){const customer=store.customers.find(c=>normalizePhone(c.phone)===mobile);if(customer&&!customer.active)throw Error('هذا الحساب موقوف بالمعاينة. راجع إدارة المتجر.');}
     async function submit(){
       if(busy.value)return;
+      if(view.value==='login'){auth.cancel();challenge.value=null;error.value='';emit('enter',createPreviewUser());return;}
       busy.value=true;error.value='';
       try{
         allowed(displayPhone.value);
@@ -53,12 +54,12 @@ export default {
       <div class="auth-body">
         <div class="auth-identity"><div class="auth-logo"><MasalMark/></div><strong>{{store.settings.name}}</strong><span dir="ltr">DIGITAL STORE</span></div>
         <h1 ref="heading" tabindex="-1">{{view==='otp'?'توثيق رقم الهاتف':view==='register'?'إنشاء حساب':'تسجيل الدخول'}}</h1>
-        <p class="auth-intro" v-if="view==='login'">ادخل رقم هاتفك حتى تكمّل لحسابك.</p>
+        <p class="auth-intro" v-if="view==='login'">اضغط تسجيل الدخول حتى تدخل للتطبيق مباشرة بدون بيانات.</p>
         <p class="auth-intro" v-else-if="view==='register'">املأ معلوماتك، وبعدها أكّد رقمك حتى نجهّز حسابك.</p>
         <p class="auth-intro" v-else>أكّد رقمك برمز التحقق المكوّن من 6 أرقام.<br><b dir="ltr">{{displayPhone}}</b> <button class="auth-edit" type="button" @click="back" :disabled="busy">تغيير الرقم</button></p>
         <form class="auth-form" @submit.prevent="submit" :aria-busy="busy">
           <template v-if="view==='register'"><label for="auth-name">الاسم الكامل</label><div class="auth-field"><User :size="20"/><input id="auth-name" v-model="name" autocomplete="name" placeholder="اسمك الكامل" required maxlength="80"/></div></template>
-          <template v-if="view!=='otp'"><label for="auth-phone">رقم الهاتف / واتساب</label><div class="auth-field"><Smartphone :size="20"/><input id="auth-phone" :value="phone" @input="cleanPhone" type="tel" inputmode="numeric" autocomplete="tel-national" dir="ltr" placeholder="07XXXXXXXXX" required minlength="11" maxlength="11" pattern="07[3-9][0-9]{8}" title="رقم هاتف عراقي من 11 رقماً يبدأ بـ07" aria-describedby="auth-phone-help"/></div><small id="auth-phone-help" class="auth-help">استخدم رقمك العراقي المرتبط بواتساب، من 11 رقماً يبدأ بـ07.</small></template>
+          <template v-if="view==='register'"><label for="auth-phone">رقم الهاتف / واتساب</label><div class="auth-field"><Smartphone :size="20"/><input id="auth-phone" :value="phone" @input="cleanPhone" type="tel" inputmode="numeric" autocomplete="tel-national" dir="ltr" placeholder="07XXXXXXXXX" required minlength="11" maxlength="11" pattern="07[3-9][0-9]{8}" title="رقم هاتف عراقي من 11 رقماً يبدأ بـ07" aria-describedby="auth-phone-help"/></div><small id="auth-phone-help" class="auth-help">استخدم رقمك العراقي المرتبط بواتساب، من 11 رقماً يبدأ بـ07.</small></template>
           <template v-if="view==='register'"><label for="auth-email">البريد الإلكتروني (اختياري)</label><div class="auth-field"><Mail :size="20"/><input id="auth-email" v-model="email" type="email" autocomplete="email" dir="ltr" placeholder="name@example.com" maxlength="254" aria-describedby="auth-email-help"/></div><small id="auth-email-help" class="auth-help">اختياري — تگدر تكمل إنشاء الحساب بدون بريد إلكتروني.</small></template>
           <template v-if="view==='otp'"><label for="auth-otp">رمز التحقق</label><div class="auth-field auth-otp-field"><ShieldCheck :size="21"/><input id="auth-otp" ref="otpInput" :value="code" @input="cleanCode($event.target.value)" type="text" inputmode="numeric" autocomplete="one-time-code" dir="ltr" placeholder="000000" required minlength="6" maxlength="6" pattern="[0-9]{6}" aria-describedby="auth-otp-help"/></div><small id="auth-otp-help" class="auth-help">{{expired?'انتهت صلاحية الرمز. اطلب رمزاً جديداً.':'الرمز صالح لمدة 5 دقائق.'}}</small></template>
           <p v-if="error" class="auth-error" role="alert">{{error}}</p>

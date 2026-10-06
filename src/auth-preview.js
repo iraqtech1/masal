@@ -1,5 +1,6 @@
 // Local UI preview only. No WhatsApp delivery or production authentication.
 // Accounts and challenges stay in memory; registration commits after verification.
+export function createPreviewUser(){return {name:'حساب تجريبي',phone:'',email:'',previewId:crypto.randomUUID()};}
 export function normalizePhone(value){
   let mobile=String(value||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776)).replace(/[\s()+-]/g,'');
   if(mobile.startsWith('00964'))mobile='0'+mobile.slice(5);
@@ -21,6 +22,7 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       if(email&&(email.length>254||!/^\S+@\S+\.\S+$/.test(email)))throw Error('اكتب بريداً إلكترونياً صحيحاً أو اتركه فارغاً.');
       if(email&&[...accounts.values()].some(account=>account.phone!==user.phone&&account.email===email))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
       const updated={name,email,phone:user.phone};
+      if(user.previewId)return {...updated,previewId:user.previewId};
       accounts.set(user.phone,updated);
       return {...updated};
     },

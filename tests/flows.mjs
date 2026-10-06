@@ -30,3 +30,14 @@ assert.equal(matchesCustomer(store.tickets[0],withoutEmail),true);
 assert.equal(matchesCustomer(store.tickets[0],another),false);
 assert.equal(matchesCustomer({email:''},withoutEmail),false,'Blank email must not match anonymous records');
 console.log('Shared order, customer, ticket, stock and import validation checks passed.');
+
+const guest={name:'Preview',phone:'',email:'',previewId:crypto.randomUUID()};
+const secondGuest={...guest,previewId:crypto.randomUUID()};
+upsertCustomer(guest);upsertCustomer(guest);
+assert.equal(store.customers.filter(c=>c.previewId===guest.previewId).length,1);
+const guestOrder=createOrder(p,0,1,guest);
+createTicket('Guest support','Preview ticket',guest);
+assert.equal(matchesCustomer(guestOrder,guest),true);
+assert.equal(matchesCustomer(store.tickets[0],guest),true);
+assert.equal(matchesCustomer(guestOrder,secondGuest),false,'Preview accounts keep separate orders');
+assert.equal(matchesCustomer(guestOrder,withoutEmail),false);
