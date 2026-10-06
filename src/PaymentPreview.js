@@ -16,7 +16,7 @@ export default {
  <form class="payment-details-form" @submit.prevent="$emit('confirm')">
  <label>{{t('اسم المشتري')}}<input v-model="buyer" required maxlength="80" autocomplete="off" :placeholder="t('اسم تجريبي')"/></label>
  <label v-if="checkout.method==='Qi'">{{t('رقم البطاقة التجريبي')}}<input v-model="account" required inputmode="numeric" pattern="[0-9]{16}" maxlength="16" dir="ltr" placeholder="4242424242424242" autocomplete="off"/></label>
- <label v-else>{{t('رقم محفظة زين كاش التجريبي')}}<input v-model="account" required inputmode="numeric" pattern="07[0-9]{9}" maxlength="11" dir="ltr" placeholder="07700000000" autocomplete="off"/></label>
+ <label v-else>{{t('رقم محفظة زين كاش التجريبي')}}<input v-model="account" required inputmode="numeric" pattern="07[0-9]{9}" @input="account=$event.target.value.replace(/[^0-9]/g,'');$event.target.value=account" maxlength="11" dir="ltr" placeholder="07700000000" autocomplete="off"/></label>
  <label v-if="checkout.method==='Qi'">{{t('تاريخ الانتهاء')}}<input v-model="expiry" required pattern="(0[1-9]|1[0-2])/[0-9]{2}" maxlength="5" dir="ltr" placeholder="12/30" autocomplete="off"/></label>
  <button class="primary wide" type="submit">{{t('إتمام الشراء')}}</button></form></template>
  <div v-else class="success"><span><Check :size="36"/></span><h2>{{t('تم تأكيد الدفع التجريبي')}}</h2><p>{{t('أضفنا طلبك التجريبي إلى طلباتي.')}}</p><p dir="ltr">{{receipt}}</p><button class="primary wide" @click="$emit('orders')">{{t('عرض طلباتي')}}</button></div>
