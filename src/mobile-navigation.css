@@ -12,8 +12,8 @@
  .app-shell nav.bottom-nav button.active .nav-symbol{background:#fff4f7;color:#a21c2d;box-shadow:0 5px 12px #a21c2d29,inset 0 1px 0 #fff}
  .app-shell nav.bottom-nav button.nav-primary .nav-symbol{background:linear-gradient(145deg,#b82d41,#a21c2d);color:#fff;border-color:#d48592;box-shadow:0 7px 15px #a21c2d3b}
  .app-shell nav.bottom-nav button.nav-primary .nav-glyph{width:29px;height:29px;stroke-width:2}
- .app-shell nav.bottom-nav button .nav-symbol .nav-progress-ring{inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);transform:rotate(-132deg);stroke:var(--dock-accent);stroke-width:2.7}
- .app-shell nav.bottom-nav .nav-progress-ring circle{stroke-dasharray:25 100;stroke-dashoffset:0;stroke-linecap:round;animation:none}
+ .app-shell nav.bottom-nav button .nav-symbol .nav-progress-ring{inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);transform:rotate(-135deg);stroke:var(--dock-accent);stroke-width:2.7}
+ .app-shell nav.bottom-nav .nav-progress-ring circle{stroke-dasharray:25 75;stroke-dashoffset:0;stroke-linecap:round;animation:masalDockRingSettle 1.35s ease-in-out both}
  .app-shell nav.bottom-nav button:active{transform:scale(.96);background:#f5e3e8;color:#780f1c}
  .app-shell nav.bottom-nav button:active .nav-symbol{transform:none}
  .app-shell nav.bottom-nav button:focus-visible{outline:2px solid var(--dock-accent);outline-offset:2px}
@@ -21,3 +21,5 @@
  .app-shell .toast{bottom:calc(115px + env(safe-area-inset-bottom,0px))}
 }
 @media(max-width:360px){.app-shell nav.bottom-nav{left:8px;right:8px;padding-inline:5px}.app-shell nav.bottom-nav button{font-size:9px}.app-shell nav.bottom-nav .nav-symbol{width:40px;height:40px}}
+@keyframes masalDockRingSettle{0%{stroke-dashoffset:0}58%{stroke-dashoffset:-125}82%{stroke-dashoffset:-97}90%{stroke-dashoffset:-102}96%{stroke-dashoffset:-99}100%{stroke-dashoffset:-100}}
+@media(prefers-reduced-motion:reduce){.app-shell nav.bottom-nav .nav-progress-ring circle{animation:none}}
