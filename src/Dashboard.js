@@ -1,5 +1,5 @@
 import {ref,computed,onMounted,onBeforeUnmount,nextTick} from 'vue/dist/vue.esm-bundler.js';
-import {LayoutDashboard,Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight} from 'lucide-vue-next';
+import {LayoutDashboard,Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight,LogOut} from 'lucide-vue-next';
 import {store,number,isoDate,record} from './store.js';
 import {validateInventory} from './inventory.js';
 import {readInventory,exportWorkbook} from './spreadsheets.js';
@@ -23,7 +23,7 @@ const sections=[
   {id:'settings',name:'الإعدادات',icon:Settings},
 ];
 export default {
-  components:{AdminLogin,SliderManager,Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight},
+  components:{AdminLogin,SliderManager,Layers,ShoppingBag,Users,Store,Wallet,CreditCard,Headphones,BarChart3,Settings,Package,Upload,Link,Search,ChevronLeft,Plus,X,ArrowUpLeft,Download,Menu,CheckCircle2,AlertCircle,Clock,Eye,Pencil,Globe,ArrowRight,LogOut},
   setup(){
     const authenticated=ref(false);
     try{authenticated.value=sessionStorage.getItem('masal-admin-session')==='demo';}catch{}
@@ -103,7 +103,7 @@ export default {
   template:`<AdminLogin v-if="!authenticated" @login="login"/><div v-else class="admin-shell">
   <button v-if="mobileMenu" class="admin-overlay" @click="mobileMenu=false" aria-label="إغلاق قائمة الإدارة"></button>
   <aside class="admin-sidebar" :class="{'is-open':mobileMenu}"><a href="#/admin" class="admin-brand"><span><MasalMark/></span><div>ماسال<small>BUSINESS CONSOLE</small></div></a><div class="admin-nav-label">الإدارة</div><nav><button v-for="s in sections" :key="s.id" :class="{active:section===s.id}" :aria-current="section===s.id?'page':undefined" @click="go(s.id)"><component :is="s.icon" :size="18"/><span>{{s.name}}</span><ChevronLeft :size="14"/></button></nav><div class="admin-side-bottom"><a href="#"><Globe :size="17"/> فتح المتجر <ArrowUpLeft :size="15"/></a><small dir="ltr">MASAL / VUE PWA</small></div></aside>
-  <main class="admin-main"><header class="admin-header"><div><button class="admin-menu-button" @click="mobileMenu=!mobileMenu" aria-label="قائمة الإدارة"><Menu :size="22"/></button><span>الإدارة <ChevronLeft :size="13"/> <b>{{title}}</b></span></div><div class="admin-header-right"><span class="admin-live"><i></i> الجلسة جاهزة</span><a href="#">زيارة التطبيق <ArrowUpLeft :size="15"/></a><button class="admin-signout" @click="logout">خروج</button><span class="admin-avatar">م</span></div></header>
+  <main class="admin-main"><header class="admin-header"><div><button class="admin-menu-button" @click="mobileMenu=!mobileMenu" aria-label="قائمة الإدارة"><Menu :size="22"/></button><span>الإدارة <ChevronLeft :size="13"/> <b>{{title}}</b></span></div><div class="admin-header-right"><button class="admin-signout" @click="logout"><LogOut :size="17"/><span>تسجيل خروج</span></button></div></header>
   <div class="admin-content"><div v-if="section==='overview'" class="admin-live-strip admin-overview-events"><b>الأحداث المباشرة</b><span><i></i>{{store.events[0]?.text||'ماكو نشاط مسجل بعد'}}</span><small v-if="store.events.length" dir="ltr">{{store.events[0].date.slice(11,16)}}</small></div>
   <section class="admin-hero"><div><span dir="ltr">{{isoDate()}} / MASAL CONSOLE</span><h1>{{title}}</h1><p>{{description}}</p></div><div><button v-if="section==='overview'" @click="go('inventory')"><Upload :size="17"/> استيراد الكارتات</button><button v-if="section==='cards'" @click="show('product')"><Plus :size="17"/> إضافة بطاقة</button><button v-if="section==='customers'||section==='merchants'" @click="show('customer')"><Plus :size="17"/> إضافة {{section==='merchants'?'محل':'عميل'}}</button><button v-if="section==='suppliers'" @click="show('supplier')"><Plus :size="17"/> إضافة مورّد</button><button v-if="section==='orders'||section==='reports'" @click="exportReport"><Download :size="17"/> تصدير Excel</button><a href="#"><Globe :size="17"/> فتح التطبيق</a></div></section>
   <SliderManager v-if="section==='slider'"/><div v-if="section!=='slider'" class="admin-session-note"><AlertCircle :size="15"/> بيانات هذه اللوحة مرتبطة بمعاينة التطبيق داخل نفس التبويب. التغييرات تبقى خلال الجلسة وتُصفّر عند تحديث الصفحة.</div>
