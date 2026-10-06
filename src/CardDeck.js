@@ -36,7 +36,8 @@ export default {
   },
   template:`<section class="card-deck" aria-label="الكارتات المميزة" aria-roledescription="carousel" @mouseenter="hovered=true" @mouseleave="hovered=false" @focusin="focused=true" @focusout="focused=false" @keydown="key">
     <div class="deck-stage" :class="{'is-dragging':dragging}" @touchstart="touchDown" @touchmove="touchDrag" @touchend="touchUp" @touchcancel="reset" @pointerdown="down" @pointermove="drag" @pointerup="up" @pointercancel="cancel" @lostpointercapture="cancel">
-      <button v-for="(p,i) in products" :key="p.id" class="deck-card" :class="{'deck-current':i===active,'deck-white':i%2===1}" :style="style(i)" :tabindex="Math.abs(offset(i))<=2?0:-1" :aria-hidden="Math.abs(offset(i))>2" :aria-label="i===active?'اختيار بطاقة '+p.name:'عرض بطاقة '+p.name" @click="select(p,i)">
+      <button v-for="(p,i) in products" :key="p.id" class="deck-card" :class="{'deck-current':i===active,'deck-white':i%2===1,'deck-card-with-art':!!p.image}" :style="style(i)" :tabindex="Math.abs(offset(i))<=2?0:-1" :aria-hidden="Math.abs(offset(i))>2" :aria-label="i===active?'اختيار بطاقة '+p.name:'عرض بطاقة '+p.name" @click="select(p,i)">
+        <img v-if="p.image" class="deck-card-art" :src="p.image" :alt="p.name" loading="lazy"/>
         <span class="deck-card-top"><span>MASAL / {{String(i+1).padStart(2,'0')}}</span><span>{{p.category}}</span></span>
         <strong dir="ltr">{{p.en}}</strong><span class="deck-card-bottom"><span>{{p.name}}</span><span>{{p.tag}}</span></span>
       </button>

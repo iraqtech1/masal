@@ -34,3 +34,17 @@
 
 .pwa-controls{position:fixed;bottom:24px;left:24px;z-index:20;max-width:min(440px,calc(100vw - 32px));display:grid;gap:8px}.pwa-banner{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3ccd5;border-radius:16px;padding:16px;box-shadow:0 10px 40px #640d181c;color:var(--wine)}.pwa-banner>div{flex:1;min-width:0}.pwa-banner b{font-size:13px}.pwa-banner p{font-size:11px;line-height:1.9;color:var(--muted);margin-top:4px}.pwa-banner .primary{font-size:12px;padding:10px 14px;white-space:nowrap}.pwa-close{padding:3px;color:var(--muted)}.pwa-offline{display:flex;align-items:center;justify-content:center;gap:8px;background:#640d18;color:white;padding:10px 16px;border-radius:12px;font-size:11px}
 @media(max-width:700px){.pwa-controls{bottom:calc(104px + env(safe-area-inset-bottom));left:16px;right:16px;max-width:none}.pwa-banner{gap:9px;padding:12px}.pwa-banner>svg{display:none}}
+
+/* صور بطاقات المنتجات المستوردة */
+.product-art.has-image{position:relative;display:block;padding:0;background:#f4eef0;overflow:hidden}
+.product-art.has-image>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.dialog-art{margin:14px 0 8px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff}
+.dialog-art>img{display:block;width:100%;height:172px;object-fit:contain;background:#f8f5f6}
+.dialog-gallery{display:flex;gap:8px;margin:0 0 14px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.dialog-gallery::-webkit-scrollbar{display:none}
+.dialog-gallery button{flex:0 0 auto;width:64px;height:41px;padding:0;border:2px solid var(--border);border-radius:9px;overflow:hidden;background:#fff;opacity:.55}
+.dialog-gallery button.selected{border-color:var(--wine);opacity:1}
+.dialog-gallery button img{width:100%;height:100%;object-fit:cover;display:block}
+.filters button{white-space:nowrap}
+.admin-card-cell{display:flex;align-items:center;gap:10px}
+.admin-card-cell img{width:64px;height:40px;object-fit:cover;border-radius:7px;border:1px solid var(--border);background:#fff;flex:0 0 auto}
