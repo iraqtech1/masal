@@ -1,8 +1,8 @@
 /* Compact featured-card hero, with swipe and arrow navigation. */
 .app-shell .hero{min-height:330px;padding-block:20px}
 .app-shell .hero .deck-stage{height:240px}
-.app-shell .hero .deck-card{height:108px;top:calc(50% - 54px);padding:12px 16px;transform:translateY(calc(var(--slot) * 78px)) rotate(var(--tilt)) scale(.93)}
-.app-shell .hero .deck-card.deck-current{transform:translateY(0) rotate(var(--tilt)) scale(1)}
+.app-shell .hero .deck-card{height:108px;top:calc(50% - 54px);padding:12px 16px;transform:translateY(calc(var(--slot) * 78px + var(--drag-y,0px))) rotate(var(--tilt)) scale(.93)}
+.app-shell .hero .deck-card.deck-current{transform:translateY(var(--drag-y,0px)) rotate(var(--tilt)) scale(1)}
 .app-shell .hero .deck-card strong{font-size:26px}
 @media(max-width:700px){
  .app-shell .hero{min-height:0;padding:18px 20px 14px}
@@ -10,8 +10,8 @@
  .app-shell .hero .hero-copy button{margin-top:10px;padding:10px 14px}
  .app-shell .hero .card-deck{max-width:300px;margin-top:8px}
  .app-shell .hero .deck-stage{height:210px}
- .app-shell .hero .deck-card{height:98px;top:calc(50% - 49px);padding:10px 14px;transform:translateY(calc(var(--slot) * 70px)) rotate(var(--tilt)) scale(.93)}
- .app-shell .hero .deck-card.deck-current{transform:translateY(0) rotate(var(--tilt)) scale(1)}
+ .app-shell .hero .deck-card{height:98px;top:calc(50% - 49px);padding:10px 14px;transform:translateY(calc(var(--slot) * 70px + var(--drag-y,0px))) rotate(var(--tilt)) scale(.93)}
+ .app-shell .hero .deck-card.deck-current{transform:translateY(var(--drag-y,0px)) rotate(var(--tilt)) scale(1)}
  .app-shell .hero .deck-card strong{font-size:25px}
  .app-shell .hero .deck-controls{margin-top:2px;gap:10px}
  .app-shell .hero .deck-hint{margin-top:6px!important}
@@ -19,3 +19,5 @@
 
 .app-shell .hero .deck-stage{touch-action:none;cursor:grab}
 .app-shell .hero .deck-stage:active{cursor:grabbing}
+
+.app-shell .hero .deck-stage.is-dragging .deck-card{transition:none}
