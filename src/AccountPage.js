@@ -1,10 +1,10 @@
 import {t,language} from './i18n.js';
 import {ref} from 'vue/dist/vue.esm-bundler.js';
-import {UserRoundPen,ShieldCheck,Info,LogOut,Moon,Languages,ChevronLeft,ArrowRight,User} from 'lucide-vue-next';
+import {UserRoundPen,ShieldCheck,Info,LogOut,Moon,Languages,ChevronDown,ChevronLeft,ArrowRight,User} from 'lucide-vue-next';
 import {dark} from './ThemeToggle.js';
 import './account.css';
 export default {
-  components:{UserRoundPen,ShieldCheck,Info,LogOut,Moon,Languages,ChevronLeft,ArrowRight,User},
+  components:{UserRoundPen,ShieldCheck,Info,LogOut,Moon,Languages,ChevronDown,ChevronLeft,ArrowRight,User},
   props:{user:Object,error:String},emits:['save','logout'],
   setup(props,{emit}){
     const view=ref('menu'),name=ref(''),email=ref('');
@@ -20,7 +20,7 @@ export default {
   <button class="account-row" @click="view='about'"><span class="account-row-icon"><Info/></span><span>{{t("حول التطبيق")}}</span><ChevronLeft class="account-chevron"/></button>
   <button class="account-row" @click="$emit('logout')"><span class="account-row-icon"><LogOut/></span><span>{{t("تسجيل الخروج")}}</span><ChevronLeft class="account-chevron"/></button>
   <button class="account-row" role="switch" :aria-checked="dark" @click="dark=!dark"><span class="account-row-icon"><Moon/></span><span>{{t("الوضع الليلي")}}</span><span class="account-switch" :class="{enabled:dark}" aria-hidden="true"><i/></span></button>
-  <label class="account-row account-language"><span class="account-row-icon"><Languages/></span><span>{{t('اللغة')}}</span><select v-model="language" :aria-label="t('لغة التطبيق')"><option value="ar" lang="ar">العربية</option><option value="en" lang="en">English</option></select></label>
+  <label class="account-row account-language"><span class="account-row-icon"><Languages/></span><span>{{t('اللغة')}}</span><span class="account-language-picker"><select v-model="language" :aria-label="t('لغة التطبيق')"><option value="ar" lang="ar">العربية</option><option value="en" lang="en">English</option></select><ChevronDown :size="16" aria-hidden="true"/></span></label>
   </div></template>
   <template v-else><button class="account-back" @click="view='menu'"><ArrowRight :size="18"/> {{t("العودة إلى حسابي")}}</button>
   <form v-if="view==='edit'" class="account-panel" @submit.prevent="save"><h2>{{t("الملف الشخصي")}}</h2><label>{{t("الاسم الكامل")}}<input v-model="name" required minlength="2" maxlength="80" autocomplete="name"/></label><label>{{t("رقم الهاتف")}}<input :value="user.phone" :placeholder="t(&quot;غير مضاف&quot;)" readonly dir="ltr"/></label><p class="muted">{{user.previewId?t("دخلت بحساب تجريبي بدون رقم هاتف."):t("رقم الهاتف مرتبط بتوثيق حسابك.")}}</p><label>{{t("البريد الإلكتروني")}} <small>{{t("(اختياري)")}}</small><input v-model="email" type="email" maxlength="254" autocomplete="email" dir="ltr"/></label><p v-if="error" class="auth-error" role="alert">{{t(error)}}</p><button class="primary wide">{{t("حفظ التعديلات")}}</button></form>
