@@ -51,7 +51,7 @@ const shownImage=computed(()=>previewImage.value||denomArt.value||selected.value
 watch(denom,()=>{previewImage.value=''});
 const nav=[{id:'home',label:'الرئيسية',icon:'Home'},{id:'cards',label:'البطاقات',icon:'Grid2X2'},{id:'orders',label:'مشترياتي',icon:'ShoppingBag'},{id:'support',label:'الدعم',icon:'Headphones'},{id:'account',label:'حسابي',icon:'User'}];
 const mobileNav=[{id:'home',label:'الرئيسية',icon:'Home'},{id:'orders',label:'مشترياتي',icon:'ShoppingBag'},{id:'cards',label:'شراء بطاقة',icon:'Plus',primary:true},{id:'support',label:'الدعم',icon:'Headphones'},{id:'account',label:'حسابي',icon:'User'}];
-function go(p){navMotion.value++;page.value=p;query.value='';window.scrollTo({top:0,behavior:'smooth'});}
+function go(p){navMotion.value++;page.value=p;query.value='';nextTick(()=>{const scroller=innerWidth<=700?document.querySelector('.app-shell>main'):window;scroller?.scrollTo({top:0,behavior:innerWidth<=700?'instant':'smooth'});});}
 function notify(t){toast.value=t;setTimeout(()=>toast.value='',3000)}
 async function open(p){selected.value=p;quantity.value=1;denom.value=0;success.value=false;previewImage.value='';await nextTick();dialog.value.showModal()}
 function close(){dialog.value.close();selected.value=null}

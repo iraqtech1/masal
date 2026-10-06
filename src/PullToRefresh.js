@@ -10,19 +10,21 @@ export default {
     const ready=computed(()=>distance.value>=refreshThreshold);
     let start=null,locked=false,frame,oldOverscroll;
     function reset(){start=null;locked=false;distance.value=0;}
+    function scrollTop(){return document.querySelector('.app-shell>main')?.scrollTop||window.scrollY;}
     function down(e){
       reset();
-      if(refreshing.value||innerWidth>700||e.touches.length!==1||window.scrollY>1||document.querySelector('dialog[open]'))return;
+      if(refreshing.value||innerWidth>700||e.touches.length!==1||scrollTop()>1||document.querySelector('dialog[open]'))return;
       const target=e.target;
       if(target.closest('input,textarea,select,[contenteditable="true"],.bottom-nav,.deck-stage'))return;
       for(let el=target;el&&el!==document.body;el=el.parentElement){
+        if(el.matches('.app-shell>main'))break;
         if(el.scrollHeight>el.clientHeight&&/auto|scroll/.test(getComputedStyle(el).overflowY))return;
       }
       start={x:e.touches[0].clientX,y:e.touches[0].clientY};
     }
     function move(e){
       if(!start)return;
-      if(e.touches.length!==1||window.scrollY>1){reset();return;}
+      if(e.touches.length!==1||scrollTop()>1){reset();return;}
       const dx=e.touches[0].clientX-start.x,dy=e.touches[0].clientY-start.y;
       if(!locked&&Math.max(Math.abs(dx),Math.abs(dy))<10)return;
       if(!locked&&(dy<=0||Math.abs(dx)>=dy)){reset();return;}
