@@ -1,5 +1,4 @@
 /* Floating five-button dock, matching the supplied navigation reference. */
-.nav-symbol>.nav-press-effect{display:none}
 .store-account{max-width:520px;padding:28px;border:1px solid var(--border);border-radius:24px;background:#fff}
 .store-account-icon{display:grid;place-items:center;width:70px;height:70px;border-radius:50%;background:#f6eaf0;color:var(--wine);margin-bottom:18px}
 .store-account dl{margin:24px 0}.store-account dl>div{padding:14px 0;border-bottom:1px solid var(--border)}
@@ -7,32 +6,8 @@
 @media(max-width:700px){
  .app-shell{position:fixed;inset:0;height:100%;min-height:0!important;overflow:hidden}
  .app-shell>main{height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
- .app-shell nav.bottom-nav{--dock-accent:#a21c2d;--dock-ink:#8c6870;position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:max(8px,min(env(safe-area-inset-bottom,0px),34px));width:auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;gap:2px;padding:7px 7px 6px;border:1px solid #fff;border-radius:999px;background:linear-gradient(105deg,rgba(255,255,255,.94),rgba(255,248,250,.93) 55%,rgba(248,231,236,.92));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 9px 22px #780f1c14,inset 0 1px 0 #fff;isolation:isolate;transform:none}
- .app-shell nav.bottom-nav button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:78px;padding:4px 1px;border-radius:999px;color:var(--dock-ink);font-size:clamp(9px,2.4vw,12px);line-height:1.5;background:transparent;transition:color .18s,background .18s,transform .18s}
- .app-shell nav.bottom-nav button.active{background:#f5e3e8;color:#780f1c}
- .app-shell nav.bottom-nav .nav-symbol{position:relative;display:grid;place-items:center;width:clamp(42px,8.6vw,60px);height:clamp(42px,8.6vw,60px);border:1px solid #fff;border-radius:50%;background:rgba(255,255,255,.82);box-shadow:0 6px 15px #780f1c12,inset 0 1px 0 #fff;transition:background .18s,box-shadow .18s}
- .app-shell nav.bottom-nav .nav-glyph{width:24px;height:24px;stroke-width:1.8}
- .app-shell nav.bottom-nav button.active .nav-symbol{background:#fff4f7;color:#a21c2d;box-shadow:0 5px 12px #a21c2d29,inset 0 1px 0 #fff}
- .app-shell nav.bottom-nav button.nav-primary .nav-symbol{background:linear-gradient(145deg,#b82d41,#a21c2d);color:#fff;border-color:#d48592;box-shadow:0 7px 15px #a21c2d3b}
- .app-shell nav.bottom-nav button.nav-primary .nav-glyph{width:29px;height:29px;stroke-width:2}
- .app-shell nav.bottom-nav button .nav-symbol .nav-progress-ring{inset:-6px;width:calc(100% + 12px);height:calc(100% + 12px);transform:rotate(-135deg);stroke:var(--dock-accent);stroke-width:2.7}
- .app-shell nav.bottom-nav .nav-progress-ring circle{stroke-dasharray:25 75;stroke-dashoffset:0;stroke-linecap:round;animation:none}
- .app-shell nav.bottom-nav button.active .nav-symbol{transform-origin:bottom right;animation:masalNavCornerExpand 3s cubic-bezier(.22,.7,.3,1) both}
- .app-shell nav.bottom-nav .nav-press-effect{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;animation:masalNavArrowsFade 3s ease both}
- .app-shell nav.bottom-nav .nav-inward-arrow{stroke-dasharray:40;stroke-dashoffset:40}
- .app-shell nav.bottom-nav .nav-inward-first{animation:masalNavArrowFirst 3s ease both}
- .app-shell nav.bottom-nav .nav-inward-second{animation:masalNavArrowSecond 3s ease both}
- .app-shell nav.bottom-nav button.active .nav-glyph{animation:masalNavGlyphReveal 3s ease both}
- .app-shell nav.bottom-nav button:active{transform:scale(.96);background:#f5e3e8;color:#780f1c}
- .app-shell nav.bottom-nav button:active .nav-symbol{transform:none}
- .app-shell nav.bottom-nav button:focus-visible{outline:2px solid var(--dock-accent);outline-offset:2px}
+ .app-shell nav.bottom-nav{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:max(8px,min(env(safe-area-inset-bottom,0px),34px));width:auto;transform:none}
  .app-shell main .content{padding-bottom:calc(126px + env(safe-area-inset-bottom,0px))}
  .app-shell .toast{bottom:calc(115px + env(safe-area-inset-bottom,0px))}
 }
-@media(max-width:360px){.app-shell nav.bottom-nav{left:8px;right:8px;padding-inline:5px}.app-shell nav.bottom-nav button{font-size:9px}.app-shell nav.bottom-nav .nav-symbol{width:40px;height:40px}}
-@keyframes masalNavCornerExpand{0%{transform:scale(.2)}30%{transform:scale(1.08)}48%{transform:scale(.96)}65%,100%{transform:scale(1)}}
-@keyframes masalNavArrowFirst{0%,28%{stroke-dashoffset:40}52%,100%{stroke-dashoffset:0}}
-@keyframes masalNavArrowSecond{0%,50%{stroke-dashoffset:40}76%,100%{stroke-dashoffset:0}}
-@keyframes masalNavArrowsFade{0%,24%{opacity:0}30%,78%{opacity:1}94%,100%{opacity:0}}
-@keyframes masalNavGlyphReveal{0%,76%{opacity:0;transform:scale(.7)}94%,100%{opacity:1;transform:scale(1)}}
-@media(prefers-reduced-motion:reduce){.app-shell nav.bottom-nav button.active .nav-symbol,.app-shell nav.bottom-nav button.active .nav-glyph{animation:none}.app-shell nav.bottom-nav .nav-press-effect{display:none}}
+@media(max-width:360px){.app-shell nav.bottom-nav{left:8px;right:8px}}
