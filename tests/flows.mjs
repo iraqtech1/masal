@@ -41,3 +41,7 @@ assert.equal(matchesCustomer(guestOrder,guest),true);
 assert.equal(matchesCustomer(store.tickets[0],guest),true);
 assert.equal(matchesCustomer(guestOrder,secondGuest),false,'Preview accounts keep separate orders');
 assert.equal(matchesCustomer(guestOrder,withoutEmail),false);
+
+const zainCashOrder=createOrder(p,0,1,guest,'ZainCash');
+assert.equal(zainCashOrder.payment,'ZainCash / محاكاة');
+assert.equal(zainCashOrder.price,p.prices[0]);

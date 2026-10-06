@@ -1,4 +1,16 @@
 export default {
+  "الدفع بواسطة": "Pay with",
+  "طرق الدفع": "Payment methods",
+  "إتمام الشراء": "Complete purchase",
+  "صفحة الدفع التجريبي": "Demo checkout",
+  "العودة إلى البطاقة": "Back to card",
+  "دفع تجريبي": "Demo payment",
+  "هذه صفحة دفع وهمية؛ لا تدخل بيانات مالية ولا يتم خصم أموال.": "This is a demo checkout. No financial details are requested and no money is charged.",
+  "حساب دفع تجريبي": "Demo payment account",
+  "تأكيد الدفع التجريبي": "Confirm demo payment",
+  "تم تأكيد الدفع التجريبي": "Demo payment confirmed",
+  "البطاقة": "Card",
+
   "التنقل بين الصفحات": "Pagination",
   "السابق": "Previous",
   "التالي": "Next",

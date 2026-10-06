@@ -51,9 +51,9 @@ export function upsertCustomer(user){
   if(customer){Object.assign(customer,user);return;}
   if(!customer){store.customers.push({...user,id:crypto.randomUUID(),kind:'فرد',active:true,discount:0,date:isoDate()});record('انضم حساب تجريبي جديد إلى ماسال');}
 }
-export function createOrder(product,denom,quantity,customer){
+export function createOrder(product,denom,quantity,customer,payment='Qi'){
   const unit=product.prices[denom];
-  const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),kind:'فرد',status:'مكتمل',payment:'Qi / محاكاة'};
+  const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),kind:'فرد',status:'مكتمل',payment:(payment==='ZainCash'?'ZainCash':'Qi')+' / محاكاة'};
   if(product.stock[denom]>=quantity)product.stock[denom]-=quantity;
   store.orders.unshift(order);record('طلب تجريبي جديد: '+product.name);return order;
 }
