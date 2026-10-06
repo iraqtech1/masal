@@ -2,9 +2,7 @@ import {t,language} from './i18n.js';
 import {ref,computed,watch,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {slides as topSlides,middleSlides} from './slides.js';
 import './slider.css';
-import {ChevronLeft,ChevronRight} from 'lucide-vue-next';
 export default {
-  components:{ChevronLeft,ChevronRight},
   props:{showPlayback:{type:Boolean,default:true},placement:{type:String,default:'top'},interval:{type:Number,default:6500},label:{type:String,default:'عروض ماسال'}},
   setup(props){
     const slides=props.placement==='middle'?middleSlides:topSlides;
@@ -24,6 +22,6 @@ export default {
   },
   template:`<section v-if="slides.length" class="banner-slider" :aria-label="t(label)" :aria-roledescription="t('عارض صور')" @mouseenter="hover=true" @mouseleave="hover=false" @focusin="focused=true" @focusout="focused=$event.currentTarget.contains($event.relatedTarget)" @keydown.left.prevent="move(-1)" @keydown.right.prevent="move(1)">
     <div class="banner-window" @pointerdown="down"><Transition name="banner-fade"><img :key="slides[index].id" :src="slides[index].src" :alt="t(slides[index].name)" draggable="false" decoding="async"/></Transition></div>
-    <div v-if="slides.length>1" class="banner-controls" dir="ltr"><button @click="move(-1)" :aria-label="t(&quot;الصورة السابقة&quot;)"><ChevronLeft :size="20"/></button><div class="banner-dots"><button v-for="(slide,i) in slides" :key="slide.id" :class="{active:index===i}" :aria-label="t(&quot;عرض الصورة &quot;)+(i+1)" :aria-current="index===i?'true':undefined" @click="index=i"></button></div><button @click="move(1)" :aria-label="t(&quot;الصورة التالية&quot;)"><ChevronRight :size="20"/></button><button v-if="showPlayback" class="banner-pause" @click="paused=!paused" :aria-label="paused?t(&quot;تشغيل السلايدر&quot;):t(&quot;إيقاف السلايدر&quot;)">{{paused?'▶':'Ⅱ'}}</button></div>
+    <div v-if="slides.length>1" class="banner-controls" dir="ltr"><div class="banner-dots"><button v-for="(slide,i) in slides" :key="slide.id" :class="{active:index===i}" :aria-label="t(&quot;عرض الصورة &quot;)+(i+1)" :aria-current="index===i?'true':undefined" @click="index=i"></button></div></div>
   </section>`
 };
