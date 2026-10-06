@@ -1,4 +1,9 @@
 export default {
+  "اسم المشتري": "Buyer name",
+  "اسم تجريبي": "Demo name",
+  "رقم البطاقة التجريبي": "Demo card number",
+  "رقم محفظة زين كاش التجريبي": "Demo ZainCash wallet number",
+  "تاريخ الانتهاء": "Expiry date",
   "آسياسيل — 25,000 دينار": "Asiacell \u2014 25,000 IQD",
   "آسياسيل — 5,000 دينار": "Asiacell \u2014 5,000 IQD",
   "آسياسيل — 10,000 دينار": "Asiacell \u2014 10,000 IQD",
