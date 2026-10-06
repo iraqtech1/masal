@@ -77,7 +77,6 @@ export default {
   "تم نسخ الكود التجريبي": "Demo code copied",
   "تعذّر النسخ. الكود: DEMO-NOT-REDEEMABLE": "Could not copy. Code: DEMO-NOT-REDEEMABLE",
   "حساب تجريبي": "Demo account",
-  "بدون بيانات — حساب تجريبي": "No details — demo account",
   "تعديل الملف الشخصي": "Edit profile",
   "الخصوصية والشروط": "Privacy & terms",
   "حول التطبيق": "About the app",

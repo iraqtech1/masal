@@ -13,7 +13,7 @@ export default {
     return {t,language,dark,view,name,email,edit,save};
   },
   template:`<section class="account-page" :aria-label="t(&quot;حسابي&quot;)">
-  <template v-if="view==='menu'"><div class="account-identity"><span><User :size="28"/></span><div><h2>{{t(user.name)}}</h2><p dir="ltr">{{user.phone||t("بدون بيانات — حساب تجريبي")}}</p></div></div>
+  <template v-if="view==='menu'"><div class="account-identity"><span><User :size="28"/></span><div><h2>{{t(user.name)}}</h2><p v-if="user.phone" dir="ltr">{{user.phone}}</p></div></div>
   <div class="account-menu">
   <button class="account-row" @click="edit"><span class="account-row-icon"><UserRoundPen/></span><span>{{t("تعديل الملف الشخصي")}}</span><ChevronLeft class="account-chevron"/></button>
   <button class="account-row" @click="view='privacy'"><span class="account-row-icon"><ShieldCheck/></span><span>{{t("الخصوصية والشروط")}}</span><ChevronLeft class="account-chevron"/></button>
