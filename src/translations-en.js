@@ -1,4 +1,10 @@
 export default {
+  "آسياسيل — 25,000 دينار": "Asiacell \u2014 25,000 IQD",
+  "آسياسيل — 5,000 دينار": "Asiacell \u2014 5,000 IQD",
+  "آسياسيل — 10,000 دينار": "Asiacell \u2014 10,000 IQD",
+  "آسياسيل — 1,000 دينار": "Asiacell \u2014 1,000 IQD",
+  "آسياسيل — 15,000 دينار": "Asiacell \u2014 15,000 IQD",
+
   "تصنيفات البطاقات": "Card categories",
   "الدفع بواسطة": "Pay with",
   "طرق الدفع": "Payment methods",

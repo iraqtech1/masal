@@ -3,10 +3,18 @@ export const MAX_SLIDES=10;
 const key='masal-slider-v1';
 const middleKey='masal-middle-slider-v1';
 export const MIDDLE_INTERVAL=2000;
-const defaults=[{id:'middle-hala',src:'middle-banners/hala.png',name:'عرض هلا'},{id:'middle-donation',src:'middle-banners/donation.png',name:'التبرع والرعاية الاجتماعية'},{id:'middle-nojoom',src:'middle-banners/nojoom.png',name:'الميزة الجديدة — نجوم'}];
+const defaults=[{"id":"middle-asiacell-25000","src":"middle-banners/asiacell-card-25000-1600x800.png","name":"آسياسيل — 25,000 دينار"},{"id":"middle-asiacell-5000","src":"middle-banners/asiacell-card-5000-1600x800.png","name":"آسياسيل — 5,000 دينار"},{"id":"middle-asiacell-10000","src":"middle-banners/asiacell-card-10000-1600x800.png","name":"آسياسيل — 10,000 دينار"},{"id":"middle-asiacell-1000","src":"middle-banners/asiacell-card-1000-1600x800.png","name":"آسياسيل — 1,000 دينار"},{"id":"middle-asiacell-15000","src":"middle-banners/asiacell-card-15000-1600x800.png","name":"آسياسيل — 15,000 دينار"}];
+const legacySources=['middle-banners/hala.png','middle-banners/donation.png','middle-banners/nojoom.png'];
 function read(){try{const data=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(data)?data.filter(s=>typeof s.id==='string'&&typeof s.src==='string'&&/^data:image\/(webp|jpeg|png|gif);base64,/.test(s.src)).slice(0,MAX_SLIDES):[];}catch{return [];}}
 export const slides=reactive(read());
-function readMiddle(){try{const raw=localStorage.getItem(middleKey);if(raw===null)return defaults.map(s=>({...s}));const data=JSON.parse(raw);return Array.isArray(data)?data.filter(s=>s&&typeof s.id==='string'&&typeof s.name==='string'&&typeof s.src==='string'&&(/^data:image\/(webp|jpeg|png|gif);base64,/.test(s.src)||defaults.some(d=>d.src===s.src))).slice(0,MAX_SLIDES):defaults.map(s=>({...s}));}catch{return defaults.map(s=>({...s}));}}
+function readMiddle(){try{
+  const raw=localStorage.getItem(middleKey);if(raw===null)return defaults.map(s=>({...s}));
+  const data=JSON.parse(raw);if(!Array.isArray(data))return defaults.map(s=>({...s}));
+  const valid=data.filter(s=>s&&typeof s.id==='string'&&typeof s.name==='string'&&typeof s.src==='string'&&(/^data:image\/(webp|jpeg|png|gif);base64,/.test(s.src)||defaults.some(d=>d.src===s.src)||legacySources.includes(s.src)));
+  if(valid.some(s=>legacySources.includes(s.src)))return [...defaults.map(s=>({...s})),...valid.filter(s=>!legacySources.includes(s.src))].slice(0,MAX_SLIDES);
+  return valid.slice(0,MAX_SLIDES);
+}catch{return defaults.map(s=>({...s}));}}
+
 export const middleSlides=reactive(readMiddle());
 if(typeof window!=='undefined')window.addEventListener('storage',event=>{if(event.key===middleKey||event.key===null)middleSlides.splice(0,middleSlides.length,...readMiddle());if(event.key===key||event.key===null)slides.splice(0,slides.length,...read());});
 export function saveSlides(next,placement='top'){
