@@ -15,7 +15,7 @@ export default {
   ]);
   const unread=computed(()=>messages.value.filter(message=>message.unread).length);
   function add(title,body){messages.value.unshift({id:Date.now(),title,body,time:'الآن',unread:true});}
-  watch(()=>props.orderCount,(value,old)=>{if(value>old)add('تم إضافة طلبك التجريبي','تفاصيل البطاقة موجودة بصفحة مشترياتي.');});
+  watch(()=>props.orderCount,(value,old)=>{if(value>old)add('تم إضافة طلبك التجريبي','تفاصيل البطاقة موجودة بصفحة طلباتي.');});
   watch(()=>props.ticketCount,(value,old)=>{if(value>old)add('وصلتنا تذكرتك التجريبية','تگدر تتابع تفاصيلها من صفحة الدعم.');});
   function readAll(){messages.value.forEach(message=>message.unread=false);}
   function outside(event){if(root.value&&!root.value.contains(event.target))opened.value=false;}
