@@ -14,7 +14,7 @@ export default {
     }
     return {username,password,visible,error,submit};
   },
-  template:`<main class="masal-login">
+  template:`<main class="masal-login"><div class="login-theme-toggle"><ThemeToggle/></div>
     <div class="masal-login-frame">
       <section class="masal-login-form-panel" aria-labelledby="admin-login-title">
         <a href="#" class="masal-login-brand"><span><MasalMark/></span><b>ماسال<small>MASAL</small></b></a>

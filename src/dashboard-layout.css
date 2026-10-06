@@ -1,0 +1,17 @@
+.admin-shell{width:100%;min-width:0;overflow-x:clip}
+.admin-shell .admin-content{max-width:none;width:100%;margin:0;padding:clamp(12px,2vw,28px);min-width:0}
+.admin-shell .admin-main{width:calc(100% - 270px);max-width:none;min-width:0}
+.admin-shell .admin-stats>button,.admin-shell .admin-stats>button.is-selected{box-shadow:0 8px 24px #780f1c20,0 2px 6px #780f1c0c}
+.admin-shell .admin-stats>button:hover,.admin-shell .admin-stats>button:focus-visible{box-shadow:0 12px 28px #780f1c2b}
+.admin-shell .admin-stats>button:active{box-shadow:0 4px 14px #780f1c24}
+.masal-login .masal-login-field{direction:ltr}
+.masal-login .masal-login-field input{text-align:left;direction:ltr}
+.masal-login .masal-login-frame{width:100%;max-width:none}
+.masal-login{padding:clamp(12px,2vw,28px)}
+.admin-merchant-count{display:flex;gap:16px;align-items:center;margin-bottom:20px;padding:22px}
+.admin-merchant-count>svg{width:48px;height:48px;padding:10px;border-radius:14px;background:#f6eaf0;color:#a21c2d}
+.admin-merchant-count strong{display:block;font-size:28px;color:var(--admin-dark)}
+.admin-merchant-count small{color:var(--admin-muted)}
+@media(max-width:1200px){.admin-shell .admin-main{width:calc(100% - 245px)}.admin-shell .admin-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.admin-shell .admin-main{width:100%;margin:0}.admin-shell .admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-shell .admin-header{padding-inline:14px}}
+@media(max-width:420px){.admin-shell .admin-stats{grid-template-columns:minmax(0,1fr)}.admin-shell .admin-content{padding:12px}.admin-shell .admin-header{height:auto;min-height:76px;flex-wrap:wrap;gap:8px;padding:10px 12px!important}.admin-shell .admin-header>div{min-width:0;flex:1 1 auto}.admin-shell .admin-header-right{gap:6px;justify-content:flex-end}.admin-shell .admin-signout{padding:8px;font-size:10px}.admin-shell .admin-search{min-width:0;max-width:100%}.admin-shell .admin-hero>div{min-width:0;max-width:100%}}

@@ -14,6 +14,8 @@ Admin preview: open `#/admin` on the same app. The Vue dashboard includes catalo
 
 Run `npm test` for shared-state and import validation checks.
 
+The shared day/night toggle appears in the store, dashboard and both login screens. Its black, blue and sky-blue night palette is saved in localStorage and synchronized between tabs. Dashboard summary cards use outer shadows; content fills the available width and grids adapt to the screen. The merchants page includes an unfiltered total-account count card, including `0 حساب` when empty.
+
 The middle slider appears directly below favorite companies with three bundled images and a two-second interval. Manage it independently at `#/admin/middle-slider` (سلايدر وسطي): add, delete and reorder up to ten images. GIF and WebP uploads retain their original animation (up to 2 MB per file); JPG/PNG uploads are optimized. Image settings persist in localStorage and synchronize across tabs in the same browser, not across devices or visitors. Hover, keyboard focus, pause, a hidden tab and reduced-motion preferences pause automatic slide changes.
 
 The store opens with phone-number sign-in and a link to create an account. Registration asks for name, Iraqi WhatsApp phone number and optional email, followed by a six-digit OTP confirmation. The email field is explicitly labelled optional; accounts, orders and support tickets use the phone identity so separate accounts can omit email. Returning sign-in also requires OTP. Codes expire after five minutes, allow five attempts and can be resent after 60 seconds. Changing the number cancels the pending challenge. No account is created before successful verification.

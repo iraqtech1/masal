@@ -49,7 +49,7 @@ export default {
   template:`<div class="auth-shell phone-auth">
     <aside class="auth-story" aria-hidden="true"><span class="auth-wordmark">MASAL / DIGITAL STORE</span><div><span class="auth-kicker">بطاقاتك، بمكان واحد</span><h2>أهلاً بيك<br>بماسال.</h2><p>رصيد واتصالات، ألعاب ومتاجر عالمية.<br>كل اللي تحتاجه صار أقرب إلك.</p></div><div class="auth-art"><span>Zain<small>رصيد واتصالات</small></span><span>PUBG<small>عالم الألعاب</small></span><span>Apple<small>بطاقات عالمية</small></span></div></aside>
     <section class="auth-panel" aria-label="الدخول إلى ماسال">
-      <div class="auth-top"><span class="auth-step">{{view==='otp'?'تأكيد رقم الهاتف':view==='register'?'حساب جديد':'أهلاً بيك'}}</span><button v-if="view!=='login'" type="button" class="auth-back" @click="view==='otp'?back():change('login')" :disabled="busy" aria-label="الرجوع"><ChevronRight :size="22"/></button></div>
+      <div class="auth-top"><ThemeToggle/><span class="auth-step">{{view==='otp'?'تأكيد رقم الهاتف':view==='register'?'حساب جديد':'أهلاً بيك'}}</span><button v-if="view!=='login'" type="button" class="auth-back" @click="view==='otp'?back():change('login')" :disabled="busy" aria-label="الرجوع"><ChevronRight :size="22"/></button></div>
       <div class="auth-body">
         <div class="auth-identity"><div class="auth-logo"><MasalMark/></div><strong>{{store.settings.name}}</strong><span dir="ltr">DIGITAL STORE</span></div>
         <h1 ref="heading" tabindex="-1">{{view==='otp'?'توثيق رقم الهاتف':view==='register'?'إنشاء حساب':'تسجيل الدخول'}}</h1>
