@@ -54,3 +54,23 @@
  .app-shell .hero .deck-controls small{font-size:8px}
  .app-shell .hero .deck-hint{line-height:1.6}
 }
+
+/* Soft separation for selectable storefront cards in both themes. */
+.app-shell{--card-edge:#dec1c9;--card-shadow:0 5px 14px #780f1c14;--card-shadow-raised:0 8px 20px #780f1c24;--card-edge-active:#b95567}
+.app-shell .brands{padding-top:4px;padding-bottom:14px}
+.app-shell .brands button,.app-shell .product-selectable{border-color:var(--card-edge);box-shadow:var(--card-shadow);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.app-shell .hero .deck-card{border-color:#edb8c580;box-shadow:0 5px 14px #29081330}
+.app-shell .hero .deck-card.deck-current{border-color:#efd394;box-shadow:0 9px 22px #29081366,0 0 0 1px #efd39444}
+.app-shell .brands button:focus-visible,.app-shell .product-selectable:focus-visible{border-color:var(--card-edge-active);box-shadow:var(--card-shadow-raised);outline:2px solid var(--card-edge-active);outline-offset:2px}
+.app-shell .brands button:active,.app-shell .product-selectable:active{transform:scale(.98)}
+html[data-theme=dark] .app-shell{--card-edge:#3b607b;--card-shadow:0 5px 14px #0005;--card-shadow-raised:0 8px 20px #0007;--card-edge-active:#82d4f5}
+html[data-theme=dark] .app-shell .brands button,html[data-theme=dark] .app-shell .product-selectable{border-color:var(--card-edge)!important;box-shadow:var(--card-shadow)}
+html[data-theme=dark] .app-shell .brands .brand-logo{color:#d4eeff!important}
+html[data-theme=dark] .app-shell .hero .deck-card{border-color:#5e9ab980;box-shadow:0 5px 14px #0005}
+html[data-theme=dark] .app-shell .hero .deck-card.deck-current{border-color:#82d4f5;box-shadow:0 9px 22px #0008,0 0 0 1px #82d4f544}
+html[data-theme=dark] .app-shell .brands button:focus-visible,html[data-theme=dark] .app-shell .product-selectable:focus-visible{border-color:var(--card-edge-active)!important;box-shadow:var(--card-shadow-raised)}
+@media(hover:hover) and (pointer:fine){
+ .app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:translateY(-3px);border-color:var(--card-edge-active);box-shadow:var(--card-shadow-raised)}
+ html[data-theme=dark] .app-shell .brands button:hover,html[data-theme=dark] .app-shell .product-selectable:hover{border-color:var(--card-edge-active)!important;box-shadow:var(--card-shadow-raised)}
+}
+@media(prefers-reduced-motion:reduce){.app-shell .brands button,.app-shell .product-selectable{transition:none}.app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:none}}
