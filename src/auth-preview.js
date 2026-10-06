@@ -27,9 +27,9 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       if(mode!=='register')throw Error('تعذّر بدء التحقق.');
       const fullName=String(name||'').trim(),address=String(email||'').trim().toLowerCase();
       if(fullName.length<2||fullName.length>80)throw Error('اكتب اسمك الكامل.');
-      if(address.length>254||!/^\S+@\S+\.\S+$/.test(address))throw Error('اكتب بريداً إلكترونياً صحيحاً.');
+      if(address&&(address.length>254||!/^\S+@\S+\.\S+$/.test(address)))throw Error('اكتب بريداً إلكترونياً صحيحاً أو اتركه فارغاً.');
       if(accounts.has(mobile))throw Error('هذا الرقم مسجّل بالفعل. ارجع لتسجيل الدخول.');
-      if([...accounts.values()].some(user=>user.email===address))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
+      if(address&&[...accounts.values()].some(user=>user.email===address))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
       return issue(mode,{name:fullName,phone:mobile,email:address});
     },
     verify(code){

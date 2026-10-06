@@ -14,7 +14,7 @@ Admin preview: open `#/admin` on the same app. The Vue dashboard includes catalo
 
 Run `npm test` for shared-state and import validation checks.
 
-The store opens with phone-number sign-in and a link to create an account. Registration asks for name, Iraqi WhatsApp phone number and email, followed by a six-digit OTP confirmation. Returning sign-in also requires OTP. Codes expire after five minutes, allow five attempts and can be resent after 60 seconds. Changing the number cancels the pending challenge. No account is created before successful verification.
+The store opens with phone-number sign-in and a link to create an account. Registration asks for name, Iraqi WhatsApp phone number and optional email, followed by a six-digit OTP confirmation. The email field is explicitly labelled optional; accounts, orders and support tickets use the phone identity so separate accounts can omit email. Returning sign-in also requires OTP. Codes expire after five minutes, allow five attempts and can be resent after 60 seconds. Changing the number cancels the pending challenge. No account is created before successful verification.
 
 WhatsApp is not connected: this is a local verification preview and no messages are sent. The OTP screen explicitly shows a preview code. Accounts and challenges stay in memory and reset on reload; an existing preview store session can restore within the same tab. Register a test account before trying a fresh sign-in. Real WhatsApp delivery, account persistence and verification must run on a backend using a WhatsApp Business provider; never put provider credentials or production OTP generation in this static app.
 
