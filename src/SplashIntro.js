@@ -1,3 +1,4 @@
+import {t,language} from './i18n.js';
 import {ref,onMounted,onBeforeUnmount,nextTick} from 'vue/dist/vue.esm-bundler.js';
 import {CreditCard,Gamepad2,Headphones,Smartphone,Monitor,Cpu} from 'lucide-vue-next';
 import MasalMark from './MasalMark.js';
@@ -19,7 +20,7 @@ export default {
       timer=setTimeout(finish,reduced.value?3000:2740);
     });
     onBeforeUnmount(()=>{clearTimeout(timer);clearTimeout(exitTimer);restore();});
-    return {visible,leaving,reduced,symbols,finish};
+    return {t,language,visible,leaving,reduced,symbols,finish};
   },
-  template:`<div v-if="visible" class="masal-splash" :class="{'is-leaving':leaving,'is-reduced':reduced}" role="dialog" aria-modal="true" aria-label="مرحباً بك في ماسال" @keydown.esc="finish"><div class="splash-glow" aria-hidden="true"></div><div class="splash-scene"><div class="splash-symbols" aria-hidden="true"><span v-for="(symbol,i) in symbols" :key="i" :style="{'--i':i}"><component :is="symbol" :size="24"/></span></div><div class="splash-logo"><MasalMark/></div><div class="splash-wordmark"><strong>ماسال</strong><span lang="en" dir="ltr">MASAL</span></div><div class="splash-line" aria-hidden="true"></div></div><button class="splash-skip" @click="finish">تخطي</button></div>`
+  template:`<div v-if="visible" class="masal-splash" :class="{'is-leaving':leaving,'is-reduced':reduced}" role="dialog" aria-modal="true" :aria-label="t(&quot;مرحباً بك في ماسال&quot;)" @keydown.esc="finish"><div class="splash-glow" aria-hidden="true"></div><div class="splash-scene"><div class="splash-symbols" aria-hidden="true"><span v-for="(symbol,i) in symbols" :key="i" :style="{'--i':i}"><component :is="symbol" :size="24"/></span></div><div class="splash-logo"><MasalMark/></div><div class="splash-wordmark"><strong>{{t("ماسال")}}</strong><span lang="en" dir="ltr">MASAL</span></div><div class="splash-line" aria-hidden="true"></div></div><button class="splash-skip" @click="finish">{{t("تخطي")}}</button></div>`
 };

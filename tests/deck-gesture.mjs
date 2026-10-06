@@ -11,7 +11,7 @@ console.log('Vertical and horizontal card swipe checks passed.');
 const {readFileSync}=await import('node:fs');
 const {runInNewContext}=await import('node:vm');
 const source=readFileSync(new URL('../src/CardDeck.js',import.meta.url),'utf8').replace(/^import .*;$/gm,'').replace('export default','const component=');
-const component=runInNewContext(source+';component',{ref:value=>({value}),computed:fn=>({get value(){return fn()}}),onMounted(){},onUnmounted(){},ChevronUp:{},ChevronDown:{},deckSwipeStep});
+const component=runInNewContext(source+';component',{t:value=>value,language:{value:'ar'},ref:value=>({value}),computed:fn=>({get value(){return fn()}}),onMounted(){},onUnmounted(){},ChevronUp:{},ChevronDown:{},deckSwipeStep});
 const selected=[];
 const deck=component.setup({products:[{id:1},{id:2},{id:3}]},{emit:(...args)=>selected.push(args)});
 const point=(x,y)=>({identifier:1,clientX:x,clientY:y});

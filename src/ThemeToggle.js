@@ -1,3 +1,4 @@
+import {t,language} from './i18n.js';
 import {ref,watch} from 'vue/dist/vue.esm-bundler.js';
 import {Moon,Sun} from 'lucide-vue-next';
 export const dark=ref(false);
@@ -6,4 +7,4 @@ function apply(){document.documentElement.dataset.theme=dark.value?'dark':'light
 apply();
 watch(dark,()=>{apply();try{localStorage.setItem('masal-theme',dark.value?'dark':'light');}catch{}});
 window.addEventListener('storage',event=>{if(event.key==='masal-theme'){dark.value=event.newValue==='dark';apply();}});
-export default {components:{Moon,Sun},setup(){return {dark};},template:`<button type="button" class="theme-toggle" @click="dark=!dark" :aria-pressed="dark" :aria-label="dark?'تفعيل الوضع النهاري':'تفعيل الوضع الليلي'" :title="dark?'الوضع النهاري':'الوضع الليلي'"><Sun v-if="dark" :size="20"/><Moon v-else :size="20"/></button>`};
+export default {components:{Moon,Sun},setup(){return {t,language,dark};},template:`<button type="button" class="theme-toggle" @click="dark=!dark" :aria-pressed="dark" :aria-label="dark?t(&quot;تفعيل الوضع النهاري&quot;):t(&quot;تفعيل الوضع الليلي&quot;)" :title="dark?t(&quot;الوضع النهاري&quot;):t(&quot;الوضع الليلي&quot;)"><Sun v-if="dark" :size="20"/><Moon v-else :size="20"/></button>`};

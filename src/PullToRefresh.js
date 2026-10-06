@@ -1,3 +1,4 @@
+import {t,language} from './i18n.js';
 import {ref,computed,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {RefreshCw} from 'lucide-vue-next';
 import {pullDistance,refreshThreshold} from './pull-gesture.js';
@@ -57,7 +58,7 @@ export default {
       document.removeEventListener('touchend',up);
       document.removeEventListener('touchcancel',reset);
     });
-    return {distance,ready,refreshing};
+    return {t,language,distance,ready,refreshing};
   },
-  template:`<div class="pull-refresh" :class="{visible:distance>0,refreshing}" :style="{'--pull-distance':distance+'px'}" role="status" aria-live="polite"><RefreshCw :size="20" :style="{transform:'rotate('+distance*3+'deg)'}"/><span>{{refreshing?'جاري التحديث…':ready?'اترك للتحديث':'اسحب للأسفل للتحديث'}}</span></div>`
+  template:`<div class="pull-refresh" :class="{visible:distance>0,refreshing}" :style="{'--pull-distance':distance+'px'}" role="status" aria-live="polite"><RefreshCw :size="20" :style="{transform:'rotate('+distance*3+'deg)'}"/><span>{{refreshing?t("جاري التحديث…"):ready?t("اترك للتحديث"):t("اسحب للأسفل للتحديث")}}</span></div>`
 };

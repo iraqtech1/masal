@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "test": "node tests/flows.mjs && node tests/marketing.mjs && node tests/pull-refresh.mjs && node tests/store-session.mjs && node tests/deck-gesture.mjs && node tests/auth-preview.mjs && node tests/slides.mjs",
+    "test": "node tests/flows.mjs && node tests/marketing.mjs && node tests/pull-refresh.mjs && node tests/store-session.mjs && node tests/deck-gesture.mjs && node tests/auth-preview.mjs && node tests/slides.mjs && node tests/i18n.mjs",
     "check": "node scripts/check.mjs"
   },
   "dependencies": {

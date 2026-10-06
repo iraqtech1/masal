@@ -1,3 +1,4 @@
+import {t,language} from './i18n.js';
 import {ref,computed,watch,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {slides as topSlides,middleSlides} from './slides.js';
 import './slider.css';
@@ -19,10 +20,10 @@ export default {
     watch([paused,hover,focused,dragging,reduced],restart);
     onMounted(()=>{media=matchMedia('(prefers-reduced-motion: reduce)');preference();media.addEventListener('change',preference);document.addEventListener('visibilitychange',restart);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cancel);restart();});
     onBeforeUnmount(()=>{clearInterval(timer);media.removeEventListener('change',preference);document.removeEventListener('visibilitychange',restart);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cancel);});
-    return {slides,index,paused,hover,focused,move,down};
+    return {t,language,slides,index,paused,hover,focused,move,down};
   },
-  template:`<section v-if="slides.length" class="banner-slider" :aria-label="label" aria-roledescription="عارض صور" @mouseenter="hover=true" @mouseleave="hover=false" @focusin="focused=true" @focusout="focused=$event.currentTarget.contains($event.relatedTarget)" @keydown.left.prevent="move(-1)" @keydown.right.prevent="move(1)">
-    <div class="banner-window" @pointerdown="down"><Transition name="banner-fade"><img :key="slides[index].id" :src="slides[index].src" :alt="slides[index].name" draggable="false" decoding="async"/></Transition></div>
-    <div v-if="slides.length>1" class="banner-controls" dir="ltr"><button @click="move(-1)" aria-label="الصورة السابقة"><ChevronLeft :size="20"/></button><div class="banner-dots"><button v-for="(slide,i) in slides" :key="slide.id" :class="{active:index===i}" :aria-label="'عرض الصورة '+(i+1)" :aria-current="index===i?'true':undefined" @click="index=i"></button></div><button @click="move(1)" aria-label="الصورة التالية"><ChevronRight :size="20"/></button><button v-if="showPlayback" class="banner-pause" @click="paused=!paused" :aria-label="paused?'تشغيل السلايدر':'إيقاف السلايدر'">{{paused?'▶':'Ⅱ'}}</button></div>
+  template:`<section v-if="slides.length" class="banner-slider" :aria-label="t(label)" :aria-roledescription="t('عارض صور')" @mouseenter="hover=true" @mouseleave="hover=false" @focusin="focused=true" @focusout="focused=$event.currentTarget.contains($event.relatedTarget)" @keydown.left.prevent="move(-1)" @keydown.right.prevent="move(1)">
+    <div class="banner-window" @pointerdown="down"><Transition name="banner-fade"><img :key="slides[index].id" :src="slides[index].src" :alt="t(slides[index].name)" draggable="false" decoding="async"/></Transition></div>
+    <div v-if="slides.length>1" class="banner-controls" dir="ltr"><button @click="move(-1)" :aria-label="t(&quot;الصورة السابقة&quot;)"><ChevronLeft :size="20"/></button><div class="banner-dots"><button v-for="(slide,i) in slides" :key="slide.id" :class="{active:index===i}" :aria-label="t(&quot;عرض الصورة &quot;)+(i+1)" :aria-current="index===i?'true':undefined" @click="index=i"></button></div><button @click="move(1)" :aria-label="t(&quot;الصورة التالية&quot;)"><ChevronRight :size="20"/></button><button v-if="showPlayback" class="banner-pause" @click="paused=!paused" :aria-label="paused?t(&quot;تشغيل السلايدر&quot;):t(&quot;إيقاف السلايدر&quot;)">{{paused?'▶':'Ⅱ'}}</button></div>
   </section>`
 };
