@@ -31,7 +31,7 @@ export default {
           </form>
           <a class="masal-login-store" href="#">الرجوع للتطبيق <ArrowLeft :size="15"/></a>
         </div>
-        <small class="masal-login-foot">لوحة إدارة تجريبية</small>
+
       </section>
       <section class="masal-login-art" aria-label="ماسال للبطاقات والإلكترونيات">
         <div class="masal-login-art-heading"><span dir="ltr">MASAL</span><h2>بطاقات وإلكترونيات</h2></div>

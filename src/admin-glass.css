@@ -1,0 +1,13 @@
+/* Frosted surfaces over Masal's burgundy and warm gold background. */
+.admin-shell{--admin-border:#e7cfd8;--admin-muted:#866373;background:radial-gradient(ellipse at 94% 4%,#a21c2d22,transparent 48%),radial-gradient(ellipse at 4% 65%,#e4b45624,transparent 50%),linear-gradient(145deg,#fff8fa,#f3e6ec 52%,#fcf4e8);background-attachment:fixed}
+.admin-shell .admin-sidebar,.admin-shell .admin-header{background:#ffffffb8;border-color:#ffffffc9;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 4px 25px #780f1c06}
+.admin-shell .admin-brand{background:#ffffff80;border-color:#ffffffd9;box-shadow:inset 0 1px 0 #fff}
+.admin-shell .admin-panel,.admin-shell .admin-stats>button,.admin-shell .admin-mini-stats>div{background:linear-gradient(135deg,#ffffffcc,#ffffff8c);border-color:#ffffffed;box-shadow:0 7px 24px #780f1c08,inset 0 1px 0 #fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.admin-shell .admin-hero{background:linear-gradient(125deg,#780f1cef,#a21c2deb 70%,#cc5260e6);border-color:#ffffff75;box-shadow:0 10px 28px #780f1c18,inset 0 1px 0 #ffffff30}
+.admin-shell .admin-overview-events{background:linear-gradient(110deg,#ffffffbd,#f9e8eca6);border-color:#ffffffd9;box-shadow:0 4px 18px #780f1c06,inset 0 1px 0 #fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.admin-shell .admin-stats>button:hover{border-color:#c4879c;box-shadow:0 7px 22px #7817361c}
+.admin-shell .admin-stats>button:active{background:#fcf1f5df;border-color:var(--admin-wine);box-shadow:0 3px 12px #78173630}
+.admin-shell .admin-stats>button:focus-visible{box-shadow:0 7px 22px #78173626}
+.masal-login .masal-login-frame{-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);background:#ffffffb8}
+@media(max-width:700px){.admin-shell{background-attachment:scroll}.admin-shell .admin-sidebar,.admin-shell .admin-header{-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.admin-shell .admin-sidebar,.admin-shell .admin-header,.admin-shell .admin-panel,.admin-shell .admin-stats>button,.admin-shell .admin-mini-stats>div{background:#fff8faed}}
