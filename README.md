@@ -14,6 +14,8 @@ Admin preview: open `#/admin` on the same app. The Vue dashboard includes catalo
 
 Run `npm test` for shared-state and import validation checks.
 
-Welcome screen offers guest entry, sign-in, and registration with name, phone, email and password. Demo accounts are kept only in the current tab's memory, with a password digest and no browser storage. Register a test account first to try sign-in; refreshing clears accounts and sessions. Production authentication requires a backend and is not provided by GitHub Pages.
+The store opens with phone-number sign-in and a link to create an account. Registration asks for name, Iraqi WhatsApp phone number and email, followed by a six-digit OTP confirmation. Returning sign-in also requires OTP. Codes expire after five minutes, allow five attempts and can be resent after 60 seconds. Changing the number cancels the pending challenge. No account is created before successful verification.
+
+WhatsApp is not connected: this is a local verification preview and no messages are sent. The OTP screen explicitly shows a preview code. Accounts and challenges stay in memory and reset on reload; an existing preview store session can restore within the same tab. Register a test account before trying a fresh sign-in. Real WhatsApp delivery, account persistence and verification must run on a backend using a WhatsApp Business provider; never put provider credentials or production OTP generation in this static app.
 
 Agreed requirements: Vue web + mobile experience; Cairo Bold; English digits and dates; burgundy and white; consumers and merchants; Excel inventory import; supplier API; Qi integration. Store name: Masal (ماسال).

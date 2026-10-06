@@ -3,7 +3,7 @@ import {restoreStoreSession,saveStoreSession} from '../src/store-session.js';
 const values=new Map(),storage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
 assert.equal(restoreStoreSession(storage),null);
 saveStoreSession(storage,{entered:true,user:null,page:'cards',merchant:false});
-assert.deepEqual(restoreStoreSession(storage),{entered:true,user:null,page:'cards',merchant:false},'Guest stays in cards after a reload');
+assert.equal(restoreStoreSession(storage),null,'Legacy guest entry must return to phone sign-in');
 saveStoreSession(storage,{entered:true,user:{name:'Test',phone:'07000000000',email:'test@example.test',password:'never-save',hash:'never-save'},page:'orders',merchant:true});
 assert.equal(restoreStoreSession(storage).page,'orders');
 assert.equal(restoreStoreSession(storage).user.name,'Test');
