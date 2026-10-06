@@ -16,7 +16,6 @@ export default {
   "عرض الكل": "View all",
   "بطاقات مقترحة": "Recommended cards",
   "كل البطاقات": "All cards",
-  "يبدأ من": "From",
   "د.ع": "IQD",
   "فئات متوفرة": "denominations available",
   "بطاقات": "cards",
