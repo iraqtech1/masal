@@ -1,6 +1,7 @@
 import {createApp,ref,computed,watch,nextTick,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight} from 'lucide-vue-next';
 import './style.css';
+import './mobile-navigation.css';
 import CardDeck from './CardDeck.js';
 import PullToRefresh from './PullToRefresh.js';
 import NavIcon from './NavIcon.js';
