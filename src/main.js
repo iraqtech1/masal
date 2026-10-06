@@ -1,4 +1,4 @@
-import {createApp,ref,computed,nextTick,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
+import {createApp,ref,computed,watch,nextTick,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
 import {Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight} from 'lucide-vue-next';
 import './style.css';
 import CardDeck from './CardDeck.js';
@@ -13,6 +13,7 @@ import SplashIntro from './SplashIntro.js';
 import MarketingSite from './marketing/Site.js';
 import {router} from './marketing/router.js';
 import {store,upsertCustomer,createOrder,createTicket} from './store.js';
+import {restoreStoreSession,saveStoreSession} from './store-session.js';
 const app=createApp({
 components:{PullToRefresh,SplashIntro,BannerSlider,MarketingSite,Dashboard,PwaControls,AuthGate,NavIcon,CardDeck,Home,Grid2X2,ShoppingBag,Headphones,Search,ChevronLeft,X,Check,Copy,CreditCard,Gamepad2,Smartphone,Layers,User,Plus,Minus,ShieldCheck,SlidersHorizontal,Ticket,ArrowUpRight},
 setup(){
@@ -21,13 +22,18 @@ const marketing=ref(location.hash.startsWith('#/ar'));
 function readRoute(){admin.value=location.hash.startsWith('#/admin');marketing.value=location.hash.startsWith('#/ar');}
 onMounted(()=>window.addEventListener('hashchange',readRoute));
 onBeforeUnmount(()=>window.removeEventListener('hashchange',readRoute));
-const entered=ref(false),session=ref(null),authRequest=ref(0);
+let tabStorage;try{tabStorage=window.sessionStorage;}catch{}
+const restored=restoreStoreSession(tabStorage);
+const entered=ref(!!restored),session=ref(restored?.user||null),authRequest=ref(0);
+if(restored?.user)upsertCustomer(restored.user);
 function enterStore(user){session.value=user;entered.value=true;upsertCustomer(user);merchant.value=store.customers.find(c=>c.email===user?.email)?.kind==='محل';go('home');}
 function accountAccess(){session.value=null;entered.value=false;merchant.value=false;toast.value='';authRequest.value++;}
 function toggleMerchant(){merchant.value=!merchant.value;const customer=store.customers.find(c=>c.email===session.value?.email);if(customer)customer.kind=merchant.value?'محل':'فرد';}
 const navMotion=ref(0);
 const navIcons={Home,Grid2X2,ShoppingBag,Headphones};
-const page=ref('home'),category=ref('الكل'),query=ref(''),merchant=ref(false),selected=ref(null),quantity=ref(1),denom=ref(0),orders=computed(()=>store.orders.filter(o=>o.email===(session.value?.email||''))),toast=ref(''),subject=ref(''),message=ref(''),success=ref(false),dialog=ref(null);
+const page=ref(restored?.page||'home'),category=ref('الكل'),query=ref(''),merchant=ref(restored?.merchant||false),selected=ref(null),quantity=ref(1),denom=ref(0),orders=computed(()=>store.orders.filter(o=>o.email===(session.value?.email||''))),toast=ref(''),subject=ref(''),message=ref(''),success=ref(false),dialog=ref(null);
+watch([entered,session,page,merchant],()=>saveStoreSession(tabStorage,{entered:entered.value,user:session.value,page:page.value,merchant:merchant.value}),{flush:'sync'});
+if(restored?.merchant&&session.value){const customer=store.customers.find(c=>c.email===session.value.email);if(customer)customer.kind='محل';}
 const products=computed(()=>store.products.filter(p=>p.active));
 const myTickets=computed(()=>store.tickets.filter(t=>t.email===(session.value?.email||'')));
 const number=n=>new Intl.NumberFormat('en-US').format(n);
