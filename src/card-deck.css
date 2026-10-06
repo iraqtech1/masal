@@ -56,21 +56,21 @@
 }
 
 /* Soft separation for selectable storefront cards in both themes. */
-.app-shell{--card-edge:#dec1c9;--card-shadow:0 5px 14px #780f1c14;--card-shadow-raised:0 8px 20px #780f1c24;--card-edge-active:#b95567}
-.app-shell .brands{padding-top:4px;padding-bottom:14px}
-.app-shell .brands button,.app-shell .product-selectable{border-color:var(--card-edge);box-shadow:var(--card-shadow);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.app-shell .hero .deck-card{border-color:#edb8c580;box-shadow:0 5px 14px #29081330}
-.app-shell .hero .deck-card.deck-current{border-color:#efd394;box-shadow:0 9px 22px #29081366,0 0 0 1px #efd39444}
+.app-shell{--card-edge:#d7aebc;--card-shadow:0 5px 0 -1px #dcb9c5,0 12px 20px #780f1c30;--card-shadow-raised:0 6px 0 -1px #d5a8b8,0 16px 24px #780f1c3b;--card-edge-active:#b95567}
+.app-shell .brands{padding-top:8px;padding-bottom:24px}
+.app-shell .brands button,.app-shell .product-selectable{background:linear-gradient(145deg,#fff 40%,#fff4f7);border-color:var(--card-edge);border-bottom-width:2px;transform:translateY(-3px);box-shadow:var(--card-shadow);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.app-shell .hero .deck-card{border-color:#edb8c580;box-shadow:0 4px 0 -1px #450913,0 10px 18px #29081366}
+.app-shell .hero .deck-card.deck-current{border-color:#efd394;box-shadow:0 5px 0 -1px #450913,0 14px 24px #29081399,0 0 0 1px #efd39455}
 .app-shell .brands button:focus-visible,.app-shell .product-selectable:focus-visible{border-color:var(--card-edge-active);box-shadow:var(--card-shadow-raised);outline:2px solid var(--card-edge-active);outline-offset:2px}
 .app-shell .brands button:active,.app-shell .product-selectable:active{transform:scale(.98)}
-html[data-theme=dark] .app-shell{--card-edge:#3b607b;--card-shadow:0 5px 14px #0005;--card-shadow-raised:0 8px 20px #0007;--card-edge-active:#82d4f5}
-html[data-theme=dark] .app-shell .brands button,html[data-theme=dark] .app-shell .product-selectable{border-color:var(--card-edge)!important;box-shadow:var(--card-shadow)}
+html[data-theme=dark] .app-shell{--card-edge:#5585a4;--card-shadow:0 5px 0 -1px #07121f,0 12px 22px #0009,0 0 0 1px #82d4f522;--card-shadow-raised:0 6px 0 -1px #07121f,0 16px 26px #000a,0 0 0 1px #82d4f544;--card-edge-active:#82d4f5}
+html[data-theme=dark] .app-shell .brands button,html[data-theme=dark] .app-shell .product-selectable{background:linear-gradient(145deg,#20435d,#102437)!important;border-color:var(--card-edge)!important;box-shadow:var(--card-shadow)}
 html[data-theme=dark] .app-shell .brands .brand-logo{color:#d4eeff!important}
-html[data-theme=dark] .app-shell .hero .deck-card{border-color:#5e9ab980;box-shadow:0 5px 14px #0005}
-html[data-theme=dark] .app-shell .hero .deck-card.deck-current{border-color:#82d4f5;box-shadow:0 9px 22px #0008,0 0 0 1px #82d4f544}
+html[data-theme=dark] .app-shell .hero .deck-card{border-color:#5e9ab980;box-shadow:0 4px 0 -1px #06101c,0 10px 18px #0009}
+html[data-theme=dark] .app-shell .hero .deck-card.deck-current{border-color:#82d4f5;box-shadow:0 5px 0 -1px #06101c,0 14px 24px #000b,0 0 0 1px #82d4f555}
 html[data-theme=dark] .app-shell .brands button:focus-visible,html[data-theme=dark] .app-shell .product-selectable:focus-visible{border-color:var(--card-edge-active)!important;box-shadow:var(--card-shadow-raised)}
 @media(hover:hover) and (pointer:fine){
- .app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:translateY(-3px);border-color:var(--card-edge-active);box-shadow:var(--card-shadow-raised)}
+ .app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:translateY(-5px);border-color:var(--card-edge-active);box-shadow:var(--card-shadow-raised)}
  html[data-theme=dark] .app-shell .brands button:hover,html[data-theme=dark] .app-shell .product-selectable:hover{border-color:var(--card-edge-active)!important;box-shadow:var(--card-shadow-raised)}
 }
-@media(prefers-reduced-motion:reduce){.app-shell .brands button,.app-shell .product-selectable{transition:none}.app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.app-shell .brands button,.app-shell .product-selectable{transition:none}.app-shell .brands button:hover,.app-shell .product-selectable:hover{transform:translateY(-3px)}}
