@@ -45,3 +45,11 @@ html[data-theme=dark] :is(.admin-shell .admin-signout,.theme-toggle){border:1px 
 html[data-theme=dark] :is(.admin-shell .admin-signout,.theme-toggle):is(:hover,:focus-visible){border-color:#7ae0ff!important;box-shadow:0 0 0 1px #7ae0ff55,0 0 18px #27b7ef50,0 8px 24px #0005!important}
 
 html[data-theme=dark] .banner-controls{background:rgba(13,33,53,.55);border-color:rgba(140,221,255,.4)}
+
+/* Compact close control for card selection dialogs. */
+.app-shell dialog > .close{display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid #e9bbc3;border-radius:10px;background:#fae9ed;color:#a21c2d;box-shadow:none}
+.app-shell dialog > .close svg{width:18px;height:18px}
+.app-shell dialog > .close:hover{background:#f4d6de}
+.app-shell dialog > .close:focus-visible{outline:2px solid #a21c2d;outline-offset:3px}
+html[data-theme=dark] .app-shell dialog > .close{background:#442631;border-color:#80505e;color:#ffb9c6!important}
+html[data-theme=dark] .app-shell dialog > .close:hover{background:#59313e}
