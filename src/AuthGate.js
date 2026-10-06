@@ -5,7 +5,7 @@ import MasalMark from './MasalMark.js';
 import {createPreviewAuth,normalizePhone} from './auth-preview.js';
 import './auth.css';
 
-const auth=createPreviewAuth();
+export const auth=createPreviewAuth();
 export default {
   components:{ChevronRight,User,Smartphone,Mail,ShieldCheck,ArrowLeft,MasalMark},
   props:{request:Number},

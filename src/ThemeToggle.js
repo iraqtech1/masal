@@ -1,6 +1,6 @@
 import {ref,watch} from 'vue/dist/vue.esm-bundler.js';
 import {Moon,Sun} from 'lucide-vue-next';
-const dark=ref(false);
+export const dark=ref(false);
 try{dark.value=localStorage.getItem('masal-theme')==='dark';}catch{}
 function apply(){document.documentElement.dataset.theme=dark.value?'dark':'light';document.querySelector('meta[name="theme-color"]')?.setAttribute('content',dark.value?'#09131f':'#a21c2d');}
 apply();

@@ -15,6 +15,15 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
     return {mode,previewCode:pending.code,expiresAt:pending.expiresAt,resendAt:pending.resendAt};
   }
   return {
+    updateProfile(user){
+      const name=String(user.name||'').trim(),email=String(user.email||'').trim().toLowerCase();
+      if(name.length<2||name.length>80)throw Error('اكتب اسمك الكامل.');
+      if(email&&(email.length>254||!/^\S+@\S+\.\S+$/.test(email)))throw Error('اكتب بريداً إلكترونياً صحيحاً أو اتركه فارغاً.');
+      if(email&&[...accounts.values()].some(account=>account.phone!==user.phone&&account.email===email))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
+      const updated={name,email,phone:user.phone};
+      accounts.set(user.phone,updated);
+      return {...updated};
+    },
     start({mode,phone,name,email}){
       pending=null;
       const mobile=normalizePhone(phone);
