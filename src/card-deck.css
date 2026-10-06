@@ -28,3 +28,29 @@
 .app-shell .hero .deck-card-with-art::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(255deg,rgba(14,5,9,.9) 6%,rgba(14,5,9,.6) 52%,rgba(14,5,9,.2))}
 .app-shell .hero .deck-card-with-art>span,.app-shell .hero .deck-card-with-art>strong{position:relative;z-index:2;color:#fff}
 .app-shell .hero .deck-card-with-art.deck-white>span,.app-shell .hero .deck-card-with-art.deck-white>strong{color:#fff}
+
+/* Half-height home feature, retaining usable card and swipe controls. */
+.app-shell .hero{min-height:165px;padding:12px 24px;gap:16px}
+.app-shell .hero .hero-copy h2{font-size:1.7rem;margin:8px 0;line-height:1.4}
+.app-shell .hero .deck-stage{height:110px}
+.app-shell .hero .deck-card{height:70px;top:calc(50% - 35px);padding:7px 12px;transform:translateY(calc(var(--slot) * 44px + var(--drag-y,0px))) rotate(var(--tilt)) scale(.93)}
+.app-shell .hero .deck-card.deck-current{transform:translateY(var(--drag-y,0px)) rotate(var(--tilt)) scale(1)}
+.app-shell .hero .deck-card strong{font-size:20px}
+.app-shell .hero .deck-card-top,.app-shell .hero .deck-card-bottom{font-size:8px}
+.app-shell .hero .deck-controls{margin-top:0;gap:8px}
+.app-shell .hero .deck-controls button{width:28px;height:28px;padding:0}
+.app-shell .hero .deck-hint{font-size:8px!important;margin-top:4px!important}
+.app-shell .product-selectable{cursor:pointer}
+.app-shell .product-selectable:focus-visible{outline:2px solid var(--primary,#a21c2d);outline-offset:3px}
+@media(max-width:700px){
+ .app-shell .hero{flex-direction:row;min-height:210px;padding:12px;gap:6px;align-items:center}
+ .app-shell .hero .hero-copy{flex:0 1 38%;min-width:0;width:auto}
+ .app-shell .hero .hero-label{font-size:8px;line-height:1.8}
+ .app-shell .hero .hero-copy h2{font-size:clamp(15px,4vw,21px);margin:8px 0}
+ .app-shell .hero .card-deck{flex:1;min-width:0;width:60%;max-width:300px;margin-top:0}
+ .app-shell .hero .deck-stage{height:130px}
+ .app-shell .hero .deck-controls{gap:4px}
+ .app-shell .hero .deck-controls>span{min-width:0;flex:1;font-size:9px}
+ .app-shell .hero .deck-controls small{font-size:8px}
+ .app-shell .hero .deck-hint{line-height:1.6}
+}
