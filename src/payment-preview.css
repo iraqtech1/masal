@@ -1,5 +1,36 @@
-.payment-methods{margin-top:24px}.payment-methods h3{font-size:14px;margin-bottom:12px}.payment-method-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.payment-method-grid button{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:14px 10px;border:1px solid #d9b4be;border-radius:14px;background:#fff9fb;color:#a21c2d}.payment-logo,.payment-preview-brand{display:grid;place-items:center;min-width:76px;height:46px;padding:6px 10px;border-radius:10px;background:#fff}.payment-logo img,.payment-preview-brand img{width:76px;max-height:34px;object-fit:contain}.payment-method-grid button:hover,.payment-method-grid button:focus-visible{border-color:#a21c2d;box-shadow:0 0 0 2px #a21c2d12}.payment-preview{max-width:540px;margin-inline:auto}.payment-preview-card{padding:26px;border:1px solid #dec3cc;border-radius:24px;background:rgba(255,255,255,.7);backdrop-filter:blur(14px);text-align:center}.payment-preview-brand{width:116px;height:62px;margin:0 auto 14px}.payment-preview-brand img{width:96px;max-height:48px}.payment-preview-tag{display:inline-block;padding:4px 12px;border-radius:20px;background:#f5e6eb;color:#a21c2d;font-size:11px}.payment-preview h2{font-size:23px;margin:16px 0}.payment-preview-note{font-size:13px;line-height:1.9;color:#88707c}.payment-preview-summary{margin:24px 0;text-align:start}.payment-preview-summary>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #ead8e0;font-size:14px}.payment-preview-summary dd{margin:0;font-weight:700}.payment-preview-total{color:#a21c2d}.payment-preview-wallet{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding:16px;border-radius:14px;background:#faf0f4;color:#a21c2d;text-align:start}.payment-preview-wallet small{display:block;margin-top:5px}.payment-preview .success{padding-top:12px}html[data-theme=dark] :is(.payment-method-grid button,.payment-preview-card){background:#10263acc;border-color:#345c7a;color:#d4eeff}html[data-theme=dark] :is(.payment-preview-tag,.payment-preview-wallet){background:#173e5b;color:#a9e3ff}html[data-theme=dark] .payment-preview-total{color:#a9e3ff}html[data-theme=dark] .payment-preview-note{color:#b7cddd}html[data-theme=dark] .payment-preview-summary>div{border-color:#34536b}html[dir=ltr] .payment-preview .account-back svg{transform:scaleX(-1)}@media(max-width:600px){.payment-preview-card{padding:22px 18px}.payment-preview h2{font-size:20px}}
-
-.payment-logo.zaincash,.payment-preview-brand.zaincash{background:#242424}
-
-.payment-details-form{display:grid;gap:14px;text-align:start}.payment-details-form label{display:grid;gap:7px;font-size:13px;font-weight:700}.payment-details-form input{width:100%;min-width:0;padding:12px 14px;border:1px solid #d9b4be;border-radius:12px;background:#fff9fb;color:#32171d;font:inherit;font-size:16px}.payment-details-form input:focus{outline:2px solid #a21c2d;outline-offset:2px}html[data-theme=dark] .payment-details-form input{background:#10263a;color:#d4eeff;border-color:#345c7a}html[data-theme=dark] .payment-details-form input:focus{outline-color:#79cfff}
+.payment-preview{max-width:540px;margin-inline:auto;padding-bottom:20px}
+.payment-page-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.payment-page-heading .account-back{margin:0;font-size:15px}
+.payment-preview-tag{display:inline-block;padding:4px 10px;border-radius:20px;background:#f5e6eb;color:#a21c2d;font-size:11px;white-space:nowrap}
+.payment-preview .payment-section-title{font-size:17px;margin:22px 0 12px}
+.payment-order-panel,.payment-fields-panel,.payment-preview-card{padding:20px;border:1px solid #ead3dc;border-radius:18px;background:rgba(255,255,255,.65);backdrop-filter:blur(14px)}
+.payment-order-panel{display:grid;gap:16px;margin:0;background:#f5e9ef99}
+.payment-order-panel dt{font-size:12px;color:#947e89;margin-bottom:3px}
+.payment-order-panel dd{margin:0;font-size:14px;overflow-wrap:anywhere}
+.payment-order-panel dd[dir=ltr]{text-align:start;direction:inherit}
+.payment-method-summary{display:flex;align-items:center;gap:12px;border:1px solid #ead3dc;border-radius:16px;background:#fff9fb;padding:14px}
+.payment-method-summary>div{flex:1;font-size:14px}
+.payment-method-summary small{display:block;margin-top:3px;color:#947e89;font-size:11px}
+.payment-method-summary>svg{color:#a21c2d}
+.payment-preview-brand{display:grid;place-items:center;flex:0 0 64px;width:64px;height:40px;padding:7px;border-radius:10px;background:#fff}
+.payment-preview-brand img{display:block;width:100%;height:100%;object-fit:contain}
+.payment-preview-brand.zaincash{background:#242424}
+.payment-preview-note{font-size:11px;line-height:1.8;color:#88707c;margin:10px 0 16px}
+.payment-details-form,.payment-fields-panel{display:grid;gap:14px;text-align:start}
+.payment-details-form label{display:grid;gap:7px;font-size:12px;font-weight:700}
+.payment-details-form input{width:100%;min-width:0;padding:12px 14px;border:1px solid #d9b4be;border-radius:12px;background:#fff9fb;color:#32171d;font:inherit;font-size:16px}
+.payment-details-form input:focus{outline:2px solid #a21c2d;outline-offset:2px}
+.payment-amount-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;padding:10px 2px}
+.payment-amount-row strong{font-size:19px;white-space:nowrap}
+.payment-final-total{border-top:1px solid #ead3dc;padding-top:18px;color:#a21c2d}
+.payment-confirm{margin-top:8px;border-radius:16px;min-height:48px}
+.payment-preview-card.success{text-align:center}
+.payment-preview-card.success h2{font-size:20px;margin:16px 0}
+html[dir=ltr] .payment-preview .account-back svg{transform:scaleX(-1)}
+html[data-theme=dark] :is(.payment-order-panel,.payment-fields-panel,.payment-preview-card,.payment-method-summary){background:#10263acc;border-color:#345c7a;color:#d4eeff}
+html[data-theme=dark] .payment-preview-tag{background:#173e5b;color:#a9e3ff}
+html[data-theme=dark] :is(.payment-final-total,.payment-method-summary>svg){color:#a9e3ff;border-color:#345c7a}
+html[data-theme=dark] :is(.payment-preview-note,.payment-order-panel dt,.payment-method-summary small){color:#b7cddd}
+html[data-theme=dark] .payment-details-form input{background:#10263a;color:#d4eeff;border-color:#345c7a}
+html[data-theme=dark] .payment-details-form input:focus{outline-color:#79cfff}
+@media(max-width:600px){.payment-order-panel,.payment-fields-panel,.payment-preview-card{padding:16px}.payment-page-heading .account-back{font-size:13px}}

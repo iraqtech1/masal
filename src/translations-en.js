@@ -1,4 +1,12 @@
 export default {
+  "تأكيد": "Confirm",
+  "المبلغ الكلي": "Total amount",
+  "مبلغ الطلب": "Order amount",
+  "تفاصيل عملية الدفع": "Payment details",
+  "اسم التاجر": "Merchant name",
+  "رقم الحركة": "Transaction reference",
+  "تفاصيل الطلب": "Order details",
+  "تأكيد عملية الدفع": "Confirm payment",
   "اسم المشتري": "Buyer name",
   "اسم تجريبي": "Demo name",
   "رقم البطاقة التجريبي": "Demo card number",
