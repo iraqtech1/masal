@@ -17,6 +17,7 @@ export default {
     const expired=computed(()=>!!challenge.value&&now.value>=challenge.value.expiresAt);
     const displayPhone=computed(()=>normalizePhone(phone.value));
     const digits=value=>value.replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
+    function cleanPhone(event){const value=digits(event.target.value).replace(/\D/g,'').slice(0,11);phone.value=value;event.target.value=value;}
     function cleanCode(value){code.value=digits(value).replace(/\D/g,'').slice(0,6);}
     async function focus(){await nextTick();(view.value==='otp'?otpInput.value:heading.value)?.focus();window.scrollTo({top:0,behavior:'instant'});}
     async function change(next){auth.cancel();challenge.value=null;view.value=next;error.value='';code.value='';await focus();}
@@ -43,7 +44,7 @@ export default {
       try{allowed(displayPhone.value);challenge.value=auth.resend();now.value=Date.now();code.value='';await focus();}catch(e){error.value=e.message;}finally{busy.value=false;}
     }
     function back(){change(challenge.value?.mode==='register'?'register':'login');}
-    return {store,view,name,phone,email,code,error,busy,heading,otpInput,challenge,remaining,expired,displayPhone,change,submit,resend,back,cleanCode};
+    return {store,view,name,phone,email,code,error,busy,heading,otpInput,challenge,remaining,expired,displayPhone,change,submit,resend,back,cleanCode,cleanPhone};
   },
   template:`<div class="auth-shell phone-auth">
     <aside class="auth-story" aria-hidden="true"><span class="auth-wordmark">MASAL / DIGITAL STORE</span><div><span class="auth-kicker">بطاقاتك، بمكان واحد</span><h2>أهلاً بيك<br>بماسال.</h2><p>رصيد واتصالات، ألعاب ومتاجر عالمية.<br>كل اللي تحتاجه صار أقرب إلك.</p></div><div class="auth-art"><span>Zain<small>رصيد واتصالات</small></span><span>PUBG<small>عالم الألعاب</small></span><span>Apple<small>بطاقات عالمية</small></span></div></aside>
@@ -57,7 +58,7 @@ export default {
         <p class="auth-intro" v-else>أكّد رقمك برمز التحقق المكوّن من 6 أرقام.<br><b dir="ltr">{{displayPhone}}</b> <button class="auth-edit" type="button" @click="back" :disabled="busy">تغيير الرقم</button></p>
         <form class="auth-form" @submit.prevent="submit" :aria-busy="busy">
           <template v-if="view==='register'"><label for="auth-name">الاسم الكامل</label><div class="auth-field"><User :size="20"/><input id="auth-name" v-model="name" autocomplete="name" placeholder="اسمك الكامل" required maxlength="80"/></div></template>
-          <template v-if="view!=='otp'"><label for="auth-phone">رقم الهاتف / واتساب</label><div class="auth-field"><Smartphone :size="20"/><input id="auth-phone" v-model="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="07XXXXXXXXX" required maxlength="22" aria-describedby="auth-phone-help"/></div><small id="auth-phone-help" class="auth-help">استخدم رقمك العراقي المرتبط بواتساب.</small></template>
+          <template v-if="view!=='otp'"><label for="auth-phone">رقم الهاتف / واتساب</label><div class="auth-field"><Smartphone :size="20"/><input id="auth-phone" :value="phone" @input="cleanPhone" type="tel" inputmode="numeric" autocomplete="tel-national" dir="ltr" placeholder="07XXXXXXXXX" required minlength="11" maxlength="11" pattern="07[3-9][0-9]{8}" title="رقم هاتف عراقي من 11 رقماً يبدأ بـ07" aria-describedby="auth-phone-help"/></div><small id="auth-phone-help" class="auth-help">استخدم رقمك العراقي المرتبط بواتساب، من 11 رقماً يبدأ بـ07.</small></template>
           <template v-if="view==='register'"><label for="auth-email">البريد الإلكتروني</label><div class="auth-field"><Mail :size="20"/><input id="auth-email" v-model="email" type="email" autocomplete="email" dir="ltr" placeholder="name@example.com" required maxlength="254"/></div></template>
           <template v-if="view==='otp'"><label for="auth-otp">رمز التحقق</label><div class="auth-field auth-otp-field"><ShieldCheck :size="21"/><input id="auth-otp" ref="otpInput" :value="code" @input="cleanCode($event.target.value)" type="text" inputmode="numeric" autocomplete="one-time-code" dir="ltr" placeholder="000000" required minlength="6" maxlength="6" pattern="[0-9]{6}" aria-describedby="auth-otp-help"/></div><small id="auth-otp-help" class="auth-help">{{expired?'انتهت صلاحية الرمز. اطلب رمزاً جديداً.':'الرمز صالح لمدة 5 دقائق.'}}</small></template>
           <p v-if="error" class="auth-error" role="alert">{{error}}</p>
