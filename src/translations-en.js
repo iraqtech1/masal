@@ -1,4 +1,5 @@
 export default {
+  "تصنيفات البطاقات": "Card categories",
   "الدفع بواسطة": "Pay with",
   "طرق الدفع": "Payment methods",
   "إتمام الشراء": "Complete purchase",
