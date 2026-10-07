@@ -2,6 +2,9 @@ import {api,connected} from './api.js';
 import {slides,middleSlides} from './slides.js';
 import {reactive,watch} from 'vue/dist/vue.esm-bundler.js';
 import {initialCategories} from './categories.js';
+import {defaultSettings,readPreviewSettings,savePreviewSettings,subscribePreviewSettings} from './preview-settings.js';
+let previewSettingsStorage;
+if(!connected)try{previewSettingsStorage=globalThis.localStorage;}catch{}
 export const CATEGORIES=reactive(initialCategories.map(c=>c.name));
 import {initialProducts} from './catalog.js';
 export const store=reactive({
@@ -9,8 +12,10 @@ export const store=reactive({
   companies:[],
   products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),
   orders:[],customers:[],tickets:[],imports:[],suppliers:[],events:[],
-  settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''},
+  settings:connected?{...defaultSettings}:readPreviewSettings(previewSettingsStorage),
 });
+if(!connected&&typeof window!=='undefined')subscribePreviewSettings(previewSettingsStorage,window,next=>Object.assign(store.settings,next));
+export function savePreviewStoreSettings(settings){Object.assign(store.settings,savePreviewSettings(settings,previewSettingsStorage));}
 watch(()=>store.categories.map(c=>c.name),names=>CATEGORIES.splice(0,CATEGORIES.length,...names),{flush:'sync'});
 export const number=n=>new Intl.NumberFormat('en-US').format(n);
 export const isoDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Baghdad',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());

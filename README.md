@@ -21,6 +21,7 @@ Customers register and sign in with an Iraqi phone number and a password of 8–
 - Checkout creates an idempotent **simulation order**, priced by the server and initially marked `قيد المراجعة`. Admin status changes appear in the customer's orders.
 - Support tickets and admin replies persist and synchronize.
 - Store name, support contacts and low-stock settings are shared. Support contacts appear on the support screen.
+- In the GitHub Pages preview, these settings persist in browser localStorage and synchronize between tabs of the same origin. They are local to that browser; cross-device settings use the shared backend deployment.
 - Excel imports update persistent stock. The server revalidates rows and rejects duplicate codes after a restart. Imported codes stay private to the server and are never delivered by simulation checkout.
 - Supplier records persist. Supplier API calls and provider secrets are not implemented.
 
