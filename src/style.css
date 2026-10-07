@@ -85,3 +85,9 @@
  .card-purchase-dialog .dialog-gallery button{height:30px}
  .card-purchase-dialog .quantity-row,.card-purchase-dialog .total{margin-block:8px}
 }
+
+/* Allow scrolling without pinch or double-tap page zoom. */
+html,body{touch-action:pan-x pan-y}
+@media(max-width:700px){
+ #app :is(input,textarea,select){font-size:16px!important}
+}

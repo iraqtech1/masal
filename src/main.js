@@ -1,3 +1,4 @@
+import './viewport.js';
 import {api,connected} from './api.js';
 import PaymentPreview from './PaymentPreview.js';
 import PagedList from './PagedList.js';
