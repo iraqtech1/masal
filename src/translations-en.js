@@ -1,4 +1,12 @@
 export default {
+  "ادخل رقم هاتفك والباسورد حتى تدخل لحسابك.": "Enter your phone number and password to sign in.",
+  "املأ معلوماتك واختار باسورد لحسابك.": "Enter your details and choose a password.",
+  "الباسورد": "Password",
+  "إخفاء الباسورد": "Hide password",
+  "إظهار الباسورد": "Show password",
+  "الباسورد لازم يكون من 8 إلى 128 حرف.": "Password must contain 8 to 128 characters.",
+  "رقم الهاتف أو الباسورد غير صحيح.": "Incorrect phone number or password.",
+
   "تفاصيل الإشعار": "Notification details",
   "العودة إلى الإشعارات": "Back to notifications",
   "تأكيد": "Confirm",

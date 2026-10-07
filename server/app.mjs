@@ -1,7 +1,7 @@
 import {categoriesForProducts,upsertCategory} from '../src/categories.js';
 import {createServer} from 'node:http';
 import {DatabaseSync} from 'node:sqlite';
-import {randomUUID,randomInt,createHash,timingSafeEqual} from 'node:crypto';
+import {randomUUID,randomInt,createHash,timingSafeEqual,randomBytes,scryptSync} from 'node:crypto';
 import {mkdirSync,existsSync,readFileSync} from 'node:fs';
 import {resolve,extname,sep} from 'node:path';
 import {initialProducts} from '../src/catalog.js';
@@ -18,7 +18,7 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
   if(!adminPassword||adminPassword.length<12)throw Error('Set ADMIN_PASSWORD to at least 12 characters.');
   if(dbPath!==':memory:')mkdirSync(resolve(dbPath,'..'),{recursive:true});
   const db=new DatabaseSync(dbPath);
-  db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, role TEXT, customer TEXT, expires INTEGER);');
+  db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, role TEXT, customer TEXT, expires INTEGER); CREATE TABLE IF NOT EXISTS credentials (customer TEXT PRIMARY KEY, salt TEXT NOT NULL, digest TEXT NOT NULL);');
   const initial={revision:0,categories:categoriesForProducts(initialProducts),products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),customers:[],orders:[],tickets:[],imports:[],suppliers:[],events:[],codes:[],slides:[],middleSlides:defaults,settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''}};
   if(!db.prepare('SELECT id FROM state WHERE id=1').get())db.prepare('INSERT INTO state VALUES (1,?)').run(JSON.stringify(initial));
   const read=()=>{const s=JSON.parse(db.prepare('SELECT value FROM state WHERE id=1').get().value);if(!Array.isArray(s.categories))s.categories=categoriesForProducts(s.products);return s;};
@@ -61,6 +61,27 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
       if(path==='/api/admin/state'&&req.method==='GET'){session(req,'admin');return json(state(req,s,true));}
       if(['/api/admin/logout','/api/auth/logout'].includes(path)&&req.method==='POST'){const role=path.includes('/admin/')?'admin':'customer';const row=session(req,role);db.prepare('DELETE FROM sessions WHERE token=?').run(row.token);res.setHeader('Set-Cookie',`masal_${role}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${secureCookies?'; Secure':''}`);return json({ok:true});}
       if(path==='/api/auth/guest'&&req.method==='POST'){rate('guest:'+req.socket.remoteAddress,20);try{return json(identity(user(req,s)));}catch{}const c={id:randomUUID(),previewId:randomUUID(),name:'زائر',email:'',phone:'',active:true,kind:'فرد',date:date()};s.customers.push(c);event(s,'انضم حساب زائر');commit(s);cookie(res,'customer',c.id);return json(identity(c));}
+      if(['/api/auth/login','/api/auth/register'].includes(path)&&req.method==='POST'){
+        rate('password:'+req.socket.remoteAddress,10);
+        const phone=normalizePhone(b.phone),password=b.password;
+        if(!/^07[3-9][0-9]{8}$/.test(phone))fail('اكتب رقم هاتف عراقي صحيح');
+        if(typeof password!=='string'||password.length<8||password.length>128)fail('الباسورد لازم يكون من 8 إلى 128 حرف.');
+        let account=s.customers.find(c=>c.phone===phone);
+        if(path.endsWith('/register')){
+          if(account)fail('هذا الرقم مسجّل بالفعل');
+          const p=profile(b);if(p.email&&s.customers.some(c=>c.email===p.email))fail('البريد مستخدم');
+          account={...p,phone,id:randomUUID(),active:true,kind:'فرد',date:date()};
+          const salt=randomBytes(16).toString('hex'),digest=scryptSync(password,salt,64).toString('hex');
+          db.exec('BEGIN');
+          try{db.prepare('INSERT INTO credentials VALUES (?,?,?)').run(account.id,salt,digest);s.customers.push(account);event(s,'انضم حساب جديد');commit(s);db.exec('COMMIT');}catch(e){db.exec('ROLLBACK');throw e;}
+        }else{
+          const credential=account&&db.prepare('SELECT * FROM credentials WHERE customer=?').get(account.id);
+          const actual=scryptSync(password,credential?.salt||'masal-missing-account',64);
+          if(!credential||!timingSafeEqual(actual,Buffer.from(credential.digest,'hex')))fail('رقم الهاتف أو الباسورد غير صحيح.',401);
+          if(!account.active)fail('الحساب موقوف',403);
+        }
+        cookie(res,'customer',account.id);return json(identity(account));
+      }
       if(path==='/api/auth/me'&&req.method==='GET')return json(identity(user(req,s)));
       if(path==='/api/auth/start'&&req.method==='POST')return json(await issue(req,res,b));
       if(path==='/api/auth/resend'&&req.method==='POST')return json(await issue(req,res,b,true));
@@ -90,6 +111,12 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
           if(collection==='suppliers'){if(!['API','Excel'].includes(d.method)||d.method==='API'&&!/^https:\/\//.test(d.url))fail('بيانات مورّد غير صحيحة');item={id:old?.id||randomUUID(),name:text(d.name,80),url:text(d.url||'',2000),method:d.method,active:d.active===true};}
           if(collection==='tickets'){if(!old||!['مفتوحة','قيد المعالجة','مغلقة'].includes(d.status))fail('تذكرة غير صحيحة');item={...old,status:d.status,reply:text(d.reply||'',2000)};}
           if(collection==='orders'){if(!old||!['مكتمل','قيد المراجعة','ملغي'].includes(d.status))fail('طلب غير صحيح');item={...old,status:d.status};}
+          if(collection==='customers'&&d.password){
+            if(typeof d.password!=='string'||d.password.length<8||d.password.length>128)fail('الباسورد لازم يكون من 8 إلى 128 حرف.');
+            const salt=randomBytes(16).toString('hex'),digest=scryptSync(d.password,salt,64).toString('hex');
+            db.prepare('INSERT OR REPLACE INTO credentials VALUES (?,?,?)').run(item.id,salt,digest);
+            db.prepare("DELETE FROM sessions WHERE role='customer' AND customer=?").run(item.id);
+          }
           if(old)Object.assign(old,item);else s[collection].push(item);
         }else fail('غير موجود',404);
         event(s,'تحديث الإدارة: '+collection);commit(s);return json(state(req,s,true));

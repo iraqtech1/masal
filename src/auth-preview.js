@@ -8,7 +8,7 @@ export function normalizePhone(value){
   return mobile;
 }
 export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,'0')}={}){
-  const accounts=new Map();
+  const accounts=new Map(),passwords=new Map();
   let pending=null;
   function issue(mode,user){
     const time=now();
@@ -16,6 +16,16 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
     return {mode,previewCode:pending.code,expiresAt:pending.expiresAt,resendAt:pending.resendAt};
   }
   return {
+    register(data){
+      if(typeof data.password!=='string'||data.password.length<8||data.password.length>128)throw Error('الباسورد لازم يكون من 8 إلى 128 حرف.');
+      this.start({...data,mode:'register'});
+      const user={...pending.user};accounts.set(user.phone,user);passwords.set(user.phone,data.password);pending=null;return user;
+    },
+    login({phone,password}){
+      const mobile=normalizePhone(phone),user=accounts.get(mobile);
+      if(!user||!passwords.has(mobile)||passwords.get(mobile)!==password)throw Error('رقم الهاتف أو الباسورد غير صحيح.');
+      return {...user};
+    },
     updateProfile(user){
       const name=String(user.name||'').trim(),email=String(user.email||'').trim().toLowerCase();
       if(name.length<2||name.length>80)throw Error('اكتب اسمك الكامل.');

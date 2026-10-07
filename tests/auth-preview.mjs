@@ -51,3 +51,12 @@ assert.throws(()=>optional.updateProfile({...edited,name:'A'}),/الكامل/);
 assert.throws(()=>optional.updateProfile({...edited,email:'bad'}),/بريداً/);
 assert.equal(optional.updateProfile({...edited,email:''}).email,'','Profile email remains optional');
 console.log('Phone normalization, verified registration, OTP expiry, retries, resend, cancellation and returning login checks passed.');
+
+const passwordAuth=createPreviewAuth();
+const passwordPerson={phone:'07787654321',name:'Password Person',email:'',password:'test-password'};
+assert.throws(()=>passwordAuth.register({...passwordPerson,password:'short'}));
+const passwordUser=passwordAuth.register(passwordPerson);
+assert.throws(()=>passwordAuth.login({...passwordPerson,password:'wrong'}));
+assert.deepEqual(passwordAuth.login({...passwordPerson,phone:'+9647787654321'}),passwordUser);
+assert.throws(()=>passwordAuth.register(passwordPerson));
+assert.equal('password' in passwordUser,false);
