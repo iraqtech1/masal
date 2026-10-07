@@ -1,4 +1,7 @@
 export default {
+  "نوع بطاقات الاتصالات": "Mobile product type",
+  "توب أب": "Top-up",
+  "لا توجد بطاقات توب أب حالياً": "No top-up cards available yet",
   "استرجاع كلمة المرور": "Recover password",
   "ادخل رقم حسابك حتى تسترجع كلمة المرور.": "Enter your account phone number to recover your password.",
   "الباسورد الجديد": "New password",
