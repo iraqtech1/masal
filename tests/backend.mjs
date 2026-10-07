@@ -55,6 +55,7 @@ try{
   assert.equal((await bob('/state')).middleSlides[0].id,'uploaded');
   state=await admin('/admin/settings',{revision:state.revision,data:{...state.settings,supportPhone:'07712345678',name:'Shared store'}},'PUT');
   assert.equal((await bob('/state')).settings.name,'Shared store');
+  assert.equal((await bob('/state')).settings.supportPhone,'07712345678','Dashboard support number reaches other customers');
   await anon('/admin/categories',{revision:state.revision,data:{name:'Test category',en:'Test category',icon:'Layers',active:true}},'PUT',401);
   state=await admin('/admin/categories',{revision:state.revision,data:{name:'تصنيف جديد',en:'New category',icon:'CreditCard',active:true}},'PUT');
   let category=state.categories.find(c=>c.name==='تصنيف جديد');assert.ok(category);
