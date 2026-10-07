@@ -52,3 +52,36 @@
 .admin-card-cell img{width:64px;height:40px;object-fit:cover;border-radius:7px;border:1px solid var(--border);background:#fff;flex:0 0 auto}
 
 .product-price{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 12px;min-height:32px;border:1px solid #d5a7b5;border-radius:10px;background:#fbf1f5;color:#a21c2d;font-size:14px;line-height:1.5;max-width:100%;flex-wrap:wrap}.product-price small{font-size:11px;color:inherit}html[data-theme=dark] .product-price{border-color:#46728d;background:#16344d;color:#bdeaff}
+
+/* Keep the purchase controls visible together on phone screens. */
+@media(max-width:700px){
+ .card-purchase-dialog{max-height:calc(100dvh - env(safe-area-inset-top,0px) - 12px);padding:16px 18px calc(16px + env(safe-area-inset-bottom,0px));margin:auto;border-radius:22px;width:calc(100% - 20px)}
+ .card-purchase-dialog h2{font-size:21px;line-height:1.4;margin:0 0 3px;padding-inline-end:42px}
+ .card-purchase-dialog .close{top:12px;left:12px;width:34px;height:34px;display:grid;place-items:center}
+ .card-purchase-dialog>.muted{font-size:10px;line-height:1.5}
+ .card-purchase-dialog .dialog-art{margin:8px 0 6px;border-radius:12px}
+ .card-purchase-dialog .dialog-art>img{height:clamp(80px,18dvh,145px)}
+ .card-purchase-dialog .dialog-gallery{gap:6px;margin-bottom:6px}
+ .card-purchase-dialog .dialog-gallery button{width:56px;height:36px}
+ .card-purchase-dialog .field-label{margin:8px 0 6px;font-size:12px}
+ .card-purchase-dialog .denominations{flex-wrap:wrap;gap:6px}
+ .card-purchase-dialog .denominations button{flex:1 0 calc(25% - 6px);padding:7px 3px;font-size:14px;min-height:48px}
+ .card-purchase-dialog .denominations small{font-size:10px}
+ .card-purchase-dialog .quantity-row{margin:10px 0;font-size:12px}
+ .card-purchase-dialog .stepper{gap:16px;padding:3px}
+ .card-purchase-dialog .stepper button{min-width:36px;min-height:36px}
+ .card-purchase-dialog .payment-methods{margin-top:8px}
+ .card-purchase-dialog .payment-methods h3{font-size:12px;margin-bottom:6px}
+ .card-purchase-dialog .payment-method-grid{gap:8px}
+ .card-purchase-dialog .payment-method-grid button{padding:6px;min-height:44px;font-size:12px}
+ .card-purchase-dialog .payment-logo{height:28px;flex-basis:50px;width:50px;padding:3px 5px}
+ .card-purchase-dialog .total{margin:12px 0;font-size:13px}
+ .card-purchase-dialog .total strong{font-size:21px}
+ .card-purchase-dialog>.primary{min-height:44px;padding:8px 18px;font-size:13px}
+}
+@media(max-width:700px) and (max-height:650px){
+ .card-purchase-dialog{padding-block:12px}
+ .card-purchase-dialog .dialog-art>img{height:72px}
+ .card-purchase-dialog .dialog-gallery button{height:30px}
+ .card-purchase-dialog .quantity-row,.card-purchase-dialog .total{margin-block:8px}
+}
