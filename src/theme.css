@@ -76,3 +76,7 @@ html[data-theme=dark] .app-shell dialog > .close:hover{background:#59313e}
 .account-theme-scene{margin-inline-start:auto}
 .theme-toggle.theme-scenic-toggle{width:84px;height:42px;padding:3px;border-radius:24px;background:#fff8fa}
 @media(prefers-reduced-motion:reduce){.theme-scene *{transition:none!important}}
+
+/* Keep the header landscape borderless in dark mode, including hover/focus. */
+html[data-theme=dark] .store-header .store-header-actions .theme-toggle.theme-scenic-toggle,
+html[data-theme=dark] .store-header .store-header-actions .theme-toggle.theme-scenic-toggle:is(:hover,:focus-visible){border:0!important;padding:0;background:transparent!important;box-shadow:none!important}
