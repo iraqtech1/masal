@@ -1,4 +1,4 @@
-.app-shell .store-header{position:relative;height:72px;min-height:72px;margin:16px 5% 0;padding:6px 22px;border:1px solid #fff;border-radius:44px;background:linear-gradient(120deg,#fff,#fcf4f6);box-shadow:0 8px 26px #780f1c0d;gap:16px;z-index:6}
+.app-shell .store-header{position:sticky;top:calc(12px + env(safe-area-inset-top,0px));height:72px;min-height:72px;margin:16px 5% 0;padding:6px 22px;border:1px solid #fff;border-radius:44px;background:linear-gradient(120deg,#fff,#fcf4f6);box-shadow:0 8px 26px #780f1c0d;gap:16px;z-index:6}
 .store-header-brand{display:flex;align-items:center;gap:12px;min-width:0;color:#a21c2d}
 .store-header-actions{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-inline-start:auto}
 .store-header-brand .masal-mark{width:52px;height:52px;object-fit:contain}
