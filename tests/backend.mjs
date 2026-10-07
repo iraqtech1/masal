@@ -13,7 +13,7 @@ try{
   await start();
   // Existing databases predate managed categories; keep their product assignments.
   const legacyDb=new DatabaseSync(join(dir,'test.sqlite'));
-  const legacy=JSON.parse(legacyDb.prepare('SELECT value FROM state WHERE id=1').get().value);delete legacy.categories;
+  const legacy=JSON.parse(legacyDb.prepare('SELECT value FROM state WHERE id=1').get().value);delete legacy.categories;delete legacy.companies;
   legacyDb.prepare('UPDATE state SET value=? WHERE id=1').run(JSON.stringify(legacy));legacyDb.close();
   const admin=client(),alice=client(),bob=client(),anon=client();
   await anon('/admin/state',undefined,'GET',401);
@@ -37,6 +37,20 @@ try{
   assert.equal((await alice('/state')).orders[0].status,'مكتمل');assert.equal(state.orders[0].price,order.price);
   state=await admin('/admin/products',{revision:state.revision,data:{...product,image:'https://example.com/card.png',prices:product.prices.map(p=>p+10)}},'PUT');
   assert.equal((await bob('/state')).products[0].image,'https://example.com/card.png');
+  assert.deepEqual(state.companies,[],'Legacy databases gain an empty company directory without guessing manufacturers');
+  await anon('/admin/companies',{revision:state.revision,data:{name:'Company',role:'both',active:true}},'PUT',401);
+  state=await admin('/admin/companies',{revision:state.revision,data:{name:'شركة البطاقات',role:'both',active:true}},'PUT');
+  const company=state.companies.find(c=>c.name==='شركة البطاقات');assert.ok(company);
+  await admin('/admin/companies',{revision:state.revision,data:{name:company.name,role:'manufacturer',active:true}},'PUT',400);
+  await admin('/admin/companies',{revision:state.revision,data:{name:'Bad role',role:'invalid',active:true}},'PUT',400);
+  await admin('/admin/products',{revision:state.revision,data:{...product,manufacturerId:'missing-company'}},'PUT',400);
+  const denominationImages=product.values.map((value,i)=>i%2?'':`https://example.com/card-${value}.png`);
+  state=await admin('/admin/products',{revision:state.revision,data:{...state.products[0],manufacturerId:company.id,supplierCompanyId:company.id,denomImages:denominationImages}},'PUT');
+  assert.deepEqual(state.products[0].denomImages,denominationImages,'Each denomination retains its own image');
+  assert.equal(state.products[0].manufacturerId,company.id);assert.equal(state.products[0].supplierCompanyId,company.id);
+  await admin('/admin/companies',{revision:state.revision,data:{...company,role:'manufacturer'}},'PUT',400);
+  state=await admin('/admin/companies',{revision:state.revision,data:{...company,name:'شركة معدلة'}},'PUT');
+  assert.equal(state.products[0].manufacturerId,company.id,'Renaming company preserves card links');
   state=await admin('/admin/middleSlides',{revision:state.revision,data:[{id:'uploaded',name:'Banner',src:'data:image/png;base64,aGVsbG8='}]},'PUT');
   assert.equal((await bob('/state')).middleSlides[0].id,'uploaded');
   state=await admin('/admin/settings',{revision:state.revision,data:{...state.settings,supportPhone:'07712345678',name:'Shared store'}},'PUT');
@@ -83,6 +97,8 @@ try{
   await passwordUser('/auth/logout',{});await passwordUser('/auth/me',undefined,'GET',401);
   await stop();await start();
   assert.equal((await admin('/admin/state')).orders.length,1,'Restart preserves database and admin session');
+  const restarted=await admin('/admin/state');assert.equal(restarted.companies.find(c=>c.id===company.id).name,'شركة معدلة');
+  assert.deepEqual(restarted.products[0].denomImages,denominationImages,'Denomination images persist after restart');
   assert.equal((await register('/auth/me')).name,'Edited account');
   assert.ok((await bob('/state')).categories.some(c=>c.id===category.id&&c.name==='تصنيف معدل'),'Categories persist after restart');
   const returning=client(),login=await returning('/auth/start',{mode:'login',phone:'07712345678'});

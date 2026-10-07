@@ -6,6 +6,7 @@ export const CATEGORIES=reactive(initialCategories.map(c=>c.name));
 import {initialProducts} from './catalog.js';
 export const store=reactive({
   categories:initialCategories.map(c=>({...c})),
+  companies:[],
   products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),
   orders:[],customers:[],tickets:[],imports:[],suppliers:[],events:[],
   settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''},
@@ -42,7 +43,7 @@ export function createTicket(subject,message,customer){
 export const connection=reactive({admin:false,ready:false,error:'',revision:0});
 let refreshing=null,refreshRole=false;
 export function applyState(data){
-  for(const key of ['categories','products','orders','customers','tickets','imports','suppliers','events'])if(Array.isArray(data[key]))store[key].splice(0,store[key].length,...data[key]);
+  for(const key of ['categories','companies','products','orders','customers','tickets','imports','suppliers','events'])if(Array.isArray(data[key]))store[key].splice(0,store[key].length,...data[key]);
   Object.assign(store.settings,data.settings);
   if(data.slides)slides.splice(0,slides.length,...data.slides);
   if(data.middleSlides)middleSlides.splice(0,middleSlides.length,...data.middleSlides);

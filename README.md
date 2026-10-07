@@ -14,6 +14,8 @@ Customers register and sign in with an Iraqi phone number and a password of 8–
 ## Shared data
 
 - Products, visibility, denominations, prices, card images and denomination images are managed by the dashboard.
+- The cards dashboard has separate card-denomination and company tabs. Every denomination displays its own image, value and price; missing denomination images are shown explicitly. The editor uploads and previews each denomination image directly.
+- Manage manufacturer and supplying-company names in the Companies tab, then assign each card to those companies. Names, roles and assignments persist on the server. Existing catalogs start with unassigned companies; renaming a company preserves its links, and roles used by cards cannot be removed.
 - Top and middle slider uploads, ordering and removals persist and appear on other devices using the same server.
 - Accounts, profile changes and suspension are shared. Guests keep their own orders and tickets through their server session.
 - Checkout creates an idempotent **simulation order**, priced by the server and initially marked `قيد المراجعة`. Admin status changes appear in the customer's orders.
