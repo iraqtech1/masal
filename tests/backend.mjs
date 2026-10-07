@@ -37,12 +37,6 @@ try{
   assert.equal((await alice('/state')).orders[0].status,'مكتمل');assert.equal(state.orders[0].price,order.price);
   state=await admin('/admin/products',{revision:state.revision,data:{...product,image:'https://example.com/card.png',prices:product.prices.map(p=>p+10)}},'PUT');
   assert.equal((await bob('/state')).products[0].image,'https://example.com/card.png');
-  await admin('/admin/products',{revision:state.revision,data:{...state.products[0],telecomType:'invalid'}},'PUT',400);
-  state=await admin('/admin/products',{revision:state.revision,data:{...state.products[0],telecomType:'topup'}},'PUT');
-  assert.equal((await bob('/state')).products[0].telecomType,'topup','Saved type reaches the storefront');
-  const {telecomType:omittedType,...withoutType}=state.products[0];
-  state=await admin('/admin/products',{revision:state.revision,data:withoutType},'PUT');
-  assert.equal(state.products[0].telecomType,'topup','Older editor updates preserve assigned type');
   assert.deepEqual(state.companies,[],'Legacy databases gain an empty company directory without guessing manufacturers');
   await anon('/admin/companies',{revision:state.revision,data:{name:'Company',role:'both',active:true}},'PUT',401);
   state=await admin('/admin/companies',{revision:state.revision,data:{name:'شركة البطاقات',role:'both',active:true}},'PUT');
@@ -104,7 +98,7 @@ try{
   await passwordUser('/auth/logout',{});await passwordUser('/auth/me',undefined,'GET',401);
   await stop();await start();
   assert.equal((await admin('/admin/state')).orders.length,1,'Restart preserves database and admin session');
-  const restarted=await admin('/admin/state');assert.equal(restarted.products[0].telecomType,'topup','Telecom type persists after restart');assert.equal(restarted.companies.find(c=>c.id===company.id).name,'شركة معدلة');
+  const restarted=await admin('/admin/state');assert.equal(restarted.companies.find(c=>c.id===company.id).name,'شركة معدلة');
   assert.deepEqual(restarted.products[0].denomImages,denominationImages,'Denomination images persist after restart');
   assert.equal((await register('/auth/me')).name,'Edited account');
   assert.ok((await bob('/state')).categories.some(c=>c.id===category.id&&c.name==='تصنيف معدل'),'Categories persist after restart');

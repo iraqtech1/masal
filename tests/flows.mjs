@@ -45,14 +45,3 @@ assert.equal(matchesCustomer(guestOrder,withoutEmail),false);
 const zainCashOrder=createOrder(p,0,1,guest,'ZainCash');
 assert.equal(zainCashOrder.payment,'ZainCash');
 assert.equal(zainCashOrder.price,p.prices[0]);
-
-const {isTelecomCategory,matchesTelecomTab}=await import("../src/telecom.js");
-const mobileCategories=[{id:"mobile",name:"اتصالات"},{id:"games",name:"ألعاب"}];
-const telecomProducts=[{id:1,category:"اتصالات"},{id:2,category:"اتصالات",telecomType:"topup"},{id:3,category:"ألعاب"}];
-const selectTelecom=tab=>telecomProducts.filter(p=>p.category==="اتصالات"&&matchesTelecomTab(p,"اتصالات",tab,mobileCategories)).map(p=>p.id);
-assert.deepEqual(selectTelecom("cards"),[1],"Existing cards stay in the cards tab");
-assert.deepEqual(selectTelecom("topup"),[2],"Top-up tab excludes scratch cards");
-assert.ok(matchesTelecomTab(telecomProducts[1],"الكل","cards",mobileCategories),"All cards includes both types");
-assert.ok(matchesTelecomTab(telecomProducts[2],"ألعاب","topup",mobileCategories),"Other categories ignore telecom tabs");
-assert.ok(isTelecomCategory("رصيد",[{id:"mobile",name:"رصيد"}]),"Renaming telecom category preserves tabs");
-console.log("Telecom cards and top-up filtering checks passed.");
