@@ -9,3 +9,5 @@
 @media(max-width:1200px){.admin-shell .admin-main{width:calc(100% - 245px)}.admin-shell .admin-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:900px){.admin-shell .admin-main{width:100%;margin:0}.admin-shell .admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-shell .admin-header{padding-inline:14px}}
 @media(max-width:420px){.admin-shell .admin-stats{grid-template-columns:minmax(0,1fr)}.admin-shell .admin-content{padding:12px}.admin-shell .admin-header{height:auto;min-height:76px;flex-wrap:wrap;gap:8px;padding:10px 12px!important}.admin-shell .admin-header>div{min-width:0;flex:1 1 auto}.admin-shell .admin-header-right{gap:6px;justify-content:flex-end}.admin-shell .admin-signout{padding:8px;font-size:10px}.admin-shell .admin-search{min-width:0;max-width:100%}.admin-shell .admin-hero>div{min-width:0;max-width:100%}}
+
+.admin-shell td > .admin-row-action + .admin-row-action{margin-inline-start:8px}
