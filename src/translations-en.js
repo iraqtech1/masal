@@ -93,7 +93,7 @@ export default {
   "عنوان الرسالة": "Subject",
   "اكتب موضوع استفسارك": "Enter your enquiry subject",
   "رسالتك": "Your message",
-  "الدعم عبر الهاتف": "Phone support",
+  "الاتصال بالدعم الفني": "Contact technical support",
   "اتصل الآن": "Call now",
   "اتصل بالدعم على الرقم": "Call support at",
   "إرسال التذكرة": "Submit ticket",
