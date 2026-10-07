@@ -95,7 +95,7 @@ template:`
 <div v-if="entered&&!admin&&!marketing" class="app-shell">
 <PullToRefresh/>
 <aside class="sidebar"><a class="brand" href="#" @click.prevent="go('home')"><span class="brand-mark"><MasalMark/></span><span>{{t(store.settings.name)}}<small>DIGITAL STORE</small></span></a><div class="side-label">{{t("المتجر")}}</div><nav><button v-for="n in nav" :class="{active:page===n.id}" :aria-current="page===n.id?'page':undefined" @click="go(n.id)"><NavIcon :icon="navIcons[n.icon]" :kind="n.id" :active="page===n.id" :motion="navMotion"/><span>{{t(n.label)}}</span><ChevronLeft/></button></nav><div class="side-bottom"><ShieldCheck/><p>{{t("ماسال")}}</p></div></aside>
-<main><StoreHeader :show-theme="page==='home'" :name="store.settings.name" :order-count="orders.length" :ticket-count="myTickets.length"/>
+<main><StoreHeader :show-theme="true" :name="store.settings.name" :order-count="orders.length" :ticket-count="myTickets.length"/>
 <div class="content"><p v-if="connected&&connection.error" role="alert">{{connection.error}} <button @click="refreshStore">إعادة المحاولة</button></p><Transition name="view" mode="out-in"><div :key="page">
 <template v-if="page==='home'">
 <BannerSlider/><div class="hero"><div class="hero-copy"><span class="hero-label"><span></span> {{t("رصيد • ألعاب • بطاقات عالمية")}}</span><h2>{{t("بطاقات الرصيد")}}<br><span>{{t("والألعاب")}}</span></h2></div><CardDeck v-if="products.length" :products="products.slice(0,6)" @select="open"/></div>

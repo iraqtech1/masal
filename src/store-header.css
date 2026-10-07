@@ -45,4 +45,17 @@ html[data-theme=dark] .notification-panel :is(p,small){color:#b7cddd}html[data-t
 html[data-theme=dark] .notification-heading .notification-close{background:#442631;border-color:#80505e;color:#ffb9c6}
 html[data-theme=dark] :is(.notification-framed,.notification-item-arrow,.notification-detail){background:#15354d;border-color:#345c7a;color:#a9e3ff}
 html[dir=ltr] :is(.notification-item-arrow,.notification-back)>svg{transform:scaleX(-1)}
-@media(max-width:380px){.app-shell .store-header{padding-inline:12px;gap:8px}.store-header-actions{gap:8px}.store-header-actions .theme-toggle.theme-scenic-toggle{width:68px;height:36px}.store-header-actions .theme-scene{width:60px;height:28px}.store-header .notification-bell{width:40px;height:40px}.store-header-brand .masal-mark{width:36px;height:36px}.store-header-brand strong{font-size:18px}.store-header-brand span{display:none}}
+@media(max-width:380px){.app-shell .store-header{padding-inline:12px;gap:8px}.store-header-actions{gap:8px}.store-header-actions .theme-toggle.theme-scenic-toggle{width:68px;height:40px}.store-header-actions .theme-scene{width:58px;height:auto}.store-header .notification-bell{width:40px;height:40px}.store-header-brand .masal-mark{width:36px;height:36px}.store-header-brand strong{font-size:18px}.store-header-brand span{display:none}}
+
+/* Size the scenic switch as one header control, keeping the SVG aspect ratio. */
+.store-header-actions .theme-toggle.theme-scenic-toggle{display:grid;place-items:center;width:84px;height:44px;padding:4px;margin:0;border-radius:24px;align-self:center;line-height:0}
+.store-header-actions .theme-scene{display:block;width:74px;height:auto;aspect-ratio:20/9;filter:none}
+@media(max-width:700px){
+ .store-header-actions{gap:8px}
+ .store-header-actions .theme-toggle.theme-scenic-toggle{width:76px;height:40px}
+ .store-header-actions .theme-scene{width:66px}
+}
+@media(max-width:380px){
+ .store-header-actions .theme-toggle.theme-scenic-toggle{width:68px;height:40px}
+ .store-header-actions .theme-scene{width:58px}
+}
