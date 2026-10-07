@@ -86,3 +86,10 @@ html[data-theme=dark] .store-header .store-header-actions .theme-toggle.theme-sc
 .admin-header .theme-toggle.theme-scenic-toggle .theme-scene{display:block;width:100%;height:auto;aspect-ratio:20/9;filter:none}
 html[data-theme=dark] .admin-header .theme-toggle.theme-scenic-toggle,
 html[data-theme=dark] .admin-header .theme-toggle.theme-scenic-toggle:is(:hover,:focus-visible){border:0!important;background:transparent!important;box-shadow:none!important;padding:0}
+
+/* Dark dashboard chart tracks and connection warning need their own surfaces. */
+html[data-theme=dark] .admin-category-bars i{background:#263f55;border:1px solid #385b75}
+html[data-theme=dark] .admin-category-bars i>span{background:#63c7f7}
+html[data-theme=dark] .admin-category-bars>div:nth-child(2) i>span{background:#81d7dc}
+html[data-theme=dark] .admin-category-bars>div:nth-child(3) i>span{background:#b3a6f5}
+html[data-theme=dark] .admin-health em{background:#49371d!important;color:#ffe0a0!important;border:1px solid #9b7841}
