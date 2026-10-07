@@ -1,3 +1,4 @@
+import {api,connected} from './api.js';
 import {ref} from 'vue/dist/vue.esm-bundler.js';
 import {User,LockKeyhole,Eye,EyeOff,ArrowLeft,CreditCard,Smartphone,Gamepad2,Headphones,Monitor,Cpu} from 'lucide-vue-next';
 import './admin-login.css';
@@ -6,13 +7,12 @@ export default {
   components:{User,LockKeyhole,Eye,EyeOff,ArrowLeft,CreditCard,Smartphone,Gamepad2,Headphones,Monitor,Cpu},
   emits:['login'],
   setup(props,{emit}){
-    const username=ref(''),password=ref(''),visible=ref(false),error=ref('');
-    function submit(){
-      if(username.value.trim()==='masal'&&password.value==='masal'){
-        password.value='';error.value='';emit('login');
-      }else{error.value='اسم المستخدم أو الباسورد غير صحيح.';}
+    const username=ref(''),password=ref(''),visible=ref(false),error=ref(''),busy=ref(false);
+    async function submit(){
+      if(busy.value)return;busy.value=true;error.value='';
+      try{if(connected)await api('/admin/login',{username:username.value.trim(),password:password.value});else if(username.value.trim()!=='masal'||password.value!=='masal')throw Error('اسم المستخدم أو الباسورد غير صحيح.');password.value='';emit('login');}catch(e){error.value=e.message;}finally{busy.value=false;}
     }
-    return {username,password,visible,error,submit};
+    return {username,password,visible,error,busy,submit};
   },
   template:`<main class="masal-login"><div class="login-theme-toggle"><ThemeToggle/></div>
     <div class="masal-login-frame">
@@ -27,7 +27,7 @@ export default {
             <label for="admin-password">الباسورد</label>
             <div class="masal-login-field"><LockKeyhole :size="18"/><input id="admin-password" v-model="password" :type="visible?'text':'password'" autocomplete="current-password" dir="ltr" placeholder="الباسورد" required maxlength="128" @input="error=''"/><button type="button" @click="visible=!visible" :aria-label="visible?'إخفاء الباسورد':'إظهار الباسورد'" :aria-pressed="visible"><EyeOff v-if="visible" :size="18"/><Eye v-else :size="18"/></button></div>
             <p v-if="error" class="masal-login-error" role="alert">{{error}}</p>
-            <button class="masal-login-submit" type="submit">دخول <ArrowLeft :size="18"/></button>
+            <button class="masal-login-submit" type="submit" :disabled="busy">دخول <ArrowLeft :size="18"/></button>
           </form>
           <a class="masal-login-store" href="#">الرجوع للتطبيق <ArrowLeft :size="15"/></a>
         </div>

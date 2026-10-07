@@ -1,36 +1,9 @@
+import {api,connected} from './api.js';
+import {slides,middleSlides} from './slides.js';
 import {reactive} from 'vue/dist/vue.esm-bundler.js';
 // الخمسة أقسام الرئيسية بالمتج�� — تُستخدم بالفلاتر وتقارير الإدارة.
 export const CATEGORIES=['اتصالات','إنترنت','ألعاب','متاجر عالمية','تطبيقات'];
-const card=name=>'cards/'+name;
-const initialProducts=[
-{id:1,name:'زين العراق',en:'Zain',category:'اتصالات',color:'#173f39',tag:'الأكثر طلباً',unit:'د.ع',image:card('zain-6000.webp'),denomImages:[card('zain-2000.webp'),card('zain-6000.webp'),card('zain-15000.webp'),card('zain-18000.webp')],values:[2000,6000,15000,18000],prices:[2100,6300,15750,18900]},
-{id:2,name:'آسياسيل',en:'asiacell',category:'اتصالات',color:'#c1343a',tag:'شحن رصيد',unit:'د.ع',image:card('asiacell-150k.webp'),denomImages:[null,null,null,card('asiacell-150k.webp')],values:[5000,10000,25000,150000],prices:[5250,10400,25800,154000]},
-{id:3,name:'ببجي موبايل',en:'PUBG',category:'ألعاب',color:'#282d3b',tag:'شدّات UC',unit:'UC',image:card('pubg-30000.webp'),values:[60,325,660],prices:[1500,7500,14500]},
-{id:4,name:'Apple',en:'Apple',category:'متاجر عالمية',color:'#4b4550',tag:'المتجر الأمريكي',unit:'USD',image:card('itunes-60.webp'),denomImages:[card('itunes-25.webp'),card('apple-45.webp'),card('itunes-60.webp')],values:[25,45,60],prices:[38500,69500,92500]},
-{id:6,name:'PlayStation',en:'PS',category:'متاجر عالمية',color:'#254c9a',tag:'المتجر الأمريكي',unit:'USD',image:card('playstation-50.webp'),denomImages:[null,null,card('playstation-50.webp')],values:[10,25,50],prices:[15500,38500,76500]},
-{id:9,name:'إنترنت العراق سيل',en:'IRAQCELL FTTH',category:'إنترنت',color:'#7a1e2e',tag:'اشتراك ألياف',unit:'د.ع',image:card('iraqcell-40k.webp'),values:[40000],prices:[42000]},
-{id:10,name:'إنترنت 4G+',en:'4G+ INTERNET',category:'إنترنت',color:'#1f6f8b',tag:'رصيد إنترنت',unit:'د.ع',image:card('internet-4g-50k.webp'),values:[50000],prices:[52500]},
-{id:11,name:'HRNIS إنترنت',en:'HRNIS',category:'إنترنت',color:'#2f6b4f',tag:'اشتراك شهري',unit:'Mbps',image:card('hrnis-50.webp'),values:[50],prices:[45000]},
-{id:12,name:'روبلاكس',en:'ROBLOX',category:'ألعاب',color:'#e2231a',tag:'Robux',unit:'USD',image:card('roblox-100.webp'),values:[100],prices:[154000]},
-{id:13,name:'كلابز',en:'CLUBS',category:'ألعاب',color:'#0f9d8f',tag:'شحن ألعاب',unit:'رصيد',image:card('clubs-1000.webp'),values:[1000],prices:[25000]},
-{id:14,name:'سول تشيل',en:'SOULCHILL',category:'ألعاب',color:'#8e44ad',tag:'شحن ألعاب',unit:'جواهر',image:card('soulchill-199.webp'),values:[199],prices:[3500]},
-{id:15,name:'سلالة المحاربين',en:'WARRIORS',category:'ألعاب',color:'#c0392b',tag:'شحن ألعاب',unit:'عملة',image:card('warriors-400.webp'),values:[400],prices:[7500]},
-{id:16,name:'يلا لودو',en:'YALLA LUDO',category:'ألعاب',color:'#e84393',tag:'عملات لودو',unit:'عملة',image:card('yalla-ludo-830.webp'),denomImages:[card('yalla-ludo-830.webp'),card('yalla-ludo-56000.webp')],values:[830,56000],prices:[15000,540000]},
-{id:17,name:'توكنز الألعاب',en:'TOKENS',category:'ألعاب',color:'#16a085',tag:'توكنز ألعاب',unit:'توكن',image:card('tokens-830.webp'),values:[830],prices:[15000]},
-{id:18,name:'أرينا بريك أوت',en:'ARENA BREAKOUT',category:'ألعاب',color:'#2c3e50',tag:'نقاط CP',unit:'CP',image:card('arena-breakout-60cp.webp'),values:[60],prices:[3500]},
-{id:19,name:'كلاش أوف كلانس',en:'CLASH',category:'ألعاب',color:'#f39c12',tag:'جواهر',unit:'جواهر',image:card('clash-80-gems.webp'),values:[80],prices:[4500]},
-{id:20,name:'فورتنايت',en:'FORTNITE',category:'ألعاب',color:'#6c3fc5',tag:'V-Bucks',unit:'V-Bucks',image:card('fortnite-500v.webp'),values:[500],prices:[15500]},
-{id:21,name:'جوجل بلاي',en:'GOOGLE PLAY',category:'متاجر عالمية',color:'#01875f',tag:'رصيد جوجل',unit:'د.ع',image:card('google-play-2000.webp'),values:[2000],prices:[2150]},
-{id:22,name:'إكس بوكس',en:'XBOX',category:'متاجر عالمية',color:'#107c10',tag:'رصيد إكس بوكس',unit:'USD',image:card('xbox-5.webp'),values:[5],prices:[7750]},
-{id:23,name:'كريم',en:'CAREEM',category:'تطبيقات',color:'#00a651',tag:'رصيد كريم',unit:'د.ع',image:card('careem-100k.webp'),values:[100000],prices:[102000]},
-{id:24,name:'إيمو',en:'IMO',category:'تطبيقات',color:'#2f8fff',tag:'رصيد imo',unit:'USD',image:card('imo-5.webp'),values:[5],prices:[7750]},
-{id:25,name:'بابليون تي في',en:'BABYLON TV',category:'تطبيقات',color:'#9b1c31',tag:'اشتراك شهري',unit:'شهر',image:card('babylon-1m.webp'),values:[1],prices:[15000]},
-{id:26,name:'جينيوز تي في',en:'GENIUS TV',category:'تطبيقات',color:'#0e7490',tag:'اشتراك 6 أشهر',unit:'شهر',image:card('genius-tv-6m.webp'),values:[6],prices:[80000]},
-{id:27,name:'ستارز بلاي',en:'STARZPLAY',category:'تطبيقات',color:'#111827',tag:'اشتراك سنوي',unit:'شهر',image:card('starzplay-year.webp'),values:[12],prices:[150000]},
-{id:5,name:'الرابعة',en:'AL RABIAA',category:'اتصالات',color:'#7749a5',tag:'بطاقات تعبئة',unit:'د.ع',values:[5000,10000,25000],prices:[5250,10500,26000]},
-{id:7,name:'كورك',en:'KOREK',category:'اتصالات',color:'#0076aa',tag:'شحن رصيد',unit:'د.ع',values:[5000,10000,25000],prices:[5200,10400,25800]},
-{id:8,name:'Steam',en:'STEAM',category:'متاجر عالمية',color:'#203447',tag:'المتجر الأمريكي',unit:'USD',values:[5,10,20],prices:[8000,15500,31000]}
-];
+import {initialProducts} from './catalog.js';
 export const store=reactive({
   products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),
   orders:[],customers:[],tickets:[],imports:[],suppliers:[],events:[],
@@ -41,22 +14,50 @@ export const isoDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Baghdad
 export function record(text){const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Baghdad',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());store.events.unshift({id:crypto.randomUUID(),text,date:isoDate()+'T'+time+'+03:00'});store.events.splice(30);}
 export function matchesCustomer(record,user){
   if(!record||!user)return false;
+  if(record.customerId&&user.id)return record.customerId===user.id;
   if(record.previewId||user.previewId)return !!record.previewId&&record.previewId===user.previewId;
   if(record.phone&&user.phone)return record.phone===user.phone;
   return !!record.email&&!!user.email&&record.email===user.email;
 }
 export function upsertCustomer(user){
-  if(!user)return;
+  if(connected||!user)return;
   const customer=store.customers.find(c=>matchesCustomer(c,user));
   if(customer){Object.assign(customer,user);return;}
   if(!customer){store.customers.push({...user,id:crypto.randomUUID(),kind:'فرد',active:true,discount:0,date:isoDate()});record('انضم حساب تجريبي جديد إلى ماسال');}
 }
 export function createOrder(product,denom,quantity,customer,payment='Qi'){
+  if(connected)return api('/orders',{productId:product.id,denom,quantity,payment,reference:arguments[5]||crypto.randomUUID()}).then(async order=>{await refreshStore();return order;});
   const unit=product.prices[denom];
   const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),kind:'فرد',status:'مكتمل',payment:(payment==='ZainCash'?'ZainCash':'Qi')+' / محاكاة'};
   if(product.stock[denom]>=quantity)product.stock[denom]-=quantity;
   store.orders.unshift(order);record('طلب تجريبي جديد: '+product.name);return order;
 }
 export function createTicket(subject,message,customer){
+  if(connected)return api('/tickets',{subject,message}).then(async ticket=>{await refreshStore();return ticket;});
   store.tickets.unshift({id:'TICKET-'+String(store.tickets.length+1).padStart(4,'0'),subject,message,customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),date:isoDate(),status:'مفتوحة',reply:''});record('تذكرة دعم جديدة');
+}
+
+export const connection=reactive({admin:false,ready:false,error:'',revision:0});
+let refreshing=null,refreshRole=false;
+export function applyState(data){
+  for(const key of ['products','orders','customers','tickets','imports','suppliers','events'])if(Array.isArray(data[key]))store[key].splice(0,store[key].length,...data[key]);
+  Object.assign(store.settings,data.settings);
+  if(data.slides)slides.splice(0,slides.length,...data.slides);
+  if(data.middleSlides)middleSlides.splice(0,middleSlides.length,...data.middleSlides);
+  connection.revision=data.revision;connection.ready=true;connection.error='';
+}
+export async function refreshStore(){
+  if(!connected)return;
+  if(refreshing){const sameRole=refreshRole===connection.admin;await refreshing;if(sameRole)return;return refreshStore();}
+  refreshRole=connection.admin;
+  refreshing=(async()=>{try{const role=refreshRole;const data=await api(role?'/admin/state':'/state');if(role===connection.admin)applyState(data);}catch(e){connection.error=e.message;throw e;}finally{refreshing=null;}})();
+  return refreshing;
+}
+export async function saveAdmin(collection,data,revision=connection.revision){
+  try{applyState(await api('/admin/'+collection,{revision,data},'PUT'));}
+  catch(e){await refreshStore().catch(()=>{});throw e;}
+}
+export async function importStock(rows,name){
+  try{const result=await api('/admin/import',{revision:connection.revision,rows,name});applyState(result.state);return result;}
+  catch(e){await refreshStore().catch(()=>{});throw e;}
 }

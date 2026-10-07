@@ -5,3 +5,5 @@ dist/
 !.env.example
 .sites-runtime/
 .openai/
+
+server/data/

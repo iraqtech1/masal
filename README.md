@@ -1,25 +1,49 @@
-# ماسال — نسخة أولية
+# ماسال — التطبيق ولوحة الإدارة
 
-Vue 3 + Vite. Arabic RTL interface, Cairo Bold 700 only, burgundy and white, English digits and ISO dates.
+Vue 3 / Vite PWA with a shared Node.js API and persistent SQLite database.
+Use Node.js 22.13 or newer.
 
-The complete user interface is Vue. It is an installable PWA with a standalone manifest, Android/maskable icons and iOS home-screen support. The service worker precaches the UI, assets and bundled Cairo Bold font for offline use after the first successful visit. A new build prompts users to update rather than immediately interrupting their session. Only the static demo interface works offline; production payments, authentication and stock require an online backend.
+## Local development
 
-Run `npm install`, then `npm run dev`. Build with `npm run build`.
+1. Run `npm ci`, then `npm run dev`.
+2. Open `http://127.0.0.1:5173`. Administration is at `#/admin`.
+3. The development launcher prints a temporary admin password if `ADMIN_PASSWORD` is absent. Username defaults to `masal`. Copy `.env.example` to `.env` to configure credentials.
 
-This is an interactive UI prototype. Products and prices are illustrative. Qi payments, supplier APIs, Excel import, authentication, production inventory and native app packaging are not implemented. Demo purchases stay in memory and reset on reload. No real codes are issued and support messages are not sent. Brand names use text treatments, not official logo assets.
+Local development enables preview OTP codes unless `DEV_OTP=false` is configured. Codes are shown on the verification screen; no WhatsApp messages are sent in that mode. Direct entry keeps the existing one-click guest experience, with a server-issued account and session. Registration and returning phone sign-in use server-side OTP challenges.
 
-The merchant switch previews account context only, not an authorization boundary or real wholesale pricing.
+## Shared data
 
-Admin preview: open `#/admin` on the same app. The Vue dashboard includes catalog and retail/merchant price editing, product publishing, XLSX stock import with duplicate validation, orders and statuses, customers and merchants, Qi preview, supplier setup, support replies, Excel reports and store settings. It shares reactive session data with the storefront within the same tab; a reload clears all demo data. Admin access is public for this prototype and is not an authorization boundary. Excel files and card codes stay in memory and are not uploaded; imported codes are never issued as real customer cards. The first import sheet uses `product_id`, `denomination`, `code`, up to 5000 rows and 2 MB.
+- Products, visibility, denominations, prices, card images and denomination images are managed by the dashboard.
+- Top and middle slider uploads, ordering and removals persist and appear on other devices using the same server.
+- Accounts, profile changes and suspension are shared. Guests keep their own orders and tickets through their server session.
+- Checkout creates an idempotent **simulation order**, priced by the server and initially marked `قيد المراجعة`. Admin status changes appear in the customer's orders.
+- Support tickets and admin replies persist and synchronize.
+- Store name, support contacts and low-stock settings are shared. Support contacts appear on the support screen.
+- Excel imports update persistent stock. The server revalidates rows and rejects duplicate codes after a restart. Imported codes stay private to the server and are never delivered by simulation checkout.
+- Supplier records persist. Supplier API calls and provider secrets are not implemented.
 
-Run `npm test` for shared-state and import validation checks.
+The foreground app refreshes every three seconds. Admin writes include a database revision; stale edits are rejected instead of silently overwriting concurrent changes. Errors appear in the interface. Customer APIs return only that customer's orders and tickets. Administration requires a server-validated session. Credentials stay out of the frontend bundle; sessions use HttpOnly, SameSite cookies.
 
-The shared day/night toggle appears in the store, dashboard and both login screens. Its black, blue and sky-blue night palette is saved in localStorage and synchronized between tabs. Dashboard summary cards use outer shadows; content fills the available width and grids adapt to the screen. The merchants page includes an unfiltered total-account count card, including `0 حساب` when empty.
+## Deployment
 
-The middle slider appears directly below favorite companies with three bundled images and a two-second interval. Manage it independently at `#/admin/middle-slider` (سلايدر وسطي): add, delete and reorder up to ten images. GIF and WebP uploads retain their original animation (up to 2 MB per file); JPG/PNG uploads are optimized. Image settings persist in localStorage and synchronize across tabs in the same browser, not across devices or visitors. Hover, keyboard focus, pause, a hidden tab and reduced-motion preferences pause automatic slide changes.
+GitHub Pages serves static files and cannot run this API. The existing Pages workflow explicitly builds **preview mode** to preserve the static demo. That preview uses in-memory data and browser-local sliders. Uploading source to GitHub alone does not enable cross-device data.
 
-The store opens with phone-number sign-in and a link to create an account. Registration asks for name, Iraqi WhatsApp phone number and optional email, followed by a six-digit OTP confirmation. The email field is explicitly labelled optional; accounts, orders and support tickets use the phone identity so separate accounts can omit email. Returning sign-in also requires OTP. Codes expire after five minutes, allow five attempts and can be resent after 60 seconds. Changing the number cancels the pending challenge. No account is created before successful verification.
+For shared operation, deploy the Node server and frontend together on a host with persistent disk:
 
-WhatsApp is not connected: this is a local verification preview and no messages are sent. The OTP screen explicitly shows a preview code. Accounts and challenges stay in memory and reset on reload; an existing preview store session can restore within the same tab. Register a test account before trying a fresh sign-in. Real WhatsApp delivery, account persistence and verification must run on a backend using a WhatsApp Business provider; never put provider credentials or production OTP generation in this static app.
+1. Run `npm ci` and `npm run build` without `VITE_DATA_MODE=preview`.
+2. Set a long random `ADMIN_PASSWORD`, `ADMIN_USER`, `DEV_OTP=false`, and `NODE_ENV=production` on the server.
+3. Run `npm start`. Configure an HTTPS reverse proxy to forward the same origin to this service. Set `HOST` and `PORT` to suit the host; the default bind is localhost and the port is 3001.
+4. Persist and back up `server/data/`, including SQLite WAL files when taking a live backup. The database, `.env` and credentials must never be committed or exposed as static files. Only `dist/` is served.
+5. Use a single Node process initially. OTP challenges and rate limits are process-local and require shared storage before deploying multiple instances.
 
-Agreed requirements: Vue web + mobile experience; Cairo Bold; English digits and dates; burgundy and white; consumers and merchants; Excel inventory import; supplier API; Qi integration. Store name: Masal (ماسال).
+For real verification, configure `OTP_WEBHOOK_URL` (HTTPS) and `OTP_WEBHOOK_TOKEN`. The endpoint receives `{"phone":"077...","code":"123456"}` with a Bearer token and must deliver the code through your WhatsApp provider, returning a successful HTTP status. Provider credentials belong on the delivery service or server. With preview OTP disabled and delivery unconfigured, registration fails explicitly.
+
+**Qi/ZainCash collection, payment webhooks, supplier fulfillment and real card-code issuance remain integrations to implement with the providers.** No real charge occurs. Simulation orders do not decrement real inventory or expose imported codes. Production financial checkout must use verified provider webhooks and transactional stock allocation.
+
+## Verification
+
+- `npm test`: UI logic plus API integration tests for persistence, sessions, customer isolation, admin permissions, server pricing, idempotent orders, support replies, images, settings, imports, conflicts, OTP and restart.
+- `npm run check`: JavaScript syntax and Vue templates.
+- `npm run build`: production PWA build.
+
+Static PWA assets can work offline. Shared accounts, orders, administration and support require the server. API responses are not precached. Build static preview mode explicitly with `VITE_DATA_MODE=preview`.

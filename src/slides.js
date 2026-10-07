@@ -1,12 +1,13 @@
+import {connected} from './api.js';
 import {reactive} from 'vue/dist/vue.esm-bundler.js';
 export const MAX_SLIDES=10;
 const key='masal-slider-v1';
 const middleKey='masal-middle-slider-v1';
 export const MIDDLE_INTERVAL=2000;
-const defaults=[{"id":"middle-asiacell-25000","src":"middle-banners/asiacell-card-25000-1600x800.png","name":"آسياسيل — 25,000 دينار"},{"id":"middle-asiacell-5000","src":"middle-banners/asiacell-card-5000-1600x800.png","name":"آسياسيل — 5,000 دينار"},{"id":"middle-asiacell-10000","src":"middle-banners/asiacell-card-10000-1600x800.png","name":"آسياسيل — 10,000 دينار"},{"id":"middle-asiacell-1000","src":"middle-banners/asiacell-card-1000-1600x800.png","name":"آسياسيل — 1,000 دينار"},{"id":"middle-asiacell-15000","src":"middle-banners/asiacell-card-15000-1600x800.png","name":"آسياسيل — 15,000 دينار"}];
+import {defaults} from './slide-defaults.js';
 const legacySources=['middle-banners/hala.png','middle-banners/donation.png','middle-banners/nojoom.png'];
 function read(){try{const data=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(data)?data.filter(s=>typeof s.id==='string'&&typeof s.src==='string'&&/^data:image\/(webp|jpeg|png|gif);base64,/.test(s.src)).slice(0,MAX_SLIDES):[];}catch{return [];}}
-export const slides=reactive(read());
+export const slides=reactive(connected?[]:read());
 function readMiddle(){try{
   const raw=localStorage.getItem(middleKey);if(raw===null)return defaults.map(s=>({...s}));
   const data=JSON.parse(raw);if(!Array.isArray(data))return defaults.map(s=>({...s}));
@@ -15,10 +16,11 @@ function readMiddle(){try{
   return valid.slice(0,MAX_SLIDES);
 }catch{return defaults.map(s=>({...s}));}}
 
-export const middleSlides=reactive(readMiddle());
-if(typeof window!=='undefined')window.addEventListener('storage',event=>{if(event.key===middleKey||event.key===null)middleSlides.splice(0,middleSlides.length,...readMiddle());if(event.key===key||event.key===null)slides.splice(0,slides.length,...read());});
+export const middleSlides=reactive(connected?defaults.map(s=>({...s})):readMiddle());
+if(!connected&&typeof window!=='undefined')window.addEventListener('storage',event=>{if(event.key===middleKey||event.key===null)middleSlides.splice(0,middleSlides.length,...readMiddle());if(event.key===key||event.key===null)slides.splice(0,slides.length,...read());});
 export function saveSlides(next,placement='top'){
   if(next.length>MAX_SLIDES)throw Error('الحد الأقصى 10 صور');
+  if(connected)return remoteSave(next,placement);
   try{localStorage.setItem(placement==='middle'?middleKey:key,JSON.stringify(next));}catch{throw Error('مساحة الحفظ غير كافية. احذف صورة أو جرّب صورة أصغر.');}
   const target=placement==='middle'?middleSlides:slides;target.splice(0,target.length,...next);
 }
@@ -36,4 +38,9 @@ export async function prepareSlide(file){
     canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
     return {id:crypto.randomUUID(),src:canvas.toDataURL('image/webp',.78),name:file.name};
   }finally{URL.revokeObjectURL(url);}
+}
+
+async function remoteSave(next,placement){
+  const {saveAdmin}=await import('./store.js');
+  await saveAdmin(placement==='middle'?'middleSlides':'slides',next);
 }

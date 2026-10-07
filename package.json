@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "node scripts/dev.mjs",
     "build": "vite build",
-    "test": "node tests/flows.mjs && node tests/marketing.mjs && node tests/pull-refresh.mjs && node tests/store-session.mjs && node tests/deck-gesture.mjs && node tests/auth-preview.mjs && node tests/slides.mjs && node tests/i18n.mjs && node tests/pagination.mjs",
-    "check": "node scripts/check.mjs"
+    "test": "node tests/flows.mjs && node tests/marketing.mjs && node tests/pull-refresh.mjs && node tests/store-session.mjs && node tests/deck-gesture.mjs && node tests/auth-preview.mjs && node tests/slides.mjs && node tests/i18n.mjs && node tests/pagination.mjs && node tests/backend.mjs",
+    "check": "node scripts/check.mjs",
+    "start": "node --env-file-if-exists=.env server/start.mjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",
@@ -23,5 +24,8 @@
     "exceljs": {
       "uuid": "^11.1.1"
     }
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }

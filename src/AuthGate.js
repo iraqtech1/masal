@@ -1,3 +1,5 @@
+import {api,connected} from './api.js';
+import {createRemoteAuth} from './remote-auth.js';
 import {t,language} from './i18n.js';
 import {store} from './store.js';
 import {ref,computed,watch,nextTick,onMounted,onBeforeUnmount} from 'vue/dist/vue.esm-bundler.js';
@@ -6,7 +8,7 @@ import MasalMark from './MasalMark.js';
 import {createPreviewAuth,createPreviewUser,normalizePhone} from './auth-preview.js';
 import './auth.css';
 
-export const auth=createPreviewAuth();
+export const auth=connected?createRemoteAuth():createPreviewAuth();
 export default {
   components:{ChevronRight,User,Smartphone,Mail,ShieldCheck,ArrowLeft,MasalMark},
   props:{request:Number},
@@ -28,14 +30,14 @@ export default {
     function allowed(mobile){const customer=store.customers.find(c=>normalizePhone(c.phone)===mobile);if(customer&&!customer.active)throw Error('هذا الحساب موقوف بالمعاينة. راجع إدارة المتجر.');}
     async function submit(){
       if(busy.value)return;
-      if(view.value==='login'){auth.cancel();challenge.value=null;error.value='';emit('enter',createPreviewUser());return;}
+      if(view.value==='login'){auth.cancel();challenge.value=null;error.value='';busy.value=true;try{emit('enter',connected?await api('/auth/guest',{}):createPreviewUser());}catch(e){error.value=e.message;}finally{busy.value=false;}return;}
       busy.value=true;error.value='';
       try{
         allowed(displayPhone.value);
         if(view.value==='otp'){
-          const user=auth.verify(code.value);challenge.value=null;code.value='';view.value='login';emit('enter',user);
+          const user=await auth.verify(code.value);challenge.value=null;code.value='';view.value='login';emit('enter',user);
         }else{
-          challenge.value=auth.start({mode:view.value,phone:phone.value,name:name.value,email:email.value});
+          challenge.value=await auth.start({mode:view.value,phone:phone.value,name:name.value,email:email.value});
           now.value=Date.now();code.value='';view.value='otp';await focus();
         }
       }catch(e){error.value=e.message;}finally{busy.value=false;}
@@ -43,7 +45,7 @@ export default {
     async function resend(){
       if(busy.value||remaining.value)return;
       busy.value=true;error.value='';
-      try{allowed(displayPhone.value);challenge.value=auth.resend();now.value=Date.now();code.value='';await focus();}catch(e){error.value=e.message;}finally{busy.value=false;}
+      try{allowed(displayPhone.value);challenge.value=await auth.resend();now.value=Date.now();code.value='';await focus();}catch(e){error.value=e.message;}finally{busy.value=false;}
     }
     function back(){change(challenge.value?.mode==='register'?'register':'login');}
     return {t,language,store,view,name,phone,email,code,error,busy,heading,otpInput,challenge,remaining,expired,displayPhone,change,submit,resend,back,cleanCode,cleanPhone};
@@ -66,7 +68,7 @@ export default {
           <p v-if="error" class="auth-error" role="alert">{{t(error)}}</p>
           <button class="primary auth-action" :disabled="busy||(view==='otp'&&(code.length!==6||expired))">{{busy?t("لحظة..."):view==='otp'?t("تأكيد ومتابعة"):view==='register'?t("متابعة وتأكيد الرقم"):t("تسجيل الدخول")}}<ArrowLeft :size="19"/></button>
         </form>
-        <div v-if="view==='otp'" class="auth-verification"><p>{{t("ما وصلك الرمز؟")}} <button type="button" @click="resend" :disabled="busy||remaining>0">{{remaining>0?t("إعادة الإرسال بعد ")+remaining+t(" ثانية"):t("إعادة إرسال الرمز")}}</button></p><div class="auth-preview-note" role="status"><strong>{{t("معاينة التحقق")}}</strong><span>{{t("واتساب غير مربوط بهذه النسخة. لم تُرسل رسالة؛ استخدم رمز التجربة:")}}</span><b dir="ltr">{{challenge?.previewCode}}</b></div></div>
+        <div v-if="view==='otp'" class="auth-verification"><p>{{t("ما وصلك الرمز؟")}} <button type="button" @click="resend" :disabled="busy||remaining>0">{{remaining>0?t("إعادة الإرسال بعد ")+remaining+t(" ثانية"):t("إعادة إرسال الرمز")}}</button></p><div v-if="challenge?.previewCode" class="auth-preview-note" role="status"><strong>{{t("معاينة التحقق")}}</strong><span>{{t("واتساب غير مربوط بهذه النسخة. لم تُرسل رسالة؛ استخدم رمز التجربة:")}}</span><b dir="ltr">{{challenge?.previewCode}}</b></div></div>
       </div>
       <div class="auth-bottom"><p class="auth-switch" v-if="view!=='otp'">{{view==='login'?t("ليس لديك حساب؟"):t("عندك حساب؟")}} <button type="button" @click="change(view==='login'?'register':'login')" :disabled="busy">{{view==='login'?t("إنشاء حساب"):t("تسجيل الدخول")}}</button></p><span class="auth-footer" dir="ltr">MASAL · DIGITAL STORE</span></div>
     </section>
