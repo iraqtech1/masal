@@ -9,7 +9,7 @@ Use Node.js 22.13 or newer.
 2. Open `http://127.0.0.1:5173`. Administration is at `#/admin`.
 3. The development launcher prints a temporary admin password if `ADMIN_PASSWORD` is absent. Username defaults to `masal`. Copy `.env.example` to `.env` to configure credentials.
 
-Local development enables preview OTP codes unless `DEV_OTP=false` is configured. Codes are shown on the verification screen; no WhatsApp messages are sent in that mode. Direct entry keeps the existing one-click guest experience, with a server-issued account and session. Registration and returning phone sign-in use server-side OTP challenges.
+Customers register and sign in with an Iraqi phone number and a password of 8–128 characters. Passwords are stored as salted scrypt hashes in SQLite. Existing accounts without a password need an administrator to set one in the customer editor. Local development also enables preview OTP codes for the legacy API unless `DEV_OTP=false` is configured.
 
 ## Shared data
 
@@ -26,6 +26,8 @@ The foreground app refreshes every three seconds. Admin writes include a databas
 
 ## Deployment
 
+For shared phone/password login across devices, use the ready-to-deploy Render Blueprint in `render.yaml`. Follow [DEPLOYMENT.md](DEPLOYMENT.md). It creates a paid service with a persistent disk; review costs in Render before applying. Preview accounts on GitHub Pages do not transfer to the new server.
+
 GitHub Pages serves static files and cannot run this API. The existing Pages workflow explicitly builds **preview mode** to preserve the static demo. That preview uses in-memory data and browser-local sliders. Uploading source to GitHub alone does not enable cross-device data.
 
 For shared operation, deploy the Node server and frontend together on a host with persistent disk:
@@ -36,7 +38,7 @@ For shared operation, deploy the Node server and frontend together on a host wit
 4. Persist and back up `server/data/`, including SQLite WAL files when taking a live backup. The database, `.env` and credentials must never be committed or exposed as static files. Only `dist/` is served.
 5. Use a single Node process initially. OTP challenges and rate limits are process-local and require shared storage before deploying multiple instances.
 
-For real verification, configure `OTP_WEBHOOK_URL` (HTTPS) and `OTP_WEBHOOK_TOKEN`. The endpoint receives `{"phone":"077...","code":"123456"}` with a Bearer token and must deliver the code through your WhatsApp provider, returning a successful HTTP status. Provider credentials belong on the delivery service or server. With preview OTP disabled and delivery unconfigured, registration fails explicitly.
+For legacy OTP verification, configure `OTP_WEBHOOK_URL` (HTTPS) and `OTP_WEBHOOK_TOKEN`. The endpoint receives `{"phone":"077...","code":"123456"}` with a Bearer token and must deliver the code through your WhatsApp provider, returning a successful HTTP status. Provider credentials belong on the delivery service or server. With preview OTP disabled and delivery unconfigured, legacy OTP requests fail explicitly. Phone/password registration and login do not require this webhook.
 
 **Qi/ZainCash collection, payment webhooks, supplier fulfillment and real card-code issuance remain integrations to implement with the providers.** No real charge occurs. Simulation orders do not decrement real inventory or expose imported codes. Production financial checkout must use verified provider webhooks and transactional stock allocation.
 
