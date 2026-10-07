@@ -60,3 +60,13 @@ assert.throws(()=>passwordAuth.login({...passwordPerson,password:'wrong'}));
 assert.deepEqual(passwordAuth.login({...passwordPerson,phone:'+9647787654321'}),passwordUser);
 assert.throws(()=>passwordAuth.register(passwordPerson));
 assert.equal('password' in passwordUser,false);
+
+const reset=passwordAuth.start({mode:'reset',phone:passwordPerson.phone});
+assert.throws(()=>passwordAuth.resetPassword('invalid','new-password'));
+assert.throws(()=>passwordAuth.resetPassword(reset.previewCode,'short'));
+passwordAuth.resetPassword(reset.previewCode,'new-password');
+assert.throws(()=>passwordAuth.resetPassword(reset.previewCode,'other-password'));
+assert.throws(()=>passwordAuth.login(passwordPerson));
+assert.deepEqual(passwordAuth.login({...passwordPerson,password:'new-password'}),passwordUser);
+const expiring=passwordAuth.start({mode:'reset',phone:passwordPerson.phone});
+passwordAuth.cancel();assert.throws(()=>passwordAuth.resetPassword(expiring.previewCode,'new-password'));

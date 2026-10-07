@@ -1,4 +1,11 @@
 export default {
+  "استرجاع كلمة المرور": "Recover password",
+  "ادخل رقم حسابك حتى تسترجع كلمة المرور.": "Enter your account phone number to recover your password.",
+  "الباسورد الجديد": "New password",
+  "حفظ الباسورد الجديد": "Save new password",
+  "إظهار رمز التحقق": "Request verification code",
+  "تم تغيير الباسورد. سجّل الدخول بالباسورد الجديد.": "Password changed. Sign in with your new password.",
+
   "ادخل رقم هاتفك والباسورد حتى تدخل لحسابك.": "Enter your phone number and password to sign in.",
   "املأ معلوماتك واختار باسورد لحسابك.": "Enter your details and choose a password.",
   "الباسورد": "Password",

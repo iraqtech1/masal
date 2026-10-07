@@ -39,7 +39,7 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
     rate('otp:'+req.socket.remoteAddress,10);const now=Date.now();const challengeId=resend?text(b.challengeId,100):randomUUID();const previous=challenges.get(challengeId);
     if(resend&&(!previous||now<previous.resendAt))fail('انتظر قبل طلب رمز جديد');
     const s=read();let account,mode;
-    if(resend){account=previous.account;mode=previous.mode;}else{mode=b.mode;const phone=normalizePhone(b.phone);if(!/^07[3-9][0-9]{8}$/.test(phone))fail('اكتب رقم هاتف عراقي صحيح');const existing=s.customers.find(c=>c.phone===phone);if(mode==='login'){if(!existing?.active)fail('الحساب غير موجود أو موقوف');account=existing;}else if(mode==='register'){if(existing)fail('هذا الرقم مسجّل بالفعل');account={...profile(b),phone,id:randomUUID(),active:true,kind:'فرد',date:date()};if(account.email&&s.customers.some(c=>c.email===account.email))fail('البريد مستخدم');}else fail('طريقة التحقق غير صحيحة');}
+    if(resend){account=previous.account;mode=previous.mode;}else{mode=b.mode;const phone=normalizePhone(b.phone);if(!/^07[3-9][0-9]{8}$/.test(phone))fail('اكتب رقم هاتف عراقي صحيح');const existing=s.customers.find(c=>c.phone===phone);if(mode==='login'||mode==='reset'){if(!existing?.active)fail('الحساب غير موجود أو موقوف');account=existing;}else if(mode==='register'){if(existing)fail('هذا الرقم مسجّل بالفعل');account={...profile(b),phone,id:randomUUID(),active:true,kind:'فرد',date:date()};if(account.email&&s.customers.some(c=>c.email===account.email))fail('البريد مستخدم');}else fail('طريقة التحقق غير صحيحة');}
     const code=String(randomInt(100000,1000000));const challenge={account,mode,code:hash(code),expiresAt:now+300000,resendAt:now+60000,attempts:0};
     if(!developmentOtp){if(!otpUrl||!otpToken||!otpUrl.startsWith('https://'))fail('خدمة إرسال رموز التحقق غير مهيأة',503);const result=await fetch(otpUrl,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+otpToken},body:JSON.stringify({phone:account.phone,code}),signal:AbortSignal.timeout(10000)});if(!result.ok)fail('تعذّر إرسال الرمز',502);}
     challenges.set(challengeId,challenge);for(const [key,c] of challenges)if(c.expiresAt<now)challenges.delete(key);
@@ -85,8 +85,21 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
       if(path==='/api/auth/me'&&req.method==='GET')return json(identity(user(req,s)));
       if(path==='/api/auth/start'&&req.method==='POST')return json(await issue(req,res,b));
       if(path==='/api/auth/resend'&&req.method==='POST')return json(await issue(req,res,b,true));
+      if(path==='/api/auth/reset-password'&&req.method==='POST'){
+        rate('reset:'+req.socket.remoteAddress,10);
+        const c=challenges.get(b.challengeId);
+        if(!c||c.mode!=='reset'||Date.now()>=c.expiresAt||c.attempts>=5)fail('اطلب رمز تحقق جديداً');
+        c.attempts++;if(typeof b.code!=='string'||!equal(hash(b.code),c.code))fail('رمز التحقق غير صحيح');
+        if(typeof b.password!=='string'||b.password.length<8||b.password.length>128)fail('الباسورد لازم يكون من 8 إلى 128 حرف.');
+        const account=s.customers.find(a=>a.id===c.account.id);if(!account?.active||account.phone!==c.account.phone)fail('الحساب موقوف',403);
+        const salt=randomBytes(16).toString('hex'),digest=scryptSync(b.password,salt,64).toString('hex');
+        db.prepare('INSERT OR REPLACE INTO credentials VALUES (?,?,?)').run(account.id,salt,digest);
+        db.prepare("DELETE FROM sessions WHERE role='customer' AND customer=?").run(account.id);
+        for(const [id,challenge] of challenges)if(challenge.account.id===account.id)challenges.delete(id);
+        return json({ok:true});
+      }
       if(path==='/api/auth/verify'&&req.method==='POST'){
-        rate('verify:'+req.socket.remoteAddress,30);const c=challenges.get(b.challengeId);if(!c||Date.now()>=c.expiresAt||c.attempts>=5)fail('اطلب رمز تحقق جديداً');c.attempts++;if(typeof b.code!=='string'||!equal(hash(b.code),c.code))fail('رمز التحقق غير صحيح');
+        rate('verify:'+req.socket.remoteAddress,30);const c=challenges.get(b.challengeId);if(!c||c.mode==='reset'||Date.now()>=c.expiresAt||c.attempts>=5)fail('اطلب رمز تحقق جديداً');c.attempts++;if(typeof b.code!=='string'||!equal(hash(b.code),c.code))fail('رمز التحقق غير صحيح');
         s=read();let account=s.customers.find(a=>a.id===c.account.id);
         if(c.mode==='register'){if(s.customers.some(a=>a.phone===c.account.phone||c.account.email&&a.email===c.account.email))fail('الحساب مسجّل بالفعل');account=c.account;s.customers.push(account);event(s,'انضم حساب جديد');commit(s);}if(!account?.active)fail('الحساب موقوف',403);challenges.delete(b.challengeId);cookie(res,'customer',account.id);return json(identity(account));
       }

@@ -26,6 +26,11 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       if(!user||!passwords.has(mobile)||passwords.get(mobile)!==password)throw Error('رقم الهاتف أو الباسورد غير صحيح.');
       return {...user};
     },
+    resetPassword(code,password){
+      if(!pending||pending.mode!=='reset')throw Error('اطلب رمز تحقق جديداً.');
+      if(typeof password!=='string'||password.length<8||password.length>128)throw Error('الباسورد لازم يكون من 8 إلى 128 حرف.');
+      const user=this.verify(code);passwords.set(user.phone,password);return {ok:true};
+    },
     updateProfile(user){
       const name=String(user.name||'').trim(),email=String(user.email||'').trim().toLowerCase();
       if(name.length<2||name.length>80)throw Error('اكتب اسمك الكامل.');
@@ -40,7 +45,7 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       pending=null;
       const mobile=normalizePhone(phone);
       if(!/^07[3-9][0-9]{8}$/.test(mobile))throw Error('اكتب رقم هاتف عراقي صحيح، مثل 07712345678.');
-      if(mode==='login'){
+      if(mode==='login'||mode==='reset'){
         const user=accounts.get(mobile);
         if(!user)throw Error('هذا الرقم غير مسجّل. اضغط «إنشاء حساب» أولاً.');
         return issue(mode,user);

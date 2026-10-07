@@ -90,6 +90,15 @@ try{
   assert.equal((await passwordUser('/auth/login',credentials)).id,passwordAccount.id,'Password credentials persist after restart');
   state=await admin('/admin/state');
   state=await admin('/admin/customers',{revision:state.revision,data:{...state.customers.find(c=>c.id===passwordAccount.id),active:false}},'PUT');
+  const recover=client();
+  const recovery=await recover('/auth/start',{mode:'reset',phone:registered.phone});
+  await recover('/auth/verify',{challengeId:recovery.challengeId,code:recovery.previewCode},'POST',400);
+  await recover('/auth/reset-password',{challengeId:recovery.challengeId,code:'000000',password:'recovered-password'},'POST',400);
+  await recover('/auth/reset-password',{challengeId:recovery.challengeId,code:recovery.previewCode,password:'short'},'POST',400);
+  await recover('/auth/reset-password',{challengeId:recovery.challengeId,code:recovery.previewCode,password:'recovered-password'});
+  await recover('/auth/reset-password',{challengeId:recovery.challengeId,code:recovery.previewCode,password:'other-password'},'POST',400);
+  await register('/auth/me',undefined,'GET',401);
+  assert.equal((await recover('/auth/login',{phone:registered.phone,password:'recovered-password'})).id,registered.id);
   const legacyAccount=state.customers.find(c=>c.id===registered.id);
   state=await admin('/admin/customers',{revision:state.revision,data:{...legacyAccount,password:'legacy-new-password'}},'PUT');
   const legacyLogin=client();
