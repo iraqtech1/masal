@@ -1,3 +1,4 @@
+import {DatabaseSync} from 'node:sqlite';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -9,12 +10,17 @@ async function start(){app=createMasalServer({dbPath:join(dir,'test.sqlite'),adm
 async function stop(){await new Promise(resolve=>app.server.close(resolve));app.close();}
 function client(){let cookie='';return async(path,body,method=body===undefined?'GET':'POST',expected=200)=>{const response=await fetch(base+'/api'+path,{method,headers:{...(cookie?{Cookie:cookie}:{}),...(body!==undefined?{'Content-Type':'application/json'}:{})},body:body===undefined?undefined:JSON.stringify(body)});if(response.headers.get('set-cookie'))cookie=response.headers.get('set-cookie').split(';')[0];const data=await response.json();assert.equal(response.status,expected,JSON.stringify(data));return data;};}
 try{
-  await start();const admin=client(),alice=client(),bob=client(),anon=client();
+  await start();
+  // Existing databases predate managed categories; keep their product assignments.
+  const legacyDb=new DatabaseSync(join(dir,'test.sqlite'));
+  const legacy=JSON.parse(legacyDb.prepare('SELECT value FROM state WHERE id=1').get().value);delete legacy.categories;
+  legacyDb.prepare('UPDATE state SET value=? WHERE id=1').run(JSON.stringify(legacy));legacyDb.close();
+  const admin=client(),alice=client(),bob=client(),anon=client();
   await anon('/admin/state',undefined,'GET',401);
   await admin('/admin/login',{username:'masal',password:'masal'},'POST',401);
   await admin('/admin/login',{username:'masal',password:'test-password-123456'});
   const a=await alice('/auth/guest',{}),b=await bob('/auth/guest',{});assert.notEqual(a.id,b.id);
-  let state=await admin('/admin/state');const product=state.products[0];
+  let state=await admin('/admin/state');assert.equal(state.categories.length,5,'Existing database gains initial categories');assert.ok(state.products.every(p=>state.categories.some(c=>c.name===p.category)));const product=state.products[0];
   const order=await alice('/orders',{productId:product.id,denom:0,quantity:2,payment:'Qi',reference:'retry-1',price:1,customerId:b.id},'POST',201);
   assert.equal(order.price,product.prices[0]*2);assert.equal(order.customerId,a.id);assert.equal(order.status,'قيد المراجعة');
   assert.equal((await alice('/orders',{productId:product.id,denom:0,quantity:2,payment:'Qi',reference:'retry-1'})).id,order.id);
@@ -35,6 +41,24 @@ try{
   assert.equal((await bob('/state')).middleSlides[0].id,'uploaded');
   state=await admin('/admin/settings',{revision:state.revision,data:{...state.settings,supportPhone:'07712345678',name:'Shared store'}},'PUT');
   assert.equal((await bob('/state')).settings.name,'Shared store');
+  await anon('/admin/categories',{revision:state.revision,data:{name:'Test category',en:'Test category',icon:'Layers',active:true}},'PUT',401);
+  state=await admin('/admin/categories',{revision:state.revision,data:{name:'تصنيف جديد',en:'New category',icon:'CreditCard',active:true}},'PUT');
+  let category=state.categories.find(c=>c.name==='تصنيف جديد');assert.ok(category);
+  assert.ok((await bob('/state')).categories.some(c=>c.id===category.id),'Dashboard category is visible in storefront');
+  await admin('/admin/categories',{revision:state.revision,data:{name:category.name,en:'Duplicate',icon:'Layers',active:true}},'PUT',400);
+  await admin('/admin/categories',{revision:state.revision,data:{name:'Invalid',en:'Invalid',icon:'NoSuchIcon',active:true}},'PUT',400);
+  state=await admin('/admin/products',{revision:state.revision,data:{...product,id:undefined,name:'New category card',category:category.name}},'PUT');
+  const categoryProduct=state.products.find(p=>p.name==='New category card');
+  assert.ok((await bob('/state')).products.some(p=>p.id===categoryProduct.id));
+  assert.deepEqual(categoryProduct.values,product.values,'Category cards retain their denominations');
+  state=await admin('/admin/categories',{revision:state.revision,data:{...category,name:'تصنيف معدل'}},'PUT');
+  category=state.categories.find(c=>c.id===category.id);
+  assert.equal(state.products.find(p=>p.id===categoryProduct.id).category,'تصنيف معدل','Rename keeps cards assigned');
+  state=await admin('/admin/categories',{revision:state.revision,data:{...category,active:false}},'PUT');
+  const hidden=await bob('/state');assert.ok(!hidden.categories.some(c=>c.id===category.id));assert.ok(!hidden.products.some(p=>p.id===categoryProduct.id));
+  await bob('/orders',{productId:categoryProduct.id,denom:0,quantity:1,payment:'Qi',reference:'hidden-category'},'POST',400);
+  state=await admin('/admin/categories',{revision:state.revision,data:{...category,active:true}},'PUT');
+  await admin('/admin/products',{revision:state.revision,data:{...product,category:'Missing category'}},'PUT',400);
   const rows=[{product_id:product.id,denomination:product.values[0],code:'PRIVATE-CODE-1'}];
   let result=await admin('/admin/import',{revision:state.revision,name:'test.xlsx',rows});assert.equal(result.accepted,1);state=result.state;
   result=await admin('/admin/import',{revision:state.revision,name:'duplicate.xlsx',rows});assert.equal(result.accepted,0);assert.equal(result.errors.length,1);
@@ -49,6 +73,7 @@ try{
   await stop();await start();
   assert.equal((await admin('/admin/state')).orders.length,1,'Restart preserves database and admin session');
   assert.equal((await register('/auth/me')).name,'Edited account');
+  assert.ok((await bob('/state')).categories.some(c=>c.id===category.id&&c.name==='تصنيف معدل'),'Categories persist after restart');
   const returning=client(),login=await returning('/auth/start',{mode:'login',phone:'07712345678'});
   assert.equal((await returning('/auth/verify',{challengeId:login.challengeId,code:login.previewCode})).id,registered.id);
   await admin('/admin/logout',{});await admin('/admin/state',undefined,'GET',401);

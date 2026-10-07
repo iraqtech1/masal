@@ -1,14 +1,16 @@
 import {api,connected} from './api.js';
 import {slides,middleSlides} from './slides.js';
-import {reactive} from 'vue/dist/vue.esm-bundler.js';
-// الخمسة أقسام الرئيسية بالمتج�� — تُستخدم بالفلاتر وتقارير الإدارة.
-export const CATEGORIES=['اتصالات','إنترنت','ألعاب','متاجر عالمية','تطبيقات'];
+import {reactive,watch} from 'vue/dist/vue.esm-bundler.js';
+import {initialCategories} from './categories.js';
+export const CATEGORIES=reactive(initialCategories.map(c=>c.name));
 import {initialProducts} from './catalog.js';
 export const store=reactive({
+  categories:initialCategories.map(c=>({...c})),
   products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),
   orders:[],customers:[],tickets:[],imports:[],suppliers:[],events:[],
   settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''},
 });
+watch(()=>store.categories.map(c=>c.name),names=>CATEGORIES.splice(0,CATEGORIES.length,...names),{flush:'sync'});
 export const number=n=>new Intl.NumberFormat('en-US').format(n);
 export const isoDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Baghdad',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 export function record(text){const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Baghdad',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());store.events.unshift({id:crypto.randomUUID(),text,date:isoDate()+'T'+time+'+03:00'});store.events.splice(30);}
@@ -40,7 +42,7 @@ export function createTicket(subject,message,customer){
 export const connection=reactive({admin:false,ready:false,error:'',revision:0});
 let refreshing=null,refreshRole=false;
 export function applyState(data){
-  for(const key of ['products','orders','customers','tickets','imports','suppliers','events'])if(Array.isArray(data[key]))store[key].splice(0,store[key].length,...data[key]);
+  for(const key of ['categories','products','orders','customers','tickets','imports','suppliers','events'])if(Array.isArray(data[key]))store[key].splice(0,store[key].length,...data[key]);
   Object.assign(store.settings,data.settings);
   if(data.slides)slides.splice(0,slides.length,...data.slides);
   if(data.middleSlides)middleSlides.splice(0,middleSlides.length,...data.middleSlides);
