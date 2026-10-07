@@ -36,8 +36,9 @@ const marketing=ref(location.hash.startsWith('#/ar'));
 function readRoute(){admin.value=location.hash.startsWith('#/admin');marketing.value=location.hash.startsWith('#/ar');}
 onMounted(()=>window.addEventListener('hashchange',readRoute));
 onBeforeUnmount(()=>window.removeEventListener('hashchange',readRoute));
-let tabStorage;try{tabStorage=window.sessionStorage;}catch{}
-const restored=connected?null:restoreStoreSession(tabStorage);
+let previewStorage,legacyStorage;try{previewStorage=window.localStorage;}catch{}try{legacyStorage=window.sessionStorage;}catch{}
+const restored=connected?null:(restoreStoreSession(previewStorage)||restoreStoreSession(legacyStorage));
+if(!connected&&restored){saveStoreSession(previewStorage,restored);saveStoreSession(legacyStorage,{entered:false});}
 const entered=ref(!!restored),session=ref(restored?.user||null),authRequest=ref(0);
 if(restored?.user)upsertCustomer(restored.user);
 async function enterStore(user){if(connected)await refreshStore().catch(e=>notify(e.message));session.value=user;entered.value=true;upsertCustomer(user);go('home');}
@@ -48,7 +49,7 @@ const navMotion=ref(0);
 const paymentMethod=ref('Qi'),paymentDraft=ref(null),paymentReceipt=ref('');
 const navIcons={Home,Grid2X2,ShoppingBag,Headphones,User,Plus};
 const page=ref(restored?.page||'home'),category=ref('الكل'),query=ref(''),selected=ref(null),quantity=ref(1),denom=ref(0),orders=computed(()=>store.orders.filter(o=>matchesCustomer(o,session.value))),toast=ref(''),subject=ref(''),message=ref(''),success=ref(false),dialog=ref(null);
-watch([entered,session,page],()=>saveStoreSession(tabStorage,{entered:entered.value,user:session.value,page:page.value}),{flush:'sync'});
+watch([entered,session,page],()=>{if(!connected)saveStoreSession(previewStorage,{entered:entered.value,user:session.value,page:page.value});},{flush:'sync'});
 const products=computed(()=>store.products.filter(p=>p.active&&store.categories.some(c=>c.active&&c.name===p.category)));
 const myTickets=computed(()=>store.tickets.filter(t=>matchesCustomer(t,session.value)));
 const number=n=>new Intl.NumberFormat('en-US').format(n);

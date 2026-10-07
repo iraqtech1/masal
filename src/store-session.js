@@ -6,7 +6,8 @@ function normalize(value){
   if(!user||typeof user.name!=='string'||typeof user.email!=='string'||typeof user.phone!=='string')return null;
   return {entered:true,user:user?{...(typeof user.id==='string'?{id:user.id}:{}),name:user.name,phone:user.phone,email:user.email,...(typeof user.previewId==='string'&&user.previewId?{previewId:user.previewId}:{})}:null,page:pages.includes(value.page)?value.page:'home'};
 }
-// This is tab-scoped preview state, not production authentication or credentials.
+// Device-local preview session; only public identity and navigation are stored.
+// Production authentication stays in server-issued HttpOnly cookies.
 export function restoreStoreSession(storage){
   try{return normalize(JSON.parse(storage.getItem(key)));}catch{return null;}
 }
