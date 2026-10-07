@@ -80,3 +80,9 @@ html[data-theme=dark] .app-shell dialog > .close:hover{background:#59313e}
 /* Keep the header landscape borderless in dark mode, including hover/focus. */
 html[data-theme=dark] .store-header .store-header-actions .theme-toggle.theme-scenic-toggle,
 html[data-theme=dark] .store-header .store-header-actions .theme-toggle.theme-scenic-toggle:is(:hover,:focus-visible){border:0!important;padding:0;background:transparent!important;box-shadow:none!important}
+
+/* Match the dashboard landscape switch to the borderless store header control. */
+.admin-header .theme-toggle.theme-scenic-toggle{width:84px;height:44px;padding:0;border:0;background:transparent;line-height:0;align-self:center}
+.admin-header .theme-toggle.theme-scenic-toggle .theme-scene{display:block;width:100%;height:auto;aspect-ratio:20/9;filter:none}
+html[data-theme=dark] .admin-header .theme-toggle.theme-scenic-toggle,
+html[data-theme=dark] .admin-header .theme-toggle.theme-scenic-toggle:is(:hover,:focus-visible){border:0!important;background:transparent!important;box-shadow:none!important;padding:0}
