@@ -25,14 +25,14 @@ export function upsertCustomer(user){
   if(connected||!user)return;
   const customer=store.customers.find(c=>matchesCustomer(c,user));
   if(customer){Object.assign(customer,user);return;}
-  if(!customer){store.customers.push({...user,id:crypto.randomUUID(),kind:'فرد',active:true,discount:0,date:isoDate()});record('انضم حساب تجريبي جديد إلى ماسال');}
+  if(!customer){store.customers.push({...user,id:crypto.randomUUID(),kind:'فرد',active:true,discount:0,date:isoDate()});record('انضم حساب جديد إلى ماسال');}
 }
 export function createOrder(product,denom,quantity,customer,payment='Qi'){
   if(connected)return api('/orders',{productId:product.id,denom,quantity,payment,reference:arguments[5]||crypto.randomUUID()}).then(async order=>{await refreshStore();return order;});
   const unit=product.prices[denom];
-  const order={id:'DEMO-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),kind:'فرد',status:'مكتمل',payment:(payment==='ZainCash'?'ZainCash':'Qi')+' / محاكاة'};
+  const order={id:'MASAL-'+String(store.orders.length+1).padStart(4,'0'),productId:product.id,name:product.name,value:product.values[denom],price:unit*quantity,quantity,date:isoDate(),customer:customer?.name||'زائر',phone:customer?.phone||'',email:customer?.email||'',...(customer?.previewId?{previewId:customer.previewId}:{}),kind:'فرد',status:'مكتمل',payment:(payment==='ZainCash'?'ZainCash':'Qi')};
   if(product.stock[denom]>=quantity)product.stock[denom]-=quantity;
-  store.orders.unshift(order);record('طلب تجريبي جديد: '+product.name);return order;
+  store.orders.unshift(order);record('طلب جديد: '+product.name);return order;
 }
 export function createTicket(subject,message,customer){
   if(connected)return api('/tickets',{subject,message}).then(async ticket=>{await refreshStore();return ticket;});

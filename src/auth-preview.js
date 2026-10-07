@@ -20,7 +20,7 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       const name=String(user.name||'').trim(),email=String(user.email||'').trim().toLowerCase();
       if(name.length<2||name.length>80)throw Error('اكتب اسمك الكامل.');
       if(email&&(email.length>254||!/^\S+@\S+\.\S+$/.test(email)))throw Error('اكتب بريداً إلكترونياً صحيحاً أو اتركه فارغاً.');
-      if(email&&[...accounts.values()].some(account=>account.phone!==user.phone&&account.email===email))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
+      if(email&&[...accounts.values()].some(account=>account.phone!==user.phone&&account.email===email))throw Error('هذا البريد مستخدم بحساب آخر.');
       const updated={name,email,phone:user.phone};
       if(user.previewId)return {...updated,previewId:user.previewId};
       accounts.set(user.phone,updated);
@@ -32,7 +32,7 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       if(!/^07[3-9][0-9]{8}$/.test(mobile))throw Error('اكتب رقم هاتف عراقي صحيح، مثل 07712345678.');
       if(mode==='login'){
         const user=accounts.get(mobile);
-        if(!user)throw Error('هذا الرقم غير مسجّل بالمعاينة. اضغط «إنشاء حساب» أولاً.');
+        if(!user)throw Error('هذا الرقم غير مسجّل. اضغط «إنشاء حساب» أولاً.');
         return issue(mode,user);
       }
       if(mode!=='register')throw Error('تعذّر بدء التحقق.');
@@ -40,7 +40,7 @@ export function createPreviewAuth({now=Date.now,makeCode=()=>String(crypto.getRa
       if(fullName.length<2||fullName.length>80)throw Error('اكتب اسمك الكامل.');
       if(address&&(address.length>254||!/^\S+@\S+\.\S+$/.test(address)))throw Error('اكتب بريداً إلكترونياً صحيحاً أو اتركه فارغاً.');
       if(accounts.has(mobile))throw Error('هذا الرقم مسجّل بالفعل. ارجع لتسجيل الدخول.');
-      if(address&&[...accounts.values()].some(user=>user.email===address))throw Error('هذا البريد مستخدم بحساب آخر بالمعاينة.');
+      if(address&&[...accounts.values()].some(user=>user.email===address))throw Error('هذا البريد مستخدم بحساب آخر.');
       return issue(mode,{name:fullName,phone:mobile,email:address});
     },
     verify(code){

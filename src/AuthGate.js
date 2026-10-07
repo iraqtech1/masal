@@ -27,7 +27,7 @@ export default {
     watch(()=>props.request,()=>{name.value='';phone.value='';email.value='';change('login');});
     onMounted(()=>{timer=setInterval(()=>now.value=Date.now(),1000);});
     onBeforeUnmount(()=>{clearInterval(timer);auth.cancel();});
-    function allowed(mobile){const customer=store.customers.find(c=>normalizePhone(c.phone)===mobile);if(customer&&!customer.active)throw Error('هذا الحساب موقوف بالمعاينة. راجع إدارة المتجر.');}
+    function allowed(mobile){const customer=store.customers.find(c=>normalizePhone(c.phone)===mobile);if(customer&&!customer.active)throw Error('هذا الحساب موقوف. راجع إدارة المتجر.');}
     async function submit(){
       if(busy.value)return;
       if(view.value==='login'){auth.cancel();challenge.value=null;error.value='';busy.value=true;try{emit('enter',connected?await api('/auth/guest',{}):createPreviewUser());}catch(e){error.value=e.message;}finally{busy.value=false;}return;}
@@ -68,7 +68,7 @@ export default {
           <p v-if="error" class="auth-error" role="alert">{{t(error)}}</p>
           <button class="primary auth-action" :disabled="busy||(view==='otp'&&(code.length!==6||expired))">{{busy?t("لحظة..."):view==='otp'?t("تأكيد ومتابعة"):view==='register'?t("متابعة وتأكيد الرقم"):t("تسجيل الدخول")}}<ArrowLeft :size="19"/></button>
         </form>
-        <div v-if="view==='otp'" class="auth-verification"><p>{{t("ما وصلك الرمز؟")}} <button type="button" @click="resend" :disabled="busy||remaining>0">{{remaining>0?t("إعادة الإرسال بعد ")+remaining+t(" ثانية"):t("إعادة إرسال الرمز")}}</button></p><div v-if="challenge?.previewCode" class="auth-preview-note" role="status"><strong>{{t("معاينة التحقق")}}</strong><span>{{t("واتساب غير مربوط بهذه النسخة. لم تُرسل رسالة؛ استخدم رمز التجربة:")}}</span><b dir="ltr">{{challenge?.previewCode}}</b></div></div>
+        <div v-if="view==='otp'" class="auth-verification"><p>{{t("ما وصلك الرمز؟")}} <button type="button" @click="resend" :disabled="busy||remaining>0">{{remaining>0?t("إعادة الإرسال بعد ")+remaining+t(" ثانية"):t("إعادة إرسال الرمز")}}</button></p><div v-if="challenge?.previewCode" class="auth-preview-note" role="status"><strong>{{t("رمز التحقق")}}</strong><span>{{t("واتساب غير مربوط بهذه النسخة. لم تُرسل رسالة؛ استخدم الرمز التالي:")}}</span><b dir="ltr">{{challenge?.previewCode}}</b></div></div>
       </div>
       <div class="auth-bottom"><p class="auth-switch" v-if="view!=='otp'">{{view==='login'?t("ليس لديك حساب؟"):t("عندك حساب؟")}} <button type="button" @click="change(view==='login'?'register':'login')" :disabled="busy">{{view==='login'?t("إنشاء حساب"):t("تسجيل الدخول")}}</button></p><span class="auth-footer" dir="ltr">MASAL · DIGITAL STORE</span></div>
     </section>
