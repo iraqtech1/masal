@@ -29,3 +29,18 @@ html[data-theme=dark] .notification-panel li{background:#12273d}html[data-theme=
 html[data-theme=dark] .notification-panel :is(p,small){color:#b7cddd}html[data-theme=dark] .notification-panel button{color:#a9e3ff}html[data-theme=dark] .notification-dot{background:#82d4f5}
 @media(max-width:700px){.app-shell .store-header{height:64px;min-height:64px;margin:12px 16px 0;padding:5px 16px}.store-header-brand{gap:8px}.store-header-brand strong{font-size:21px}.store-header-brand .masal-mark{width:46px;height:46px}.store-header .notification-bell{width:46px;height:46px}.store-header-brand span{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.notification-bell.has-unread,.notification-bell.has-unread>svg{animation:none}}
+
+.notification-heading .notification-close{width:34px;height:34px;padding:0;border:1px solid #e6b7c1;background:#fae8ee;border-radius:50%;color:#a21c2d}
+.notification-framed{border:1px solid #e5bec9;border-radius:10px;background:#fbf0f4;padding:7px 10px;display:inline-flex;align-items:center;gap:7px;color:#a21c2d;font-size:11px}
+.notification-panel li{padding:0}
+.notification-item{display:flex;align-items:flex-start;gap:8px;width:100%;padding:12px;text-align:start;border-radius:12px}
+.notification-item>div{flex:1;min-width:0}
+.notification-item-arrow{display:grid;place-items:center;flex-shrink:0;width:26px;height:26px;border:1px solid #e6c4ce;border-radius:8px;background:#fff7fa;color:#a21c2d;margin-block:auto}
+.notification-item:hover{background:#a21c2d09}
+.notification-back{margin-top:12px}
+.notification-detail{margin-top:12px;padding:15px;border:1px solid #ead0d8;border-radius:14px;background:#f9f0f4}
+.notification-detail h3{font-size:15px;line-height:1.8}
+.notification-detail p{font-size:13px;line-height:2;margin:10px 0;color:#765462;overflow-wrap:anywhere}
+html[data-theme=dark] .notification-heading .notification-close{background:#442631;border-color:#80505e;color:#ffb9c6}
+html[data-theme=dark] :is(.notification-framed,.notification-item-arrow,.notification-detail){background:#15354d;border-color:#345c7a;color:#a9e3ff}
+html[dir=ltr] :is(.notification-item-arrow,.notification-back)>svg{transform:scaleX(-1)}

@@ -1,4 +1,6 @@
 export default {
+  "تفاصيل الإشعار": "Notification details",
+  "العودة إلى الإشعارات": "Back to notifications",
   "تأكيد": "Confirm",
   "المبلغ الكلي": "Total amount",
   "مبلغ الطلب": "Order amount",
