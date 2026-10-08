@@ -1,12 +1,12 @@
 export const SETTINGS_KEY='masal-store-settings-v1';
-export const defaultSettings={name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''};
+export const defaultSettings={name:'ماسال',lowStock:5,supportEmail:'',supportPhone:'',privacyText:'',aboutText:''};
 
 function cleanSettings(data){
   const settings={...defaultSettings};
   if(!data||typeof data!=='object'||Array.isArray(data))return settings;
   if(typeof data.name==='string'&&data.name.trim()&&data.name.length<=60)settings.name=data.name.trim();
   if(Number.isInteger(data.lowStock)&&data.lowStock>=0&&data.lowStock<=10000)settings.lowStock=data.lowStock;
-  for(const [key,max]of [['supportEmail',254],['supportPhone',30]])if(typeof data[key]==='string'&&data[key].length<=max)settings[key]=data[key].trim();
+  for(const [key,max]of [['supportEmail',254],['supportPhone',30],['privacyText',10000],['aboutText',10000]])if(typeof data[key]==='string'&&data[key].length<=max)settings[key]=data[key].trim();
   return settings;
 }
 

@@ -8,6 +8,7 @@ import {resolve,extname,sep} from 'node:path';
 import {initialProducts} from '../src/catalog.js';
 import {defaults} from '../src/slide-defaults.js';
 import {normalizePhone} from '../src/auth-preview.js';
+import {defaultSettings} from '../src/preview-settings.js';
 import {validateInventory,findInventoryCard} from '../src/inventory.js';
 
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
@@ -20,9 +21,9 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
   if(dbPath!==':memory:')mkdirSync(resolve(dbPath,'..'),{recursive:true});
   const db=new DatabaseSync(dbPath);
   db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, role TEXT, customer TEXT, expires INTEGER); CREATE TABLE IF NOT EXISTS credentials (customer TEXT PRIMARY KEY, salt TEXT NOT NULL, digest TEXT NOT NULL);');
-  const initial={revision:0,companies:[],categories:categoriesForProducts(initialProducts),products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),customers:[],orders:[],tickets:[],imports:[],suppliers:[],events:[],codes:[],slides:[],middleSlides:defaults,settings:{name:'ماسال',lowStock:5,supportEmail:'',supportPhone:''}};
+  const initial={revision:0,companies:[],categories:categoriesForProducts(initialProducts),products:initialProducts.map(p=>({...p,active:true,stock:p.values.map(()=>0)})),customers:[],orders:[],tickets:[],imports:[],suppliers:[],events:[],codes:[],slides:[],middleSlides:defaults,settings:{...defaultSettings}};
   if(!db.prepare('SELECT id FROM state WHERE id=1').get())db.prepare('INSERT INTO state VALUES (1,?)').run(JSON.stringify(initial));
-  const read=()=>{const s=JSON.parse(db.prepare('SELECT value FROM state WHERE id=1').get().value);if(!Array.isArray(s.categories))s.categories=categoriesForProducts(s.products);if(!Array.isArray(s.companies))s.companies=[];return s;};
+  const read=()=>{const s=JSON.parse(db.prepare('SELECT value FROM state WHERE id=1').get().value);s.settings={...defaultSettings,...s.settings};if(!Array.isArray(s.categories))s.categories=categoriesForProducts(s.products);if(!Array.isArray(s.companies))s.companies=[];return s;};
   const commit=s=>{s.revision++;db.prepare('UPDATE state SET value=? WHERE id=1').run(JSON.stringify(s));};
   const event=(s,message)=>{s.events.unshift({id:randomUUID(),text:message,date:new Date().toISOString()});s.events.splice(30);};
   const challenges=new Map(),limits=new Map();
@@ -117,7 +118,7 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
         if(!d||typeof d!=='object')fail('بيانات غير صحيحة');
         if(collection==='categories'){try{upsertCategory(s.categories,s.products,d,randomUUID);}catch(e){fail(e.message);}}
         else if(collection==='companies'){try{const previous=s.companies.find(c=>c.id===d.id);if(previous&&s.products.some(p=>p.manufacturerId===d.id&&d.role!=='manufacturer'&&d.role!=='both'||p.supplierCompanyId===d.id&&d.role!=='supplier'&&d.role!=='both'))fail('نوع الشركة مرتبط ببطاقات. عدّل ربط البطاقات أولاً.');upsertCompany(s.companies,d,randomUUID);}catch(e){fail(e.message);}}
-        else if(collection==='settings'){const name=text(d.name,60),supportEmail=text(d.supportEmail,254),supportPhone=text(d.supportPhone,30);if(!name||!Number.isInteger(d.lowStock)||d.lowStock<0||d.lowStock>10000||supportEmail&&!/^\S+@\S+\.\S+$/.test(supportEmail))fail('إعدادات غير صحيحة');s.settings={name,supportEmail,supportPhone,lowStock:d.lowStock};}
+        else if(collection==='settings'){const name=text(d.name,60),supportEmail=text(d.supportEmail,254),supportPhone=text(d.supportPhone,30),privacyText=text(d.privacyText??s.settings.privacyText,10000),aboutText=text(d.aboutText??s.settings.aboutText,10000);if(!name||!Number.isInteger(d.lowStock)||d.lowStock<0||d.lowStock>10000||supportEmail&&!/^\S+@\S+\.\S+$/.test(supportEmail))fail('إعدادات غير صحيحة');s.settings={name,supportEmail,supportPhone,privacyText,aboutText,lowStock:d.lowStock};}
         else if(['slides','middleSlides'].includes(collection)){if(!Array.isArray(d)||d.length>10)fail('الحد الأقصى 10 صور');s[collection]=d.map(slide=>{image(slide.src);return {id:text(slide.id,100),name:text(slide.name,200),src:slide.src};});}
         else if(['products','customers','suppliers','tickets','orders'].includes(collection)){
           const old=s[collection].find(item=>item.id===d.id);let item;

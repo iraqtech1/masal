@@ -11,3 +11,5 @@ html[data-theme=dark] :is(.account-row,.account-panel){background:linear-gradien
 .account-menu .account-theme-row{display:grid;grid-template-columns:44px minmax(0,1fr) 78px;text-align:start}
 .account-theme-row .account-theme-scene{margin:0;justify-self:end}
 @media(max-width:700px){.account-menu .account-theme-row{grid-template-columns:40px minmax(0,1fr) 78px}}
+
+.account-information .account-custom-text{white-space:pre-wrap;overflow-wrap:anywhere}

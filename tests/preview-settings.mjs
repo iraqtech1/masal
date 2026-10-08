@@ -32,3 +32,16 @@ assert.throws(()=>savePreviewSettings(saved,{setItem(){throw Error('quota');}}),
 assert.equal(storage.getItem(SETTINGS_KEY),before,'Failed persistence does not change saved settings');
 assert.deepEqual(readPreviewSettings({getItem(){throw Error('blocked');}}),defaultSettings);
 console.log('Preview support contacts persist across loads and synchronize across tabs, with explicit storage failures.');
+
+const content={...defaultSettings,privacyText:'خصوصية مخصصة\nسطر ثانٍ <script>test</script>',aboutText:'حول متجرنا\nبطاقات رقمية'};
+savePreviewSettings(content,storage);assert.equal(readPreviewSettings(storage).privacyText,content.privacyText);assert.equal(readPreviewSettings(storage).aboutText,content.aboutText);
+const textEvents=new Map(),targetTexts={addEventListener:(name,fn)=>textEvents.set(name,fn),removeEventListener:name=>textEvents.delete(name)};let synced;
+const stopTexts=subscribePreviewSettings(storage,targetTexts,next=>synced=next);textEvents.get('storage')({key:SETTINGS_KEY,storageArea:storage});assert.equal(synced.aboutText,content.aboutText);stopTexts();
+const {readFileSync}=await import('node:fs');const {createSSRApp}=await import('vue');const {renderToString}=await import('@vue/server-renderer');const accountSource=readFileSync('src/AccountPage.js','utf8');
+for(const [view,key]of [['privacy','privacyText'],['about','aboutText']]){
+ const template=accountSource.slice(accountSource.indexOf('<article v-if="view===\''+view+'\'"'));const article=template.slice(0,template.indexOf('</article>')+10);
+ const render=settings=>renderToString(createSSRApp({template:article,setup:()=>({view,store:{settings},t:phrase=>'translated:'+phrase})}));
+ const html=await render(content);assert.ok(html.includes('account-custom-text'));assert.ok(html.includes(key==='privacyText'?'&lt;script&gt;test&lt;/script&gt;':'حول متجرنا'));assert.ok(!html.includes('translated:'+content[key]),'Custom text is not rewritten by UI translation');
+ const fallback=await render(defaultSettings);assert.ok(!fallback.includes('account-custom-text'),'Empty text preserves existing fallback content');assert.ok(fallback.includes('translated:'));
+}
+console.log('Custom privacy and about text persists, syncs and renders as escaped text with default fallback.');

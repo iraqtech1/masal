@@ -34,3 +34,5 @@
 .admin-serial-panel{padding:20px;margin-bottom:20px}.admin-serial-panel h2{margin:0 0 14px;font-size:18px}.admin-serial-panel .admin-toolbar{margin-bottom:10px}.admin-serial-note{color:var(--admin-muted,#89707a);font-size:13px;line-height:1.7}.admin-serial-result{display:flex;flex-wrap:wrap;gap:14px 24px;padding:16px;border:1px solid #dbc2cb;border-radius:12px;overflow-wrap:anywhere}.admin-serial-result strong{flex-basis:100%}
 
 .admin-serial-panel .admin-search input{min-width:0;text-align:right}.admin-serial-panel .admin-search input::placeholder{text-align:right}.admin-serial-panel .admin-secondary{background:#ead2dc;border-color:#cda3b5;color:#78364f;font-weight:700}.admin-serial-panel .admin-secondary:hover:not(:disabled){background:#dfbccb}.admin-serial-panel .admin-secondary:focus-visible{outline:2px solid #9b4a66;outline-offset:2px}
+
+.admin-settings textarea{min-height:140px;resize:vertical;line-height:1.9;white-space:pre-wrap}.admin-settings>.admin-panel-title:not(:first-child){margin-top:24px}.admin-settings>small{display:block;color:var(--admin-muted);line-height:1.8;margin-bottom:14px}

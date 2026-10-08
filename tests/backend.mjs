@@ -56,6 +56,12 @@ try{
   state=await admin('/admin/settings',{revision:state.revision,data:{...state.settings,supportPhone:'07712345678',name:'Shared store'}},'PUT');
   assert.equal((await bob('/state')).settings.name,'Shared store');
   assert.equal((await bob('/state')).settings.supportPhone,'07712345678','Dashboard support number reaches other customers');
+  const privacyText='سياسة مخصصة\nسطر آخر <b>نص</b>',aboutText='تعريف المتجر\nبطاقات وألعاب';
+  state=await admin('/admin/settings',{revision:state.revision,data:{...state.settings,privacyText,aboutText}},'PUT');
+  assert.equal((await bob('/state')).settings.privacyText,privacyText);assert.equal((await anon('/state')).settings.aboutText,aboutText);
+  await admin('/admin/settings',{revision:state.revision,data:{...state.settings,privacyText:'x'.repeat(10001)}},'PUT',400);
+  const {privacyText:removedPrivacy,aboutText:removedAbout,...oldSettings}=state.settings;
+  state=await admin('/admin/settings',{revision:state.revision,data:oldSettings},'PUT');assert.equal(state.settings.privacyText,privacyText,'Older settings editors preserve custom content');
   await anon('/admin/categories',{revision:state.revision,data:{name:'Test category',en:'Test category',icon:'Layers',active:true}},'PUT',401);
   state=await admin('/admin/categories',{revision:state.revision,data:{name:'تصنيف جديد',en:'New category',icon:'CreditCard',active:true}},'PUT');
   let category=state.categories.find(c=>c.name==='تصنيف جديد');assert.ok(category);
@@ -113,7 +119,7 @@ try{
   await stop();await start();
   assert.equal((await admin('/admin/state')).orders.length,1,'Restart preserves database and admin session');
   assert.equal((await admin('/admin/cards/search',{serial:'0000123'})).card.productId,product.id,'Serial lookup survives server restart');
-  const restarted=await admin('/admin/state');assert.equal(restarted.companies.find(c=>c.id===company.id).name,'شركة معدلة');
+  const restarted=await admin('/admin/state');assert.equal(restarted.settings.privacyText,privacyText);assert.equal(restarted.settings.aboutText,aboutText);assert.equal(restarted.companies.find(c=>c.id===company.id).name,'شركة معدلة');
   assert.deepEqual(restarted.products[0].denomImages,denominationImages,'Denomination images persist after restart');
   assert.equal((await register('/auth/me')).name,'Edited account');
   assert.ok((await bob('/state')).categories.some(c=>c.id===category.id&&c.name==='تصنيف معدل'),'Categories persist after restart');
