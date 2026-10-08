@@ -30,3 +30,5 @@
 .admin-stats>button:active{background:#fcf1f5;border-color:var(--admin-wine);box-shadow:0 3px 12px #78173630;transform:translateY(0) scale(.985)}
 .admin-stats>button:focus-visible{outline:2px solid var(--admin-wine);outline-offset:3px;box-shadow:0 7px 22px #78173626}
 @media(prefers-reduced-motion:reduce){.admin-stats>button{transition:none}.admin-stats>button:hover,.admin-stats>button:active{transform:none}}
+
+.admin-serial-panel{padding:20px;margin-bottom:20px}.admin-serial-panel h2{margin:0 0 14px;font-size:18px}.admin-serial-panel .admin-toolbar{margin-bottom:10px}.admin-serial-note{color:var(--admin-muted,#89707a);font-size:13px;line-height:1.7}.admin-serial-result{display:flex;flex-wrap:wrap;gap:14px 24px;padding:16px;border:1px solid #dbc2cb;border-radius:12px;overflow-wrap:anywhere}.admin-serial-result strong{flex-basis:100%}

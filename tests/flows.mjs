@@ -45,3 +45,20 @@ assert.equal(matchesCustomer(guestOrder,withoutEmail),false);
 const zainCashOrder=createOrder(p,0,1,guest,'ZainCash');
 assert.equal(zainCashOrder.payment,'ZainCash');
 assert.equal(zainCashOrder.price,p.prices[0]);
+
+const {findInventoryCard}=await import("../src/inventory.js");
+const serialChecked=validateInventory([{product_id:p.id,denomination:p.values[0],code:"SERIAL-A",serial:"000123"},{product_id:p.id,denomination:p.values[0],code:"SERIAL-B",serial:"000123"}],store.products);
+assert.equal(serialChecked.accepted.length,1);assert.match(serialChecked.errors[0].reason,/سيريل/);
+assert.equal(findInventoryCard(serialChecked.accepted,store.products," 000123 ").serial,"000123");
+assert.equal(findInventoryCard(serialChecked.accepted,store.products,"123"),null);
+assert.equal(findInventoryCard(serialChecked.accepted,store.products,"SERIAL-A"),null,"A redemption code does not act as a serial when a serial exists");
+assert.equal(validateInventory([{product_id:p.id,denomination:p.values[0],code:"NEW",serial:"000123"}],store.products,new Set(),new Set(["000123"])).accepted.length,0);
+console.log("Inventory serial validation and exact lookup checks passed.");
+
+const {readInventory}=await import('../src/spreadsheets.js');
+const {default:ExcelJS}=await import('exceljs');
+const book=new ExcelJS.Workbook(),sheet=book.addWorksheet('Inventory');sheet.addRow(['product_id','denomination','code','serial']);sheet.addRow([p.id,p.values[0],'XLSX-CODE','000777']);
+const bytes=await book.xlsx.writeBuffer();const parsed=await readInventory({name:'inventory.xlsx',size:bytes.length,arrayBuffer:async()=>bytes});
+assert.equal(parsed[0].serial,'000777','XLSX parsing preserves optional serial and leading zeroes');
+assert.equal(validateInventory(parsed,store.products).accepted[0].serial,'000777');
+sheet.getRow(1).getCell(4).value='other';const legacyBytes=await book.xlsx.writeBuffer();const oldRows=await readInventory({name:'legacy.xlsx',size:legacyBytes.length,arrayBuffer:async()=>legacyBytes});assert.equal(oldRows[0].serial,undefined,'Legacy workbooks still import');

@@ -8,7 +8,7 @@ import {resolve,extname,sep} from 'node:path';
 import {initialProducts} from '../src/catalog.js';
 import {defaults} from '../src/slide-defaults.js';
 import {normalizePhone} from '../src/auth-preview.js';
-import {validateInventory} from '../src/inventory.js';
+import {validateInventory,findInventoryCard} from '../src/inventory.js';
 
 const fail=(message,status=400)=>{throw Object.assign(Error(message),{status});};
 const text=(value,max=2000)=>{if(typeof value!=='string'||value.length>max)fail('بيانات غير صحيحة');return value.trim();};
@@ -136,7 +136,8 @@ export function createMasalServer({dbPath='server/data/masal.sqlite',adminUser=p
         }else fail('غير موجود',404);
         event(s,'تحديث الإدارة: '+collection);commit(s);return json(state(req,s,true));
       }
-      if(path==='/api/admin/import'&&req.method==='POST'){session(req,'admin');revision(s,b);if(!Array.isArray(b.rows)||b.rows.length>5000)fail('الحد الأقصى 5000 صف');const checked=validateInventory(b.rows,s.products,new Set(s.codes.map(c=>c.code)));for(const r of checked.accepted){s.products.find(p=>p.id===r.productId).stock[r.index]++;s.codes.push({code:r.code,productId:r.productId,value:r.value});}s.imports.unshift({id:randomUUID(),name:text(b.name,200),count:checked.accepted.length,rejected:checked.errors.length,date:date()});event(s,'استيراد '+checked.accepted.length+' بطاقة');commit(s);return json({state:state(req,s,true),accepted:checked.accepted.length,errors:checked.errors});}
+      if(path==='/api/admin/cards/search'&&req.method==='POST'){session(req,'admin');const serial=text(b.serial,256);if(!serial)fail('اكتب سيريل الكارت');return json({card:findInventoryCard(s.codes,s.products,serial)});}
+      if(path==='/api/admin/import'&&req.method==='POST'){session(req,'admin');revision(s,b);if(!Array.isArray(b.rows)||b.rows.length>5000)fail('الحد الأقصى 5000 صف');const checked=validateInventory(b.rows,s.products,new Set(s.codes.map(c=>c.code)),new Set(s.codes.map(c=>c.serial).filter(Boolean)));for(const r of checked.accepted){s.products.find(p=>p.id===r.productId).stock[r.index]++;s.codes.push({code:r.code,serial:r.serial,productId:r.productId,value:r.value});}s.imports.unshift({id:randomUUID(),name:text(b.name,200),count:checked.accepted.length,rejected:checked.errors.length,date:date()});event(s,'استيراد '+checked.accepted.length+' بطاقة');commit(s);return json({state:state(req,s,true),accepted:checked.accepted.length,errors:checked.errors});}
       fail('غير موجود',404);
     }catch(e){if(!res.headersSent)json({error:e.status?e.message:'تعذّر تنفيذ الطلب'},e.status||500);else res.end();}
   });

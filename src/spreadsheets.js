@@ -7,7 +7,7 @@ export async function readInventory(file){
   if(sheet.rowCount>5001)throw Error('الحد الأقصى 5000 كارت بكل ملف.');
   const headers=sheet.getRow(1).values.slice(1).map(v=>String(v??'').trim());
   if(!['product_id','denomination','code'].every(h=>headers.includes(h)))throw Error('استخدم أعمدة القالب: product_id, denomination, code.');
-  const rows=[];for(let i=2;i<=sheet.rowCount;i++){const row=sheet.getRow(i);if(!row.hasValues)continue;const item={};for(const header of ['product_id','denomination','code']){const v=row.getCell(headers.indexOf(header)+1).value;if(typeof v==='object'&&v!==null)throw Error('الخلايا لازم تكون قيم نصية أو أرقام بدون معادلات.');item[header]=v;}rows.push(item);}return rows;
+  const rows=[];for(let i=2;i<=sheet.rowCount;i++){const row=sheet.getRow(i);if(!row.hasValues)continue;const item={};for(const header of ['product_id','denomination','code',...(headers.includes('serial')?['serial']:[])]){const v=row.getCell(headers.indexOf(header)+1).value;if(typeof v==='object'&&v!==null)throw Error('الخلايا لازم تكون قيم نصية أو أرقام بدون معادلات.');item[header]=v;}rows.push(item);}return rows;
 }
 export async function exportWorkbook(name,headers,rows){
   const book=await workbook(),sheet=book.addWorksheet('Masal');sheet.views=[{rightToLeft:true}];sheet.addRow(headers);rows.forEach(r=>sheet.addRow(r));sheet.columns.forEach(c=>c.width=24);sheet.getRow(1).font={bold:true,color:{argb:'FFFFFFFF'}};sheet.getRow(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF9B4A66'}};

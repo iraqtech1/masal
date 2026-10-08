@@ -52,3 +52,5 @@ For legacy OTP verification, configure `OTP_WEBHOOK_URL` (HTTPS) and `OTP_WEBHOO
 - `npm run build`: production PWA build.
 
 Static PWA assets can work offline. Shared accounts, orders, administration and support require the server. API responses are not precached. Build static preview mode explicitly with `VITE_DATA_MODE=preview`.
+
+Dashboard card lookup: the Cards section searches an exact inventory serial through an admin-only endpoint. XLSX imports support an optional `serial` column (store leading-zero identifiers as text); duplicate nonempty serials are rejected. Legacy imports without serials can be found using their code. Lookup returns card identity and denomination, never the redemption code when a separate serial is present. Preview mode searches inventory imported in the current session.
