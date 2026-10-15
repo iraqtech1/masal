@@ -7,3 +7,8 @@ dist/
 .openai/
 
 server/data/
+
+*.sqlite
+*.sqlite-*
+*.sqlite.key
+*.masal
